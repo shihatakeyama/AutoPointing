@@ -1,0 +1,3 @@
+# AutoPointingDigitizer
+コマンドによって画面にポインティングします
+フォーカス変更
