@@ -325,7 +325,7 @@ int GnrlCom::setBaudRate()
 // ****************************************************************************
 int GnrlCom::setTimeout(unsigned int TimeOut)
 {
-	bool ack;
+	BOOL ack;
 	COMMTIMEOUTS	cto;
 	
 	GetCommTimeouts(m_hFile, &cto );			// タイムアウトの設定状態を取得

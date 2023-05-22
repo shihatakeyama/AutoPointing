@@ -13,34 +13,24 @@
 
 #include "GnrlNumerical.h"
 #include "GnrlThread.h"
-#include "AM_Define.h"
+#include "Define.h"
 #define  USE_MFC
 #include "GnrlComList.h"
 #include "GnrlCom.h"
 
-#include "AM_extern.h"
+#include "global.h"
+#include "extern.h"
+#include "global.h"
 
 
+int32_t initParam();
+
+
+CAutoMouseDlg *pCAutoMouseDlg;
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
-
-extern GnrlCom gCom;
-GnrlCom gCom;
-
-//extern std::vector<AM_Point> gPointVector;		/// DOAXのウインドウ座標
-int32_t setPointVector(int32_t OperationNo ,int32_t Offset_x ,int32_t Offset_y);
-
-CAutoMouseDlg *pCAutoMouseDlg;
-
-// 各種スレッド
-GnrlThread gMouseThread;
-GnrlThread gOperationThread;
-GnrlThread gRecvThread;
-
-int32_t	g_Operation = 0;		// 稼働状態
-int32_t	gAddSleep = 0;
 
 
 
@@ -88,11 +78,11 @@ CAboutDlg::CAboutDlg(unsigned int FiraWareVersion) : CDialogEx(CAboutDlg::IDD)
 	struct VS_VERSIONINFO *pData = (VS_VERSIONINFO*)LockResource(hGlobal);
 	
 	if(FiraWareVersion == 0xFFFFFFFF){
-		m_StrAppVer.Format(L"Aplication Version: %08X" ,pData->Value.dwProductVersionLS);
-		m_StrFirVer =      L"Firmware  Version: --------";
+		m_StrAppVer.Format(_T("Aplication Version: %08X")	, pData->Value.dwProductVersionLS);
+		m_StrFirVer		 = _T("Firmware  Version: --------");
 	}else{
-		m_StrAppVer.Format(L"Aplication Version: %08X" ,pData->Value.dwProductVersionLS);
-		m_StrFirVer.Format(L"Firmware  Version: %08X" ,FiraWareVersion);
+		m_StrAppVer.Format(_T("Aplication Version: %08X")	, pData->Value.dwProductVersionLS);
+		m_StrFirVer.Format(_T("Firmware  Version: %08X")	, FiraWareVersion);
 	}
 }
 
@@ -202,6 +192,8 @@ BOOL CAutoMouseDlg::OnInitDialog()
 	// TODO: 初期化をここに追加します。
 	pCAutoMouseDlg = this;
 
+	initParam();
+
 	// 接続ボタンの色
 	m_CbrCom[0].CreateSolidBrush(RGB(0x80, 0x80, 0x80)); 
 	m_CbrCom[1].CreateSolidBrush(RGB(0x00, 0x00, 0xFF)); 
@@ -251,6 +243,7 @@ void CAutoMouseDlg::OnDestroy()
 
 //	g_Life = 0;
 }
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // ユーザーがバージョンクリック
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -269,7 +262,6 @@ void CAutoMouseDlg::OnSysCommand(UINT nID, LPARAM lParam)
 			CAboutDlg dlgAbout(0xFFFFFFFF);
 			dlgAbout.DoModal();		
 		}
-
 	}
 	else
 	{

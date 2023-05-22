@@ -4,7 +4,7 @@
 
 #pragma once
 #include "afxwin.h"
-#include "AM_define.h"
+#include "define.h"
 
 // CAutoMouseDlg ダイアログ
 class CAutoMouseDlg : public CDialogEx

@@ -11,7 +11,7 @@
 #include <mutex>
 #include <string>
 
-#include "ProcBase.h"
+#include "WorkBase.h"
 
 #include "AutoMouse.h"
 #include "AutoMouseDlg.h"
@@ -20,15 +20,13 @@
 
 #include "GnrlNumerical.h"
 #include "GnrlThread.h"
-#include "AM_Define.h"
+#include "Define.h"
 #include "GnrlComList.h"
 #include "GnrlCom.h"
 
-#include "AM_define.h"
-#include "AM_extern.h"
-
-
-extern GnrlCom gCom;
+#include "define.h"
+#include "extern.h"
+#include "global.h"
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -38,20 +36,6 @@ static uint8_t gTxBuf[TRX_BUF_SIZE*2];		// ASCII
 static uint8_t gRxBuf[TRX_BUF_SIZE*2];		// バイナリ
 static int16_t gRxCo = 0;
 static int16_t gRxTimer = 0;
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-// 操作リスト。
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
-std::vector<AM_Point>			gPointVector;		/// ターゲットウインドウ座標基準
-
-std::wstring					gTitle;
-CPoint							gBurePoint;
-int32_t							gBureTime = 0;
-
-std::vector<ProcBase*>			gWorks;
-std::vector<std::wstring>		gWorkNames;
-std::mutex						gWorkMutex;
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -162,18 +146,6 @@ int32_t RotatingHorse2(const AM_Point *Point, int32_t Len)
 	return 0;
 }
 
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-// ランダム
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-int random(int MaxVal)
-{
-	return rand() % MaxVal;
-}
-int randScatter(int CenterVal ,int Width)
-{
-    int32_t ret = random(Width);
-    return CenterVal + ret - (Width>>1);
-}
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // Point List
