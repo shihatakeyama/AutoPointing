@@ -2,6 +2,7 @@
 
 echo 削除します。宜しいですか？ 
 
+
 del AutoMouse.sdf /S /Q
 del Debug /S /Q
 rmdir Debug /S /Q
@@ -17,4 +18,7 @@ del AutoMouse\Debug /S /Q
 rmdir AutoMouse\Debug /S /Q
 del AutoMouse\Release /S /Q
 rmdir AutoMouse\Release /S /Q
+
+
+git add .
 
