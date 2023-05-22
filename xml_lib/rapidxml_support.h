@@ -85,7 +85,7 @@ node_t* first_node(const node_t* Base ,const char_t *Name ,uint32_t &Val);
 node_t* first_node(const node_t* Base ,const char_t *Name ,double &Val);
 node_t* first_node_hex(const node_t* Base ,const char_t *Name ,uint32_t &Val);
 node_t* next_sibling(const node_t* Node ,const char_t *name = 0, std::size_t name_size = 0);
-node_t* find_node_index(const node_t* Node ,const char_t *Name ,const char_t **List ,int32_t &Index);
+int32_t find_node_index(const node_t* Node /*,const char_t *Name */,const char_t **List ,int32_t &Index);
 int32_t namecmp(const node_t* Node, const char_t *Name);
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -98,10 +98,9 @@ attribute_t* first_attribute(const node_t* Base ,const char_t *Name ,char_t **St
 attribute_t* first_attribute(const node_t* Base ,const char_t *Name ,int32_t &Val);
 attribute_t* first_attribute(const node_t* Base ,const char_t *Name ,double &Val);
 attribute_t* first_attribute_hex(const node_t* Base ,const char_t *Name ,uint32_t &Val);
-attribute_t* first_attribute(const node_t* Base ,string_t &Str);
+attribute_t* first_attribute(const node_t* Base, const char_t *Name, string_t &Str);
 attribute_t* first_attribute_check(const node_t* Base ,bool &Val);	// ,const char_t *Name
 attribute_t* next_sibling(const attribute_t* Attr ,const char_t *name = 0, std::size_t name_size = 0);
-
 attribute_t* find_attribute_index(const node_t* Node ,const char_t *Name ,const char_t **List ,int32_t &Index);
 
 };

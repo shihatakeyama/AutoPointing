@@ -15,8 +15,9 @@
 
 #include "GnrlNumerical.h"
 #include "GnrlThread.h"
-#include "AM_Define.h"
-#include "AM_extern.h"
+#include "Define.h"
+#include "extern.h"
+#include "global.h"
 
 
 //DWORD WINAPI MousePointThread(LPVOID Arg);

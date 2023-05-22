@@ -25,21 +25,21 @@ public:
 	GnrlThread(void *lpStartAddress);
 	~GnrlThread();
 
-	void*	beginThread(void *StartAddless, void *Param, Bool8 Suspend);	// ① スレッド起動
-	Sint32	resumeThread()	{return ResumeThread(m_hThread);}	// ①’再スタート 関数が成功すると、関数呼び出し前のサスペンドカウントが返ります。関数が失敗すると、0xFFFFFFFF が返ります。
+	void*	beginThread(void *StartAddless, void *Param, bool Suspend);	// ① スレッド起動
+	int32_t	resumeThread()	{return ResumeThread(m_hThread);}	// ①’再スタート 関数が成功すると、関数呼び出し前のサスペンドカウントが返ります。関数が失敗すると、0xFFFFFFFF が返ります。
 	void	endThread();								// ②ワーカースレッドへ終了を依頼する。
-	Bool8	isLife() const		{return m_LIFE;}		// スレッド終了状態取得
-	void	setLife(Bool8 Life)	{m_LIFE = Life;}		// Lifeをセット
-	Bool8	isEndThread(Uint32 dwMilliseconds=10000);	// ③ワーカースレッドが終了したか確認 
+	bool	isLife() const		{ return m_LIFE; }		// スレッド終了状態取得
+	void	setLife(bool Life)	{ m_LIFE = Life; }		// Lifeをセット
+	bool	isEndThread(uint32_t dwMilliseconds = 10000);	// ③ワーカースレッドが終了したか確認 
 	void*	setStartAddress(void* lpStartAddress);
 //--	virtual Sint32 VRoutine();	// 継承先のクラスで、ルーチンを定義する場合のメンバ関数		 
 
 private:
-	Bool8	m_LIFE;					// FALSになったら、直ちにループを終了し、ワーカースレッドを終了させて下さい。 
+	bool	m_LIFE;					// FALSになったら、直ちにループを終了し、ワーカースレッドを終了させて下さい。 
 //	static	void s_callRoutine(void* Arg);	// BeginThread()が呼ぶ為の関数	 
 	void*	m_lpStartAddress;		// s_callRoutine()は、ワーカスレッドの先頭アドレスを設定する関数 
 
-	Uint32	m_ThreadID;				//	m_lpStartAddress = (LPTHREAD_START_ROUTINE)&CAboutDlg::test;　←staic宣言の関数
+	uint32_t	m_ThreadID;				//	m_lpStartAddress = (LPTHREAD_START_ROUTINE)&CAboutDlg::test;　←staic宣言の関数
 	void*	m_hThread;
 };
 
@@ -73,17 +73,17 @@ public:
 		return theMutex;
 	}
 
-	Sint32 lock();		// 成功すると0を返す　以外は異常 
-	Sint32 trylock();	// 成功すると0を返す　以外は異常 
-	Sint32 unlock();	// 成功すると0を返す　以外は異常 
+	int32_t lock();		// 成功すると0を返す　以外は異常 
+	int32_t trylock();	// 成功すると0を返す　以外は異常 
+	int32_t unlock();	// 成功すると0を返す　以外は異常 
 
-	static const Sint32 m_Busy;
+	static const int32_t m_Busy;
 
 private:
 	GnrlMutex(const GnrlMutex& arg);
 //	GnrlMutex& operator=(const GnrlMutex& arg);
 
-	Sint32 m_State;	// GetLastError();の戻り値
+	int32_t m_State;	// GetLastError();の戻り値
 
 #ifdef HAVE_CXX_VOLATILE
 	volatile

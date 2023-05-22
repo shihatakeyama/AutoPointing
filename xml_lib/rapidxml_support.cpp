@@ -20,7 +20,7 @@ namespace rapidxml{
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // 本ライブラリのバージョン
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-const static uint32_t vresion		= 0x05235140;
+const static uint32_t vresion		= 0x05235220;
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // 拒否/許可 
@@ -296,10 +296,11 @@ node_t* next_sibling(const node_t* Node ,const char_t *name, std::size_t name_si
 	return Node->next_sibling(name ,name_size ,true);
 }
 
-node_t* find_node_index(const node_t* Node ,const char_t *Name ,const char_t **List ,int32_t &Index)
+int32_t find_node_index(const node_t* Node /*,const char_t *Name */,const char_t **List ,int32_t &Index)
 {
-	node_t* node = Node->first_node(Name);
-	if(node == nullptr)	return nullptr;
+//	node_t* node = Node->first_node(Name);
+//	if(node == nullptr)	return nullptr;
+	auto *node = Node;
 
 	Index = 0;
 	std::size_t	purname_size = rapidxml::internal::measure(node->value());
@@ -307,14 +308,14 @@ node_t* find_node_index(const node_t* Node ,const char_t *Name ,const char_t **L
 	while(*List){
 			std::size_t	listname_size = rapidxml::internal::measure(*List);
 		if(rapidxml::internal::compare(*List, listname_size, node->value(), purname_size, false)){
-			return node;
+			return 0;
 		}
 
 		List++;
 		Index++;
 	}
 
-	return nullptr;	
+	return -1;	
 }
 int32_t namecmp(const node_t* Node, const char_t *Name)
 {
