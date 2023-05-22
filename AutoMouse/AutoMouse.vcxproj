@@ -104,10 +104,11 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AM_define.h" />
-    <ClInclude Include="AM_extern.h" />
+    <ClInclude Include="define.h" />
+    <ClInclude Include="extern.h" />
     <ClInclude Include="AutoMouse.h" />
     <ClInclude Include="AutoMouseDlg.h" />
+    <ClInclude Include="global.h" />
     <ClInclude Include="GnrlCom.h" />
     <ClInclude Include="GnrlComList.h" />
     <ClInclude Include="GnrlDefine.h" />
@@ -115,16 +116,18 @@
     <ClInclude Include="GnrlNumerical.h" />
     <ClInclude Include="GnrlString.h" />
     <ClInclude Include="GnrlThread.h" />
-    <ClInclude Include="ProcBase.h" />
-    <ClInclude Include="ProcTouch.h" />
-    <ClInclude Include="ProcTouchs.h" />
+    <ClInclude Include="WorkBase.h" />
+    <ClInclude Include="WorkTouch.h" />
+    <ClInclude Include="WorkTouchs.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="sub.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AutoMouse.cpp" />
     <ClCompile Include="AutoMouseDlg.cpp" />
+    <ClCompile Include="global.cpp" />
     <ClCompile Include="GnrlCom.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClCompile>
@@ -135,14 +138,15 @@
     <ClCompile Include="GnrlNumerical.cpp" />
     <ClCompile Include="operation_Thread.cpp" />
     <ClCompile Include="SetParam.cpp" />
-    <ClCompile Include="ProcBase.cpp" />
-    <ClCompile Include="ProcTouch.cpp" />
-    <ClCompile Include="ProcTouchs.cpp" />
+    <ClCompile Include="WorkBase.cpp" />
+    <ClCompile Include="WorkTouch.cpp" />
+    <ClCompile Include="WorkTouchs.cpp" />
     <ClCompile Include="ShowMousePoint.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="sub.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="AutoMouse.rc" />
