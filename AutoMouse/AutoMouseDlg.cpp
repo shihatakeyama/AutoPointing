@@ -23,8 +23,6 @@
 #include "global.h"
 
 
-int32_t initParam();
-
 
 CAutoMouseDlg *pCAutoMouseDlg;
 
@@ -192,7 +190,13 @@ BOOL CAutoMouseDlg::OnInitDialog()
 	// TODO: 初期化をここに追加します。
 	pCAutoMouseDlg = this;
 
-	initParam();
+	try{
+		initParam();
+	}
+	catch (const std::wstring& e){
+//		e.what();	// e.what()		/// _T("イニシャライズ失敗")
+		MessageBox(e.c_str(), _T("Automouse"));		// MB_ICONERROR ,
+	}
 
 	// 接続ボタンの色
 	m_CbrCom[0].CreateSolidBrush(RGB(0x80, 0x80, 0x80)); 
@@ -241,6 +245,7 @@ void CAutoMouseDlg::OnDestroy()
 
 	GnrlComList::clearComList();
 
+	clearParam();
 //	g_Life = 0;
 }
 

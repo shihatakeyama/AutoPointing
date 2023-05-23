@@ -40,7 +40,7 @@ int32_t		gAddSleep = 0;
 std::vector<AM_Point>			gPointVector;		/// ターゲットウインドウ座標基準
 
 std::wstring					gTitle;
-CPoint							gBurePoint;
+CPoint							gBurePoint = CPoint(4,4);
 int32_t							gBureTime = 0;
 
 class WorkBase;
