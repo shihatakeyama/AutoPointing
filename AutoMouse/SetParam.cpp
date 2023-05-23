@@ -31,8 +31,22 @@ int32_t initParam()
 	rapidxml::document_t doc;
 	rapidxml::string_t docbuf;
 
-	ack = rapidxml::load_document(doc ,InitFilePath ,docbuf);
-	if(ack < 0)	return ERC_ng;
+	try{
+		ack = rapidxml::load_document(doc, InitFilePath, docbuf);
+		if (ack < 0){ throw std::wstring(_T("load document")); return ERC_ng; }
+	}
+	catch (const std::wstring& e){
+		std::wstring  str(_T("データ読み込み失敗\n"));
+		str += e;
+		throw str;
+	}
+#if 0
+	catch (const rapidxml::parse_error &e){
+		std::wstring  str(_T("XMLデータ読み込み失敗\n"));
+	//	str += e.what();
+		throw str;
+	}
+#endif
 
 	// **** 各種パラメータ読み込み ****
 
@@ -40,7 +54,7 @@ int32_t initParam()
 	rapidxml::node_t *node;
 	rapidxml::first_node(root ,_T("title") ,gTitle);
 
-	node = rapidxml::first_node(root, _T("bure"));
+	node = rapidxml::first_node(root, _T("blur"));
 	if (node == nullptr){
 		gBurePoint = CPoint(4, 4);
 	}else{
@@ -59,8 +73,10 @@ int32_t initParam()
 int32_t clearParam()
 {
 
-	for(auto *e:gWorks)	delete e;
-	gWorks.clear();
+//	for(auto *e:gWorks)	delete e;
+//	gWorks.clear();
+	WorkBase::clearProcList(gWorks);
+
 	gWorkNames.clear();
 
 	return ERC_ok;

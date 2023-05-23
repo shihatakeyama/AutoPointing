@@ -51,9 +51,16 @@ public:
 	static int32_t loadProcList(std::vector<WorkBase*>	&List, rapidxml::node_t* ProcessXml, std::vector<std::wstring> &WorkNames);
 	static int32_t saveProcList(const std::vector<WorkBase*> &List, rapidxml::document_t &Doc, rapidxml::node_t* ProcessXml);
 
-	// タッチ位置と遅延の読み書き
+	// メモリ解放
+	static int32_t clearProcList(std::vector<WorkBase*> &List);
+
+
+	// 単体のタッチ位置と遅延の読み書き
 	static int32_t loadTouchPoint(const rapidxml::node_t* Node ,TouchPoint *Point);
 	static int32_t saveTouchPoint(rapidxml::node_t *Parent ,rapidxml::document_t &Doc ,const TouchPoint *Point);
+
+	// 回数読み
+	int32_t loadLoop_n(const rapidxml::node_t* Node);
 
 protected:
 	int32_t					m_LoopNum;

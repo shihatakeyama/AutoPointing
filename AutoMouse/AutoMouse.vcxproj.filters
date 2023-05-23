@@ -75,6 +75,9 @@
     <ClInclude Include="WorkTouchs.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="WorkWait.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AutoMouse.cpp">
@@ -126,6 +129,9 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="WorkTouchs.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="WorkWait.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>

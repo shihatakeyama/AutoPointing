@@ -158,6 +158,7 @@ namespace rapidxml
 #include "rapidxml_iterators.hpp"
 #include "rapidxml_std.hpp"
 #endif
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // **** 単数個/複数個 共通読み書き 各プロセスの内容をXMLオブジェクトへ ****
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -172,6 +173,8 @@ int32_t WorkTouchs::loadXmlNode(const rapidxml::node_t* Child/*-- ,sheet_t *Db*/
 	});
 #endif
 
+	loadLoop_n(Child);
+
 #if 1
 	// プロセスの数読み込み
 	const rapidxml::node_t* itr = rapidxml::first_node(Child);		// ※※※※※ 検討？
@@ -182,17 +185,6 @@ int32_t WorkTouchs::loadXmlNode(const rapidxml::node_t* Child/*-- ,sheet_t *Db*/
 		
 		itr = rapidxml::next_sibling(itr);
 	}
-#endif
-
-#if 0
-	const rapidxml::node_t *nn = nullptr;
-	rapidxml::const_node_iterator<TCHAR>	aaa(nn);
-	children<TCHAR>	bbb(nn);
-	for(auto *itr:aaa){
-
-	
-	}
-
 #endif
 
 	return ERC_ok;

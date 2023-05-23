@@ -13,8 +13,15 @@
 #include "GnrlNumerical.h"
 
 
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+// パラメーター
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+int32_t initParam();
+int32_t clearParam();
 
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // 
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 int randScatter(int CenterVal ,int Width);
 
 //extern std::vector<AM_Point> gPointVector;		/// DOAXのウインドウ座標

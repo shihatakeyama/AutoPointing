@@ -11,7 +11,7 @@
 #include "WorkBase.h"
 #include "WorkTouch.h"
 #include "WorkTouchs.h"
-
+#include "WorkWait.h"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // クラス名のリスト
@@ -40,7 +40,7 @@ WorkBase *WorkBase::newProc(enum E_ProcType ValTypeId)
 			pbase = new WorkTouchs();
 			break;
 		case EPT_wait:
-//++			pbase = new ProcWait();
+			pbase = new WorkWait();
 			break;
 		default:
 			ASSERT(0);
@@ -115,7 +115,7 @@ int32_t WorkBase::loadProcList(std::vector<WorkBase*>	&List, rapidxml::node_t* P
 	while (node){
 		rapidxml::attribute_t *attr = rapidxml::first_attribute(node, _T("name"), name);
 		int32_t idx;
-		ack = rapidxml::find_node_index(node, m_ProcNames, idx);
+		ack = rapidxml::find_node_index(node, m_ProcNames, idx);	// ノード名が _T("works") である事を確認。 
 		if (ack < 0)	break;
 
 		WorkBase *proc = newProc(static_cast<E_ProcType>(idx));
@@ -133,6 +133,17 @@ int32_t WorkBase::loadProcList(std::vector<WorkBase*>	&List, rapidxml::node_t* P
 }
 int32_t WorkBase::saveProcList(const std::vector<WorkBase*> &List ,rapidxml::document_t &Doc ,rapidxml::node_t* ProcessXml)
 {
+	return ERC_ok;
+}
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+// メモリ解放
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+int32_t WorkBase::clearProcList(std::vector<WorkBase*> &List)
+{
+	for (auto *e : List)	delete e;
+	List.clear();
+
 	return ERC_ok;
 }
 
@@ -158,3 +169,19 @@ int32_t WorkBase::saveTouchPoint(rapidxml::node_t *Parent ,rapidxml::document_t 
 	return ERC_ok;
 }
 
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+// 回数読み
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+int32_t WorkBase::loadLoop_n(const rapidxml::node_t* Node)
+{
+	int32_t n;
+	rapidxml::attribute_t *attr;
+
+	attr = rapidxml::first_attribute(Node, _T("loop_n"), n);
+	if (attr == nullptr){
+		return ERC_ng;
+	}
+	m_LoopNum = n;
+
+	return ERC_ok;
+}
