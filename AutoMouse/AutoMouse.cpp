@@ -113,3 +113,4 @@ BOOL CAutoMouseApp::InitInstance()
 	return FALSE;
 }
 
+

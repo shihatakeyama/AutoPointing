@@ -17,6 +17,10 @@
 #include "GnrlCom.h"
 
 
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+// 
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+std::wstring	gApplicatonName = _T("AutoPointingDigitizer");
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // 各種スレッド
@@ -37,15 +41,18 @@ int32_t		gAddSleep = 0;
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // 操作リスト。
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-std::vector<AM_Point>			gPointVector;		/// ターゲットウインドウ座標基準
+std::vector<AM_Point>		gPointVector;		/// ターゲットウインドウ座標基準
 
-std::wstring					gTitle;
-CPoint							gBurePoint = CPoint(4,4);
-int32_t							gBureTime = 0;
+std::wstring				gTitle;
+std::wstring				gTargetWindowName;
+CPoint						gBasePoint;
+CPoint						gBurePoint = CPoint(4,4);
+int32_t						gBureTime = 4;
+int32_t						gNowTime[3] = { 280, 280, 20 };
 
 class WorkBase;
-std::vector<WorkBase*>			gWorks;
-std::vector<std::wstring>		gWorkNames;
-std::mutex						gWorkMutex;
-
+std::vector<WorkBase*>		gWorks;
+std::vector<std::wstring>	gWorkNames;
+std::mutex					gWorkMutex;
+int32_t						gInitWorkNo=0;
 

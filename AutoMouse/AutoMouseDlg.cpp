@@ -107,6 +107,7 @@ CAutoMouseDlg::CAutoMouseDlg(CWnd* pParent /*=NULL*/)
 	, m_Pointw(_T(""))
 	, m_StrEndTime(_T(""))
 	, m_EndTime((time_t)-1)
+	, m_TargetWindowName(_T(""))
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -114,8 +115,8 @@ CAutoMouseDlg::CAutoMouseDlg(CWnd* pParent /*=NULL*/)
 void CAutoMouseDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
-	DDX_Text(pDX, IDC_STATIC_POINTM,	m_Pointm);
-	DDX_Text(pDX, IDC_STATIC_POINTW,	m_Pointw);
+	DDX_Text(pDX, IDC_STATIC_POINTM, m_Pointm);
+	DDX_Text(pDX, IDC_STATIC_POINTW, m_Pointw);
 	DDX_Control(pDX, IDC_BUTTON_START, m_Start);
 	DDX_Control(pDX, IDC_BUTTON_STOP, m_Stop);
 	//  DDX_Control(pDX, IDC_COMBO_COMNO, m_ComNoCombo);
@@ -123,6 +124,8 @@ void CAutoMouseDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_BUTTON_COM_CONNECT, mButtonConnect);
 	DDX_Text(pDX, IDC_STATIC_END_TIME, m_StrEndTime);
 	DDX_Control(pDX, IDC_COMBO_OPERATION, m_OperationSel);
+	DDX_Text(pDX, IDC_STATIC_TARGET_WINDOW_NAME, m_TargetWindowName);
+	DDV_MaxChars(pDX, m_TargetWindowName, 256);
 }
 
 BEGIN_MESSAGE_MAP(CAutoMouseDlg, CDialogEx)
@@ -138,7 +141,7 @@ BEGIN_MESSAGE_MAP(CAutoMouseDlg, CDialogEx)
 
 	ON_BN_CLICKED(IDC_BUTTON_START, &CAutoMouseDlg::OnBnClickedButtonStart)
 	ON_BN_CLICKED(IDC_BUTTON_STOP, &CAutoMouseDlg::OnBnClickedButtonStop)
-	ON_BN_CLICKED(IDC_BUTTON2, &CAutoMouseDlg::OnBnClickedButton2)
+//	ON_BN_CLICKED(IDC_BUTTON2, &CAutoMouseDlg::OnBnClickedButton2)
 	ON_BN_CLICKED(IDC_BUTTON_COMSERCH, &CAutoMouseDlg::OnBnClickedButtonComserch)
 	ON_BN_CLICKED(IDC_BUTTON_COM_CONNECT, &CAutoMouseDlg::OnBnClickedButtonComConnect)
 	ON_WM_DRAWITEM()
@@ -195,13 +198,16 @@ BOOL CAutoMouseDlg::OnInitDialog()
 	}
 	catch (const std::wstring& e){
 //		e.what();	// e.what()		/// _T("イニシャライズ失敗")
-		MessageBox(e.c_str(), _T("Automouse"));		// MB_ICONERROR ,
+		MessageBox(e.c_str(), WINDOW_NAME, MB_OK | MB_ICONSTOP);		// MB_ICONERROR ,
+		return false;
 	}
 
 	// 接続ボタンの色
 	m_CbrCom[0].CreateSolidBrush(RGB(0x80, 0x80, 0x80)); 
 	m_CbrCom[1].CreateSolidBrush(RGB(0x00, 0x00, 0xFF)); 
 
+
+	m_TargetWindowName = gTargetWindowName.c_str();
 
 	OnBnClickedButtonComserch();
 
@@ -210,16 +216,22 @@ BOOL CAutoMouseDlg::OnInitDialog()
 
 	gOperationThread.beginThread(OperationThread ,NULL ,FALSE);
 
-	gRecvThread.beginThread(RecvThread ,NULL ,FALSE);
+	gRecvThread.beginThread(RecvRootine ,NULL ,FALSE);
 
 
 	m_Stop.EnableWindow(FALSE);
 
+#if 0
 //	m_OperationSel.AddString(_T("通常フェス"),0);
 	m_OperationSel.InsertString(-1,_T("通常フェス"));
 	m_OperationSel.InsertString(-1,_T("決勝フェス"));
 	m_OperationSel.InsertString(-1,_T("準決勝フェス"));
 	m_OperationSel.InsertString(-1,_T("10連ガチャ"));
+#else
+	for (const auto &e : gWorkNames){
+		m_OperationSel.InsertString(-1, e.c_str());
+	}
+#endif
 	m_OperationSel.SetCurSel(0);
 
 	OnBnClickedButtonNow();
@@ -262,7 +274,7 @@ void CAutoMouseDlg::OnSysCommand(UINT nID, LPARAM lParam)
 			openCom();
 		}
 
-		ack = sendCommand(0x99 ,0x99 ,NULL ,0);
+		ack = APD_sendCommand(0x99, 0x99, NULL, 0);
 		if(ack < 0){
 			CAboutDlg dlgAbout(0xFFFFFFFF);
 			dlgAbout.DoModal();		
@@ -418,46 +430,18 @@ void CAutoMouseDlg::OnBnClickedButton1()
 		openCom();
 	}
 
-	ack = sendCommand(0x99 ,0x99 ,NULL ,0);
+	ack = APD_sendCommand(0x99, 0x99, NULL, 0);
 	if(ack < 0){
 		
 	}
 }
 
-void CAutoMouseDlg::OnBnClickedButton2()
-{
-	int i;
-	WINDOWINFO windowInfo;
-
-#if 1	// ウインドウ名を指定してそのウインドウを閉じる。
-	LPCTSTR winname = _T("DOAX VenusVacation");
-	HWND hWndChild = ::FindWindowEx(NULL, NULL, NULL, winname);
-	if (hWndChild == NULL) {
-		return;
-	}
-//		::SendMessage(hWndChild, WM_CLOSE, 0, 0);
-//		::SendMessage(hWndChild, WM_DESTROY, 0, 0);
-
-	RECT rec;
-
-	::GetWindowRect( hWndChild, &rec );		//デスクトップのハンドルからその(画面の)大きさを取得
-	windowInfo.cbSize = sizeof(WINDOWINFO);
-	::GetWindowInfo(hWndChild, &windowInfo);
-    rec.bottom; 
-    rec.left;
-    rec.right;
-    rec.top;
-
-#endif
-
-}
-
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-// DOAXのウインドウ位置を取得する。
+// ターゲットウインドウ位置を取得する。
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-int32_t getDoaxWindowPos(RECT &Rect)
+int32_t getTargetWindowPos(RECT &Rect)
 {
-	LPCTSTR winname = _T("DOAX VenusVacation");
+	LPCTSTR winname = gTargetWindowName.c_str();
 	HWND hWndChild = ::FindWindowEx(NULL, NULL, NULL, winname);
 	if (hWndChild == NULL) {
 		return -1;
@@ -494,9 +478,9 @@ void CAutoMouseDlg::OnBnClickedButtonStart()
 	AM_setDisplayResolution(rec.right ,rec.bottom);
 //	AM_click(321 ,421);
 
-	ack = getDoaxWindowPos(rec);
+	ack = getTargetWindowPos(rec);
 	if(ack < 0){
-		MessageBox(_T("DAOXウインドウが見つかりません。") ,WINDOW_NAME ,MB_OK | MB_ICONSTOP);
+		MessageBox(_T("ターゲットウインドウが見つかりません。") ,WINDOW_NAME ,MB_OK | MB_ICONSTOP);
 		return;
 	}
 
@@ -745,3 +729,14 @@ void CAutoMouseDlg::OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized)
 
 	// TODO: ここにメッセージ ハンドラー コードを追加します。
 }
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+// デジタイザのバージョン をメインスレッドへ通知
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+void recvVersion(const uint8_t *Data, uint8_t Len)
+{
+	Uint32 ver = Uint8ArrowToUint32(&Data[2]);
+
+	pCAutoMouseDlg->PostMessage(WM_SHOW_VERSION, ver);
+}
+

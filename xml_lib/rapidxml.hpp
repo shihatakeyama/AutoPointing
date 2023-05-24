@@ -2195,8 +2195,10 @@ namespace rapidxml
                             // Skip and validate closing tag name
                             Ch *closing_name = text;
                             skip<node_name_pred, Flags>(text);
-                            if (!internal::compare(node->name(), node->name_size(), closing_name, text - closing_name, true))
-                                RAPIDXML_PARSE_ERROR("invalid closing tag name", text);
+							if (!internal::compare(node->name(), node->name_size(), closing_name, text - closing_name, true)){
+//								RAPIDXML_PARSE_ERROR("invalid closing tag name", text);
+								RAPIDXML_PARSE_ERROR("closing tag does not match", node->name());	// add by hatakeyama	2023/05/24 
+							}
                         }
                         else
                         {

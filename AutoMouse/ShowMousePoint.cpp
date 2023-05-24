@@ -47,7 +47,7 @@ Uint32 MousePointThread(void *Arg)
 			
 			strm.Format(_T("x=%5d , y=%5d"), point.x, point.y);
 
-			ack = getDoaxWindowPos(rect);
+			ack = getTargetWindowPos(rect);
 			if(ack < 0){
 				strw = _T("-------  -------");
 			}else{

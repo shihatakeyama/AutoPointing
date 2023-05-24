@@ -22,22 +22,23 @@ WorkTouch::~WorkTouch()
 }
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-// **** 信号処理  各処理共通呼び出し処理 ****
+// ワーク処理  各処理共通呼び出し処理
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 int32_t WorkTouch::proc()
 {
-//--	delay(m_TouchPoint->delay);
-	touchPoint(m_TouchPoint);
+	int32_t ack;
 
-	return ERC_ok;
+	ack = touchPoint(m_TouchPoint);
+
+	return ack;
 }
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-// **** 単数個/複数個 共通読み書き 各プロセスの内容をXMLオブジェクトへ ****
+// 単数個/複数個 共通読み書き 各プロセスの内容をXMLオブジェクトへ
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-int32_t WorkTouch::loadXmlNode(const rapidxml::node_t* Child/*-- ,sheet_t *Db*/)
+int32_t WorkTouch::loadXmlNode(const rapidxml::node_t* Child)
 {
-	loadLoop_n(Child);
+	loadXmlLoop_n(Child);
 	loadTouchPoint(Child ,m_TouchPoint);
 
 	return ERC_ok;
