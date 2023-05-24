@@ -53,7 +53,7 @@
 #include "rapidxml_iterators.hpp"
 #include "rapidxml_std.hpp"
 #include "rapidxml_print.hpp"	// std::ofstream << rapidxml::xml_document<>
-#include "rapidxml_support.h"
+#include "rapidxml_if.h"
 
 
 

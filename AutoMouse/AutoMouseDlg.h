@@ -61,7 +61,7 @@ public:
 	afx_msg void OnBnClickedButtonStop();
 	CButton m_Start;
 	CButton m_Stop;
-	afx_msg void OnBnClickedButton2();
+//--	afx_msg void OnBnClickedButton2();
 	// Comî‘çÜëIë
 	afx_msg void OnBnClickedButtonComserch();
 	CComboBox m_ComSel;
@@ -82,4 +82,5 @@ public:
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
 	afx_msg void OnBnClickedButtonNowshort();
 	afx_msg void OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized);
+	CString m_TargetWindowName;
 };

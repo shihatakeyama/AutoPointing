@@ -36,10 +36,10 @@
     <ClInclude Include="rapidxml_std.hpp">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="rapidxml_support.h">
+    <ClInclude Include="rapidxml_utils.hpp">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="rapidxml_utils.hpp">
+    <ClInclude Include="rapidxml_if.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
@@ -47,7 +47,7 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="rapidxml_support.cpp">
+    <ClCompile Include="rapidxml_if.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>

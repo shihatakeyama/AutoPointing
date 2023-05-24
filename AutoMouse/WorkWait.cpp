@@ -32,12 +32,12 @@ int32_t WorkWait::proc()
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // **** 単数個/複数個 共通読み書き 各プロセスの内容をXMLオブジェクトへ ****
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-int32_t WorkWait::loadXmlNode(const rapidxml::node_t* Child/*-- ,sheet_t *Db*/)
+int32_t WorkWait::loadXmlNode(const rapidxml::node_t* Child)
 {
 	int32_t val;
 	rapidxml::attribute_t *attr;
 
-	loadLoop_n(Child);
+	loadXmlLoop_n(Child);
 
 	attr = rapidxml::first_attribute(Child, _T("wait"), val);
 	if (attr != nullptr){

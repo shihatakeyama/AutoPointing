@@ -129,6 +129,7 @@
   <ItemGroup>
     <ClCompile Include="AutoMouse.cpp" />
     <ClCompile Include="AutoMouseDlg.cpp" />
+    <ClCompile Include="Digitize.cpp" />
     <ClCompile Include="global.cpp" />
     <ClCompile Include="GnrlCom.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>

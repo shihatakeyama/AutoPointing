@@ -13,3 +13,11 @@
 int random(int MaxVal);
 int randScatter(int CenterVal, int Width);
 
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+// スリープ
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+void APD_Sleep(int32_t msc);
+// 近いスリープ終了をやめたい
+void APD_SleepAppend(int32_t msc);
+
+

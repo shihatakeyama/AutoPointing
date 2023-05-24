@@ -8,6 +8,9 @@
 
 #include "define.h"
 #include "extern.h"
+#include "global.h"
+#include "sub.h"
+#include "GnrlThread.h"
 #include "WorkBase.h"
 #include "WorkTouch.h"
 #include "WorkTouchs.h"
@@ -43,7 +46,6 @@ WorkBase *WorkBase::newProc(enum E_ProcType ValTypeId)
 			pbase = new WorkWait();
 			break;
 		default:
-			ASSERT(0);
 			break;
 	}
 
@@ -77,21 +79,23 @@ int32_t WorkBase::touchPoint(const TouchPoint *Point)
 // 待ち
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 void WorkBase::delay(int32_t Msec)
-{
-	Sleep(Msec);	// 仮
+{	
+//	Sleep(Msec);	// 仮
+	APD_Sleep(Msec);
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // true:通常運転中
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 bool WorkBase::isLife() const
 {
-	return true;	// ※※※※※
+//	return true;	// ※※※※※
+	return gOperationThread.isLife();
 }
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // **** 単数個/複数個 共通読み書き 各プロセスの内容をXMLオブジェクトへ ****
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-int32_t WorkBase::loadXmlNode(const rapidxml::node_t* Child/*-- ,sheet_t *Db*/)
+int32_t WorkBase::loadXmlNode(const rapidxml::node_t* Child)
 {
 	return ERC_ng;
 }
@@ -104,7 +108,7 @@ int32_t WorkBase::saveXmlNode(rapidxml::node_t *ProcList ,rapidxml::document_t &
 // XMLからワークリストを読み込み
 // List： ワークの数 配列要素数になります。
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-int32_t WorkBase::loadProcList(std::vector<WorkBase*>	&List, rapidxml::node_t* ProcessXml, std::vector<std::wstring> &WorkNames)
+int32_t WorkBase::loadWorkList(std::vector<WorkBase*>	&List, rapidxml::node_t* ProcessXml, std::vector<std::wstring> &WorkNames)
 {
 	int32_t ack;
 	rapidxml::node_t *node = ProcessXml->first_node();
@@ -114,10 +118,17 @@ int32_t WorkBase::loadProcList(std::vector<WorkBase*>	&List, rapidxml::node_t* P
 	// ワークの数だけループします。
 	while (node){
 		rapidxml::attribute_t *attr = rapidxml::first_attribute(node, _T("name"), name);
-		int32_t idx;
-		ack = rapidxml::find_node_index(node, m_ProcNames, idx);	// ノード名が _T("works") である事を確認。 
-		if (ack < 0)	break;
 
+		int32_t idx;
+#if 0
+		ack = rapidxml::find_node_name_index(node, m_ProcNames, idx);	// ノード名が _T("works") である事を確認。 
+		if (ack < 0)	break;
+#else
+		ack = rapidxml::comp_node_name(node, _T("work"));
+		if (ack < 0)	throw std::wstring(_T("not work"));
+
+		idx = EPT_touchs;
+#endif
 		WorkBase *proc = newProc(static_cast<E_ProcType>(idx));
 		ack = proc->loadXmlNode(node);
 		if (ack < 0)	break;
@@ -131,7 +142,7 @@ int32_t WorkBase::loadProcList(std::vector<WorkBase*>	&List, rapidxml::node_t* P
 
 	return ERC_ok;
 }
-int32_t WorkBase::saveProcList(const std::vector<WorkBase*> &List ,rapidxml::document_t &Doc ,rapidxml::node_t* ProcessXml)
+int32_t WorkBase::saveWorkList(const std::vector<WorkBase*> &List ,rapidxml::document_t &Doc ,rapidxml::node_t* ProcessXml)
 {
 	return ERC_ok;
 }
@@ -172,16 +183,15 @@ int32_t WorkBase::saveTouchPoint(rapidxml::node_t *Parent ,rapidxml::document_t 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // 回数読み
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-int32_t WorkBase::loadLoop_n(const rapidxml::node_t* Node)
+int32_t WorkBase::loadXmlLoop_n(const rapidxml::node_t* Node)
 {
 	int32_t n;
 	rapidxml::attribute_t *attr;
 
 	attr = rapidxml::first_attribute(Node, _T("loop_n"), n);
-	if (attr == nullptr){
-		return ERC_ng;
+	if (attr != nullptr){
+		m_LoopNum = n;
 	}
-	m_LoopNum = n;
 
 	return ERC_ok;
 }

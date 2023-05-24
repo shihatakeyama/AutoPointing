@@ -22,7 +22,7 @@
 #define RX_TIMEOUT		400
 #define CR				0x0D	// コマンド終端
 
-#define WINDOW_NAME	_T("AutoMouse")
+#define WINDOW_NAME	_T("AutoPointingDigitizer")
 
 
 enum E_Notification{

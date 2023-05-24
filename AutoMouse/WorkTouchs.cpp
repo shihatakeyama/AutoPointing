@@ -27,9 +27,12 @@ WorkTouchs::~WorkTouchs()
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 int32_t WorkTouchs::proc()
 {
+	int32_t ack;
+
 	for(int32_t i=0;i<m_LoopNum;i++){
-		procOne();
-		if(!isLife())	return ERC_ok;
+		if (!isLife())		return ERC_ok;
+		ack = procOne();
+		if (ack < ERC_ok)	return ack;
 	}
 
 	return ERC_ok;
@@ -47,14 +50,17 @@ int32_t	WorkTouchs::procOne()
 	switch(m_Mode){ //(EPTM_each)
 	case EPTM_each:
 		for(i=0;i<m_TouchPoints.size();i++){
-			ack = touchPoint(m_TouchPoints[i]);
-			if(!isLife())	return ERC_ok;
+			if (!isLife())	return ERC_ok;
+//			ack = touchPoint(m_TouchPoints[i].);
+			ack = m_TouchPoints[i]->proc();
 		}
 		break;
 	case EPTM_anyone:
 		{
+		if (!isLife())	return ERC_ok;
 		int32_t rdm = rand() % m_TouchPoints.size();
-		ack = touchPoint(m_TouchPoints[rdm]);
+//		ack = touchPoint(m_TouchPoints[rdm]);
+		ack = m_TouchPoints[rdm]->proc();
 		}
 		break;
 	default:
@@ -162,26 +168,25 @@ namespace rapidxml
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // **** 単数個/複数個 共通読み書き 各プロセスの内容をXMLオブジェクトへ ****
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-int32_t WorkTouchs::loadXmlNode(const rapidxml::node_t* Child/*-- ,sheet_t *Db*/)
+int32_t WorkTouchs::loadXmlNode(const rapidxml::node_t* Child)
 {
-#if 0
-	// プロセスの数読み込み			for ( auto &itr : rapidxml::node_iterator<TCHAR>(ProcessXmlaa)) {
-	std::for_each(rapidxml::node_iterator<TCHAR>(Child->first_node()) ,rapidxml::node_iterator<TCHAR>(Child->last_node()) ,[this](const rapidxml::node_t *itr){
-		TouchPoint	*point = new TouchPoint();
-		loadTouchPoint(itr ,point);
-		m_TouchPoints.push_back(point);
-	});
-#endif
+	int32_t ack;
 
-	loadLoop_n(Child);
+	loadXmlLoop_n(Child);
 
 #if 1
 	// プロセスの数読み込み
-	const rapidxml::node_t* itr = rapidxml::first_node(Child);		// ※※※※※ 検討？
+	const rapidxml::node_t* itr = rapidxml::first_node(Child);
 	while(itr){
-		TouchPoint	*point = new TouchPoint();
-		loadTouchPoint(itr ,point);
-		m_TouchPoints.push_back(point);
+		int32_t idx;
+		WorkBase *wb;
+
+		ack = rapidxml::find_node_name_index(itr, m_ProcNames, idx);	// ノード名が _T("works") である事を確認。 
+		wb = WorkBase::newProc(static_cast<WorkBase::E_ProcType>(idx));
+		if (wb == nullptr)	throw std::wstring(_T("ワーク名が不一致"));
+
+		wb->loadXmlNode(itr);
+		m_TouchPoints.push_back(wb);
 		
 		itr = rapidxml::next_sibling(itr);
 	}

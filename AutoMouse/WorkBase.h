@@ -44,12 +44,12 @@ public:
 	bool isLife() const;	// true:通常運転中
 
 	// **** 単数個/複数個 共通読み書き 各プロセスの内容をXMLオブジェクトへ ****
-	virtual int32_t loadXmlNode(const rapidxml::node_t* Child/*-- ,sheet_t *Db*/);
+	virtual int32_t loadXmlNode(const rapidxml::node_t* Child);
 	virtual int32_t saveXmlNode(rapidxml::node_t *Parent ,rapidxml::document_t &Doc) const;
 
 	// XMLからプロセスリストを読み込み
-	static int32_t loadProcList(std::vector<WorkBase*>	&List, rapidxml::node_t* ProcessXml, std::vector<std::wstring> &WorkNames);
-	static int32_t saveProcList(const std::vector<WorkBase*> &List, rapidxml::document_t &Doc, rapidxml::node_t* ProcessXml);
+	static int32_t loadWorkList(std::vector<WorkBase*>	&List, rapidxml::node_t* ProcessXml, std::vector<std::wstring> &WorkNames);
+	static int32_t saveWorkList(const std::vector<WorkBase*> &List, rapidxml::document_t &Doc, rapidxml::node_t* ProcessXml);
 
 	// メモリ解放
 	static int32_t clearProcList(std::vector<WorkBase*> &List);
@@ -60,15 +60,14 @@ public:
 	static int32_t saveTouchPoint(rapidxml::node_t *Parent ,rapidxml::document_t &Doc ,const TouchPoint *Point);
 
 	// 回数読み
-	int32_t loadLoop_n(const rapidxml::node_t* Node);
+	int32_t loadXmlLoop_n(const rapidxml::node_t* Node);
 
 protected:
 	int32_t					m_LoopNum;
+	const static TCHAR		*m_ProcNames[];
 
 private:
 	enum E_ProcType			m_ProcType;
-
-	const static TCHAR		*m_ProcNames[];
 
 };
 

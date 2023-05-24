@@ -22,7 +22,7 @@ public:
 	virtual int32_t proc();
 
 	// **** 単数個/複数個 共通読み書き 各プロセスの内容をXMLオブジェクトへ ****
-	virtual int32_t loadXmlNode(const rapidxml::node_t* Child/*-- ,sheet_t *Db*/);
+	virtual int32_t loadXmlNode(const rapidxml::node_t* Child);
 	virtual int32_t saveXmlNode(rapidxml::node_t *Parent, rapidxml::document_t &Doc) const;
 
 private:
