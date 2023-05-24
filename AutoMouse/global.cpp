@@ -55,4 +55,4 @@ std::vector<WorkBase*>		gWorks;
 std::vector<std::wstring>	gWorkNames;
 std::mutex					gWorkMutex;
 int32_t						gInitWorkNo=0;
-
+int32_t						gWorkNo = 0;	//  Œ»İÀs’†‚Ìƒ[ƒN

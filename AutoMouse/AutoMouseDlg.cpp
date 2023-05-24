@@ -23,6 +23,8 @@
 #include "global.h"
 
 
+void APD_SleepAppend(int32_t msc);
+
 
 CAutoMouseDlg *pCAutoMouseDlg;
 
@@ -244,6 +246,8 @@ BOOL CAutoMouseDlg::OnInitDialog()
 void CAutoMouseDlg::OnDestroy()
 {
 	CDialogEx::OnDestroy();
+
+	g_Operation = 0;
 
 	gMouseThread.endThread();
 	gOperationThread.endThread();
@@ -488,6 +492,8 @@ void CAutoMouseDlg::OnBnClickedButtonStart()
 	setPointVector(curpos ,0 ,0);
 //	m_OperationSel.SetFocus();
 
+	gWorkNo = m_OperationSel.GetCurSel();
+
 	gAddSleep = 0;
 	g_Operation = 1;
 	m_Start.EnableWindow(FALSE);
@@ -723,7 +729,8 @@ void CAutoMouseDlg::OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized)
 	CDialogEx::OnActivate(nState, pWndOther, bMinimized);
 
 	if ((nState == WA_ACTIVE) || (nState == WA_CLICKACTIVE)){
-		gAddSleep = 6;		// アクティブになってから少し操作の人間の時間与える
+		gAddSleep = 6;		// アクティブになってから少しウエイトして、操作の人間の時間与える
+		APD_SleepAppend(6000);
 
 	}
 

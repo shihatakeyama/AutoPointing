@@ -53,6 +53,8 @@ extern std::vector<WorkBase*>		gWorks;
 extern std::vector<std::wstring>	gWorkNames;
 extern std::mutex					gWorkMutex;
 extern int32_t						gInitWorkNo;
+extern int32_t						gWorkNo;
+
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // äeéÌê›íË
