@@ -298,6 +298,8 @@ node_t* next_sibling(const node_t* Node ,const char_t *name, std::size_t name_si
 // Node(–¼)‚ÍList‚Ì‰½”Ô–Ú‚É‚ ‚è‚Ü‚·‚©H
 int32_t find_node_name_index(const node_t* Node , const char_t **List, int32_t &Index)
 {
+	if(Node == nullptr)	return -1;
+
 	auto *node = Node;
 
 	Index = 0;
@@ -426,8 +428,7 @@ attribute_t* next_sibling(const attribute_t* Attr ,const char_t *name, std::size
 // Attr(–¼)‚ÍList‚Ì‰½”Ô–Ú‚É‚ ‚è‚Ü‚·‚©H
 int32_t find_attribute_val_index(const attribute_t* Attr, const char_t **List, int32_t &Index)
 {
-//--	attribute_t* attr = Node->first_attribute(Name);
-//--	if(attr == nullptr)	return nullptr;
+	if(Attr == nullptr)	return -1;
 
 	Index = 0;
 	std::size_t	purname_size = rapidxml::internal::measure(Attr->value());

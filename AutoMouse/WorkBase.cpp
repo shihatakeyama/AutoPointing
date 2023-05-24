@@ -88,8 +88,8 @@ void WorkBase::delay(int32_t Msec)
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 bool WorkBase::isLife() const
 {
-//	return true;	// Å¶Å¶Å¶Å¶Å¶
-	return gOperationThread.isLife();
+	return (g_Operation != 0);
+//	return gOperationThread.isLife();
 }
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

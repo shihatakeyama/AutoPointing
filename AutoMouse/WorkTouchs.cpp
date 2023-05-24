@@ -23,13 +23,14 @@ WorkTouchs::~WorkTouchs()
 }
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-// **** 信号処理  各処理共通呼び出し処理 ****
+// 信号処理  各処理共通呼び出し処理
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 int32_t WorkTouchs::proc()
 {
 	int32_t ack;
+	int32_t i;
 
-	for(int32_t i=0;i<m_LoopNum;i++){
+	for(i=0;m_LoopNum==0 ? true : i<m_LoopNum;i++){
 		if (!isLife())		return ERC_ok;
 		ack = procOne();
 		if (ack < ERC_ok)	return ack;
@@ -47,11 +48,10 @@ int32_t	WorkTouchs::procOne()
 	int32_t ack = ERC_ok;
 	if(m_TouchPoints.size() == 0)	return ERC_ng;
 
-	switch(m_Mode){ //(EPTM_each)
+	switch(m_Mode){
 	case EPTM_each:
 		for(i=0;i<m_TouchPoints.size();i++){
 			if (!isLife())	return ERC_ok;
-//			ack = touchPoint(m_TouchPoints[i].);
 			ack = m_TouchPoints[i]->proc();
 		}
 		break;
@@ -59,7 +59,6 @@ int32_t	WorkTouchs::procOne()
 		{
 		if (!isLife())	return ERC_ok;
 		int32_t rdm = rand() % m_TouchPoints.size();
-//		ack = touchPoint(m_TouchPoints[rdm]);
 		ack = m_TouchPoints[rdm]->proc();
 		}
 		break;
@@ -71,106 +70,20 @@ int32_t	WorkTouchs::procOne()
 	return ERC_ok;
 }
 
-namespace rapidxml
-{
-
-    //! Iterator of child nodes of xml_node
-    template<class Ch>
-    class const_node_iterator
-    {
-    
-    public:
-
-        typedef typename xml_node<Ch> value_type;
-        typedef typename xml_node<Ch> &reference;
-        typedef typename xml_node<Ch> *pointer;
-        typedef std::ptrdiff_t difference_type;
-        typedef std::bidirectional_iterator_tag iterator_category;
-        
-        const_node_iterator()
-            : m_node(0)
-        {
-        }
-
-        const_node_iterator(const xml_node<Ch> *node)
-            : m_node(node->first_node())
-        {
-        }
-        
-        reference operator *() const
-        {
-            assert(m_node);
-            return *m_node;
-        }
-
-        pointer operator->() const
-        {
-            assert(m_node);
-            return m_node;
-        }
-
-        const_node_iterator& operator++()
-        {
-            assert(m_node);
-            m_node = m_node->next_sibling();
-            return *this;
-        }
-
-        const_node_iterator operator++(int)
-        {
-            node_iterator tmp = *this;
-            ++this;
-            return tmp;
-        }
-
-        const_node_iterator& operator--()
-        {
-            assert(m_node && m_node->previous_sibling());
-            m_node = m_node->previous_sibling();
-            return *this;
-        }
-
-        const_node_iterator operator--(int)
-        {
-            node_iterator tmp = *this;
-            ++this;
-            return tmp;
-        }
-
-        bool operator ==(const const_node_iterator<Ch> &rhs)
-        {
-            return m_node == rhs.m_node;
-        }
-
-        bool operator !=(const const_node_iterator<Ch> &rhs)
-        {
-            return m_node != rhs.m_node;
-        }
-
-    private:
-
-        const xml_node<Ch> *m_node;
-
-    };
-}
-#if 1
-#include <iostream>
-#include <vector>
-#include <algorithm>
-#include "rapidxml.hpp"
-#include "rapidxml_utils.hpp"	// rapidxml::file
-#include "rapidxml_print.hpp"	// std::ofstream << rapidxml::xml_document<>
-#include "rapidxml_std.hpp"
-#include "rapidxml_iterators.hpp"
-#include "rapidxml_std.hpp"
-#endif
-
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-// **** 単数個/複数個 共通読み書き 各プロセスの内容をXMLオブジェクトへ ****
+// 単数個/複数個 共通読み書き 各プロセスの内容をXMLオブジェクトへ
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 int32_t WorkTouchs::loadXmlNode(const rapidxml::node_t* Child)
 {
 	int32_t ack;
+	int32_t val;
+
+	rapidxml::attribute_t *attr = rapidxml::first_attribute(Child ,_T("type"));
+	ack = rapidxml::find_attribute_val_index(attr ,m_ModeNames ,val);
+	if(ack < ERC_ok){
+	}else{
+		m_Mode	= static_cast<E_WorkTouchsMode>(val);
+	}
 
 	loadXmlLoop_n(Child);
 

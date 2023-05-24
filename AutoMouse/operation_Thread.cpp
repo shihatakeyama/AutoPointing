@@ -197,11 +197,15 @@ Uint32 OperationThread(void* Arg)
 		Sleep(1000);
 	}
 #else
-	int32_t WorkNo = 0;
+//	int32_t WorkNo = 0;
 	// îrëº
-	std::lock_guard<std::mutex> lock(gWorkMutex);
 
-	gWorks[WorkNo]->proc();
+	while (gOperationThread.isLife()){
+		if (g_Operation != 0){	// â“ì≠íÜÇæÇ¡ÇΩÇÁÅB
+			std::lock_guard<std::mutex> lock(gWorkMutex);
+			gWorks[gWorkNo]->proc();
+		}
+	}
 
 #endif
 
