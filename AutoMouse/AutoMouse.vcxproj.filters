@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="ソース ファイル\com">
+      <UniqueIdentifier>{05f6f744-82c3-44cb-90fb-d637b509705b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\com">
+      <UniqueIdentifier>{b45d6c9f-8c72-4af3-b783-d60cb9ee67a6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -31,12 +37,6 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Resource.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="GnrlCom.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="GnrlComList.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="GnrlThread.h">
@@ -78,6 +78,12 @@
     <ClInclude Include="WorkWait.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="com\GnrlCom.h">
+      <Filter>ヘッダー ファイル\com</Filter>
+    </ClInclude>
+    <ClInclude Include="com\GnrlComList.h">
+      <Filter>ヘッダー ファイル\com</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AutoMouse.cpp">
@@ -90,12 +96,6 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="ShowMousePoint.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="GnrlCom.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="GnrlComList.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="operation_Thread.cpp">
@@ -136,6 +136,12 @@
     </ClCompile>
     <ClCompile Include="Digitize.cpp">
       <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="com\GnrlCom.cpp">
+      <Filter>ソース ファイル\com</Filter>
+    </ClCompile>
+    <ClCompile Include="com\GnrlComList.cpp">
+      <Filter>ソース ファイル\com</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

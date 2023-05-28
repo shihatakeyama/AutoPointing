@@ -67,7 +67,7 @@ Uint32 GnrlFilepath::getModuleAttachmentFilePath(TCHAR* FilePath, Uint32 Size, c
 
 	toAbsolutePath(FilePath, Size ,FilePath, FileName);
 
-	return Nstrlen(FilePath);
+	return Tstrlen(FilePath);
 }
 
 // **********************************************************************************
@@ -93,7 +93,7 @@ void GnrlFilepath::getBaseDirectory(TCHAR* &Result, TCHAR *First, TCHAR *Last, B
 	{
 		p = Last;
 	}else{
-		p = First + Nstrlen(First);
+		p = First + Tstrlen(First);
 	}
 
 	if(TerminalYRemoved)
@@ -199,7 +199,7 @@ void GnrlFilepath::toAbsolutePath(TCHAR *Result, int32_t Len,
 	TCHAR	*rp;
 	TCHAR	subdircode;		// '\'または'/'
 
-	if(Nstrchr(Current,'\\')){
+	if(Tstrchr(Current,'\\')){
 		subdircode = '\\';
 	}else{
 		subdircode = '/';
@@ -214,34 +214,34 @@ void GnrlFilepath::toAbsolutePath(TCHAR *Result, int32_t Len,
 #endif
 	if(*Path == subdircode){	// Pathがルートディレクトリ指定の場合
 
-		Nstrcpy_s(Result, Len, Current);
-		rp = Nstrchr(Result, subdircode);
+		Tstrcpy_s(Result, Len, Current);
+		rp = Tstrchr(Result, subdircode);
 		if(rp && rp[1]==subdircode){
 			// Currentが　http:// である場合
-			rp = Nstrchr(rp+3, subdircode);
+			rp = Tstrchr(rp+3, subdircode);
 			if(rp){
-				Nstrcpy_s(rp, Len - (rp - Result), Path);	// "http://yasuneko/"の後ろにPath"Name"を付加
+				Tstrcpy_s(rp, Len - (rp - Result), Path);	// "http://yasuneko/"の後ろにPath"Name"を付加
 				return;
 			}else{
-				Nstrcat_s(Result, Len , Path);				// "http://yasuneko"の後ろにPath"/Name"を付加
+				Tstrcat_s(Result, Len , Path);				// "http://yasuneko"の後ろにPath"/Name"を付加
 				return;
 			}
 		}else{
 			// Currentが　C:\　//
-			Nstrcpy_s(rp, Len - (rp - Result), Path);
+			Tstrcpy_s(rp, Len - (rp - Result), Path);
 			return;
 		}
 	}
 
 	// Pathが絶対パス表記である(ファイルパスの根元がある)場合
 	// ネットワークアクセスの場合は考慮
-	if(Nstrchr(Path, ':') != NULL
+	if(Tstrchr(Path, ':') != NULL
 	||( Path[0]==subdircode && Path[1]==subdircode)){
-		Nstrcpy_s(Result, Len, Path);	// Pathの値を返す
+		Tstrcpy_s(Result, Len, Path);	// Pathの値を返す
 		return;
 	}
 
-	length = Nstrlen(Current);
+	length = Tstrlen(Current);
 	bp = ((TCHAR*)Current) + length;	// bpは文字列baseの終端を指す
 	if(*(bp-1)=='\\' || *(bp-1)=='/'){
 		bp--;				// Baseの語尾の\、/は取り除く
@@ -250,12 +250,12 @@ void GnrlFilepath::toAbsolutePath(TCHAR *Result, int32_t Len,
 	// Pathの先頭部にある".."または"../"を解析する事で
 	// Baseのパス表記のうち、Resultと共通部分を調べる
 	for(pp=(TCHAR*)Path; *pp!='\0' && *pp=='.';){
-		if(!Nstrncmp(pp ,_T("..\\") ,3) || !Nstrncmp(pp ,_T("../") ,3)){	// Path前部が[..\]1階層上へ移動可能
+		if(!Tstrncmp(pp ,_T("..\\") ,3) || !Tstrncmp(pp ,_T("../") ,3)){	// Path前部が[..\]1階層上へ移動可能
 			pp += 3;
 			getBaseDirectory(bp, ct, bp);
-		}else if(!Nstrncmp(pp ,_T(".\\"),2) || !Nstrncmp(pp ,_T("./") ,2)){
+		}else if(!Tstrncmp(pp ,_T(".\\"),2) || !Tstrncmp(pp ,_T("./") ,2)){
 			pp +=2;
-		}else if(!Nstrncmp(pp ,_T("..\0") ,3)){
+		}else if(!Tstrncmp(pp ,_T("..\0") ,3)){
 			pp += 2;
 			getBaseDirectory(bp, ct, bp);
 		}else{
@@ -281,7 +281,7 @@ void GnrlFilepath::toAbsolutePath(TCHAR *Result, int32_t Len,
 
 	// Pathのうち、先頭部分の".\"や"..\"を取り除いた残りの部分
 	// (ppが示す文字列)を、Resultの文字列に追加する。
-	Nstrcpy_s(rp, Len - (rp - Result), pp);
+	Tstrcpy_s(rp, Len - (rp - Result), pp);
 
 	return;
 }

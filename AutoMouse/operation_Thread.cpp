@@ -22,6 +22,7 @@
 #include "GnrlThread.h"
 #include "Define.h"
 #include "global.h"
+//#define USE_MFC
 #include "GnrlComList.h"
 #include "GnrlCom.h"
 
@@ -190,6 +191,7 @@ int32_t setPointVector(int32_t OperationNo ,int32_t Offset_x ,int32_t Offset_y)
 Uint32 OperationThread(void* Arg)
 {
 #if 0
+	// ãåédól
 	while (gOperationThread.isLife()){
 		if (g_Operation != 0){	// â“ì≠íÜÇæÇ¡ÇΩÇÁÅB
 			RotatingHorse2(&gPointVector[0], gPointVector.size());
@@ -205,6 +207,7 @@ Uint32 OperationThread(void* Arg)
 			std::lock_guard<std::mutex> lock(gWorkMutex);
 			gWorks[gWorkNo]->proc();
 		}
+		Sleep(100);
 	}
 
 #endif

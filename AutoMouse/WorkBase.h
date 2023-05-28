@@ -39,9 +39,11 @@ public:
 
 	// **** 信号処理  各処理共通呼び出し処理 ****
 	virtual int32_t proc();
+	virtual int32_t procOne();
+
 	int32_t touchPoint(const TouchPoint *Point);
 	void delay(int32_t Msec);
-	bool isLife() const;	// true:通常運転中
+	static bool isLife();	// true:通常運転中
 
 	// **** 単数個/複数個 共通読み書き 各プロセスの内容をXMLオブジェクトへ ****
 	virtual int32_t loadXmlNode(const rapidxml::node_t* Child);

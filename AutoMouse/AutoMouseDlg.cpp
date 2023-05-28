@@ -14,9 +14,9 @@
 #include "GnrlNumerical.h"
 #include "GnrlThread.h"
 #include "Define.h"
-#define  USE_MFC
-#include "GnrlComList.h"
+
 #include "GnrlCom.h"
+#include "GnrlComList.h"
 
 #include "global.h"
 #include "extern.h"
@@ -158,8 +158,9 @@ BEGIN_MESSAGE_MAP(CAutoMouseDlg, CDialogEx)
 END_MESSAGE_MAP()
 
 
-// CAutoMouseDlg メッセージ ハンドラー
-
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+// ウインドウ初期設定
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 BOOL CAutoMouseDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
@@ -203,6 +204,27 @@ BOOL CAutoMouseDlg::OnInitDialog()
 		MessageBox(e.c_str(), WINDOW_NAME, MB_OK | MB_ICONSTOP);		// MB_ICONERROR ,
 		return false;
 	}
+
+	{ // 初期ウインドウ位置  ※Dialogの｢プロパティ｣>｢Center｣で値をTRUEにしておかないと中央に戻されてしまう。
+
+		RECT  rect;
+		int32_t width  = GetSystemMetrics(SM_CXSCREEN);		// スクリーンの幅を取得
+		int32_t height = GetSystemMetrics(SM_CYSCREEN);		// スクリーンの高さを取得
+
+
+//		::GetClientRect(nullptr ,&mrect);
+		GetWindowRect(&rect);
+		
+		// 自ウインドウの大きさを引く
+		width -= rect.right  - rect.left;
+		height-= rect.bottom - rect.top;
+
+		int32_t x = gWindowPos.x * width / gWindowDenominator ;
+		int32_t y = gWindowPos.y * height / gWindowDenominator;
+
+		BOOL aaa = SetWindowPos(this ,x ,y ,0 ,0 ,SWP_NOSIZE|SWP_NOZORDER);
+	}
+
 
 	// 接続ボタンの色
 	m_CbrCom[0].CreateSolidBrush(RGB(0x80, 0x80, 0x80)); 
@@ -266,7 +288,7 @@ void CAutoMouseDlg::OnDestroy()
 }
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-// ユーザーがバージョンクリック
+// ユーザーがバージョンボタンクリック
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 void CAutoMouseDlg::OnSysCommand(UINT nID, LPARAM lParam)
 {
@@ -428,6 +450,7 @@ LRESULT CAutoMouseDlg::OnShowVersion(WPARAM wParam, LPARAM lParam)
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 void CAutoMouseDlg::OnBnClickedButton1()
 {
+#if 0
 	int comno,ack;
 
 	if(!gCom.isOpened()){
@@ -438,6 +461,7 @@ void CAutoMouseDlg::OnBnClickedButton1()
 	if(ack < 0){
 		
 	}
+#endif
 }
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -519,7 +543,7 @@ void CAutoMouseDlg::OnBnClickedButtonComserch()
 	int32_t i;
 	CString str;
 
-	GnrlComList::putComList(m_ComSel);
+	GnrlComList::setGuiComList(m_ComSel ,gCom);
 
 	for(i=0;i<m_ComSel.GetCount();i++){
 		m_ComSel.GetLBText(i, str);
@@ -547,7 +571,7 @@ void CAutoMouseDlg::openCom()
 {
 	int32_t ack,comno;
 
-	comno = GnrlComList::getComPortNo(m_ComSel);
+	comno = GnrlComList::getGuiPortNo(m_ComSel);
 	if(comno < 0) return;
 	gCom.putParameter(comno ,115200 ,400 ,GnrlCom::ESTOPBIT_1 ,GnrlCom::EPARITY_no);
 
@@ -734,7 +758,6 @@ void CAutoMouseDlg::OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized)
 
 	}
 
-	// TODO: ここにメッセージ ハンドラー コードを追加します。
 }
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

@@ -22,25 +22,25 @@ typedef	char			Nchar;
 
 //typedef wchar_t				Nchar;				// プロジェクトで設定する文字の扱いに合わせて下さい。Unicode,マルチバイト
 typedef wchar_t				TCHAR;				// Microsoft定義キャラクタ 旧Nchar
-#define Nstrlen(a)			wcslen(a)
-#define Nitoa(v,b,l)		_itow(v,b,l)
-#define Natof(a)			_wtof(a)
+#define Tstrlen(a)			wcslen(a)
+#define Titoa(v,b,l)		_itow(v,b,l)
+#define Tatof(a)			_wtof(a)
 
-#define Nstrchr(a,b)		wcschr(a,b)
-#define Nstrrchr(a,b)		wcsrchr(a,b)		// strrchr()
-#define Nstrcpy(a,b)		wcscpy(a,b)			// strcpy()
-#define Nstrcpy_s(a,b,c)	wcscpy_s(a,b,c)	
-#define	Nstrcat(a,b)		wcscat(a,b)			// strcat()
-#define Nstrcat_s(a,b,c)	wcscat_s(a,b,c)
+#define Tstrchr(a,b)		wcschr(a,b)
+#define Tstrrchr(a,b)		wcsrchr(a,b)		// strrchr()
+#define Tstrcpy(a,b)		wcscpy(a,b)			// strcpy()
+#define Tstrcpy_s(a,b,c)	wcscpy_s(a,b,c)	
+#define	Tstrcat(a,b)		wcscat(a,b)			// strcat()
+#define Tstrcat_s(a,b,c)	wcscat_s(a,b,c)
 #define	Tstrcmp(a,b)		wcscmp(a,b)
-#define	Nstrncmp(a,b,c)		wcsncmp(a,b,c)
-#define	Nstrncpy(a,b,c)		wcsncpy(a,b,c)
-#define	Nstrncpy_s(a,b,c,d)	wcsncpy_s(a,b,c,d)
+#define	Tstrncmp(a,b,c)		wcsncmp(a,b,c)
+#define	Tstrncpy(a,b,c)		wcsncpy(a,b,c)
+#define	Tstrncpy_s(a,b,c,d)	wcsncpy_s(a,b,c,d)
 //#define	N_T(a)				_T(a)				// const char set
-#define Nmkdir(a)			_wmkdir(a)
+#define Tmkdir(a)			_wmkdir(a)
 
 
-#define Nfopen_s(a,b,c)		_wfopen_s(a,b,c)	// fopen
+#define Tfopen_s(a,b,c)		_wfopen_s(a,b,c)	// fopen
 
 #endif
 

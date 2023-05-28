@@ -14,6 +14,7 @@
 #include "define.h"
 #include "extern.h"
 #include "global.h"
+#include "GnrlCom.h"
 #include "WorkBase.h"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -22,6 +23,7 @@
 int32_t initParam()
 {
 	int32_t ack;
+	int32_t val;
 	TCHAR InitFilePath[MAX_PATH];
 
 	// 排他
@@ -70,6 +72,29 @@ int32_t initParam()
 		rapidxml::first_attribute(node, _T("x"), val);	gBasePoint.x = val;
 		rapidxml::first_attribute(node, _T("y"), val);	gBasePoint.y = val;
 	}
+
+	 // ウインドウ表示初期位置
+	gEWindowPosBit = EWP_none;
+	node = rapidxml::first_node(root, _T("window"));
+	if (node){
+		const TCHAR *vname[] = {_T("top")	,_T("center") ,_T("bottom")};
+		const TCHAR *hname[] = {_T("left")	,_T("center") ,_T("right")};
+		rapidxml::attribute_t *attr;
+		
+		attr = rapidxml::first_attribute(node ,_T("denominator") ,gWindowDenominator);
+
+		attr = rapidxml::first_attribute(node ,_T("vpos") ,val);
+		if(attr){
+			gWindowPos.x = val;
+		}
+
+		attr = rapidxml::first_attribute(node ,_T("hpos") ,val);
+		if(attr){
+			gWindowPos.y = val;
+		}
+	}
+
+	gCom.loadXmlNode(root ,_T("com"));
 
 	node = rapidxml::first_node(root, _T("blur"));
 	if (node == nullptr){

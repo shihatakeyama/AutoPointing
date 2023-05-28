@@ -53,40 +53,58 @@ WorkBase *WorkBase::newProc(enum E_ProcType ValTypeId)
 }
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-// **** 信号処理  各処理共通呼び出し処理 ****
+// 各処理共通呼び出し処理
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 int32_t WorkBase::proc()
 {
-	return ERC_ng;
+	int32_t ack=ERC_ok;
+	int32_t i;
+
+	for(i=0;m_LoopNum==0 ? true : i<m_LoopNum;i++){
+		if (!isLife())		return ERC_ok;
+		ack = procOne();
+		if (ack < ERC_ok)	return ack;
+	}
+
+	return ack;
 }
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+// 
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+int32_t WorkBase::procOne()
+{
+	return ERC_invalid_call;
+}
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // タッチ操作など
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 int32_t WorkBase::touchPoint(const TouchPoint *Point)
 {
+	int32_t ack = ERC_ng;
 	ASSERT(Point);
 
 	delay(Point->delay);
 
 	// RUN中であればタッチ操作します。
 	if(isLife()){
-		AM_click(Point->x, Point->y);
+//		AM_click(Point->x, Point->y);
+		ack = AP_pointingDesiredWindow(CPoint(Point->x,Point->y));
 	}
 
-	return ERC_ok;
+	return ack;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // 待ち
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 void WorkBase::delay(int32_t Msec)
 {	
-//	Sleep(Msec);	// 仮
 	APD_Sleep(Msec);
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // true:通常運転中
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-bool WorkBase::isLife() const
+bool WorkBase::isLife()
 {
 	return (g_Operation != 0);
 //	return gOperationThread.isLife();

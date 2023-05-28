@@ -46,6 +46,8 @@
 #endif
 
 
+#include "define.h"
+
 // XML 
 #define USE_XML
 #include "rapidxml.hpp"

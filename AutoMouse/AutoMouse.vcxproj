@@ -52,9 +52,9 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;USE_MFC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>..\xml_lib</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\;..\xml_lib;.\com</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -105,13 +105,13 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="com\GnrlCom.h" />
+    <ClInclude Include="com\GnrlComList.h" />
     <ClInclude Include="define.h" />
     <ClInclude Include="extern.h" />
     <ClInclude Include="AutoMouse.h" />
     <ClInclude Include="AutoMouseDlg.h" />
     <ClInclude Include="global.h" />
-    <ClInclude Include="GnrlCom.h" />
-    <ClInclude Include="GnrlComList.h" />
     <ClInclude Include="GnrlDefine.h" />
     <ClInclude Include="GnrlFilepath.h" />
     <ClInclude Include="GnrlNumerical.h" />
@@ -129,12 +129,10 @@
   <ItemGroup>
     <ClCompile Include="AutoMouse.cpp" />
     <ClCompile Include="AutoMouseDlg.cpp" />
+    <ClCompile Include="com\GnrlCom.cpp" />
+    <ClCompile Include="com\GnrlComList.cpp" />
     <ClCompile Include="Digitize.cpp" />
     <ClCompile Include="global.cpp" />
-    <ClCompile Include="GnrlCom.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="GnrlComList.cpp" />
     <ClCompile Include="GnrlFilePath.cpp" />
     <ClCompile Include="GnrlString.cpp" />
     <ClCompile Include="GnrlThread.cpp" />
