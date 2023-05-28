@@ -1,28 +1,30 @@
-<AutoPointingDigitizer version="1.0" encoding="utf-8">
+<AutoPointing version="1.0" encoding="utf-8">
 	<soft_version>01234220</soft_version>
 	<title>DOAX</title>
+	<window denominator="100" vpos="0" hpos="0"/>
 	<target window_name="DOAX VenusVacation" foward_match="false" x="0" y="0"/>
 	<inside check="enable" />
+	<com PortNo="3" BaudRate="115200" Timeout="1000" Stopbit="0" Parity="0"/>
 	<blur x="4" y="4" time="100"/>
 	<active pause_time="3000"/>
 	<end_time time0="280" time1="280" time2="20" />
-	<works init="0">
+	<works index="0">
 		<work name="通常フェス" loop_n="0">
 			<touchs type="anyone">
-				<touch x="1220" y="365" delay="0" />
-				<touch x="1220" y="425" delay="0" />
+				<touch x="1220" y="395" delay="0" />
+				<touch x="1210" y="468" delay="0" />
 				<touch x="1220" y="485" delay="0" />
-				<touch x="1220" y="525" delay="0" />
-				<touch x="1220" y="675" delay="0" />
+				<touch x="1200" y="538" delay="0" />
+				<touch x="1220" y="669" delay="0" />
 			</touchs>
 			<touch x="1019" y="728" delay="2500" />
 			<touch x="602"  y="503" delay="500" />
 			<touch x="745"  y="619" delay="500" />
+			<wait delay="5000"/>
 			<touch x="922"  y="731" delay="1000" loop_n="8"/>
-			<touch x="646"  y="747" delay="2500" />
-			<touch x="646"  y="747" delay="700" />
+			<touch x="646"  y="747" delay="2500" loop_n="2"/>
 			<touch x="1238" y="82"  delay="1000" />
-			<wait delay="2000"/>
+			<wait delay="5000"/>
 		</work>
 		<work name="決勝フェス" loop_n="0">
 			<touch x="1220" y="393" delay="0" />
@@ -58,5 +60,5 @@
 			<wait delay="2000"/>
 		</work>
 	</works>
-</AutoPointingDigitizer>
+</AutoPointing>
 
