@@ -361,7 +361,6 @@ attribute_t* first_attribute(const node_t* Base, const char_t *Name, int32_t &Va
 {
 	attribute_t* attr = Base->first_attribute(Name);
 	if(attr == nullptr){
-		Val = 0;
 		return nullptr;
 	}
 //	std::swscanf(attr->value() ,_T("%d") ,&Val);
