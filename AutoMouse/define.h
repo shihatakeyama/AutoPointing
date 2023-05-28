@@ -15,7 +15,7 @@
 
 
 // ソフトバージョン
-#define		SOFT_VERSION	0x04235241
+#define		SOFT_VERSION	0x04235280
 
 
 #define TRX_BUF_SIZE   	32
