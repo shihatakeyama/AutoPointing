@@ -21,13 +21,13 @@ WorkTouchs::~WorkTouchs()
 {
 	clearTouchPoints();
 }
-
+#if 0
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // M†ˆ—  Šeˆ—‹¤’ÊŒÄ‚Ño‚µˆ—
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 int32_t WorkTouchs::proc()
 {
-	int32_t ack;
+	int32_t ack=ERC_ok;
 	int32_t i;
 
 	for(i=0;m_LoopNum==0 ? true : i<m_LoopNum;i++){
@@ -36,9 +36,9 @@ int32_t WorkTouchs::proc()
 		if (ack < ERC_ok)	return ack;
 	}
 
-	return ERC_ok;
+	return ack;
 }
-
+#endif
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // 1T‚·‚é‚Ì‚İ
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

@@ -5,6 +5,8 @@
 
 #include "stdafx.h"
 
+#include "rapidxml_if.h"
+
 #include "define.h"
 
 #include "WorkWait.h"
@@ -20,9 +22,9 @@ WorkWait::~WorkWait()
 {}
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-// **** 信号処理  各処理共通呼び出し処理 ****
+// 信号処理  各処理共通呼び出し処理
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-int32_t WorkWait::proc()
+int32_t WorkWait::procOne()
 {
 	delay(m_WaitMsec);
 
@@ -30,7 +32,7 @@ int32_t WorkWait::proc()
 }
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-// **** 単数個/複数個 共通読み書き 各プロセスの内容をXMLオブジェクトへ ****
+// 単数個/複数個 共通読み書き 各プロセスの内容をXMLオブジェクトへ
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 int32_t WorkWait::loadXmlNode(const rapidxml::node_t* Child)
 {

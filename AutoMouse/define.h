@@ -22,14 +22,24 @@
 #define RX_TIMEOUT		400
 #define CR				0x0D	// コマンド終端
 
-#define WINDOW_NAME	_T("AutoPointingDigitizer")
+#define WINDOW_NAME	_T("AutoPointing")
 
 
 enum E_Notification{
-  EN_mouse      = 1,
-  EN_keyboard   = 2,
-  EN_digitizer  = 3,
-  EN_system		= 0x99
+	EN_mouse		= 1,
+	EN_keyboard		= 2,
+	EN_digitizer	= 3,
+	EN_system		= 0x99
+};
+
+enum E_WindowPosBit{
+	EWP_none	= 0x00,
+	EWP_top		= 0x01,
+	EWP_vcenter	= 0x02,
+	EWP_bottom	= 0x03,
+	EWP_left	= 0x04,
+	EWP_hcenter	= 0x08,
+	EWP_right	= 0x0C,
 };
 
 struct AM_Point{	// 旧仕様
@@ -59,6 +69,7 @@ enum E_ReturnCode {
 	ERC_baudrate	= -2,
 	ERC_timeout		= -3,
 	ERC_ng			= -5,
+	 ERC_invalid_call = -13,
 	ERC_othererr	= -99
 };
 

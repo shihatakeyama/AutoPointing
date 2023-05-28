@@ -12,15 +12,14 @@
 #include "GnrlThread.h"
 #include "define.h"
 
-#define  USE_MFC
-#include "GnrlComList.h"
 #include "GnrlCom.h"
+#include "GnrlComList.h"
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-std::wstring	gApplicatonName = _T("AutoPointingDigitizer");
+std::wstring	gApplicatonName = _T("AutoPointing");
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // 各種スレッド
@@ -45,7 +44,10 @@ std::vector<AM_Point>		gPointVector;		/// ターゲットウインドウ座標基準
 
 std::wstring				gTitle;
 std::wstring				gTargetWindowName;
-CPoint						gBasePoint;
+enum E_WindowPosBit			gEWindowPosBit=EWP_none;		// ウインドウ位置
+int32_t						gWindowDenominator=100;
+CPoint						gWindowPos;
+CPoint						gBasePoint;		// Pointing オフセット
 CPoint						gBurePoint = CPoint(4,4);
 int32_t						gBureTime = 4;
 int32_t						gNowTime[3] = { 280, 280, 20 };
