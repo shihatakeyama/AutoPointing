@@ -203,7 +203,7 @@ namespace GnrlComList{
 
 				FILE *fp;
 				TCHAR  buf[COM_NAME_BUF_SIZE];
-				Nsprintf(buf, _T("\\\\.\\COM%d"), i);	// 
+				Tsprintf(buf, _T("\\\\.\\COM%d"), i);	// 
 
 				Tfopen_s(&fp ,buf, _T("r"));
 				if (fp != NULL) {	// fopen()

@@ -51,10 +51,11 @@ CPoint						gBasePoint;		// Pointing オフセット
 CPoint						gBurePoint = CPoint(4,4);
 int32_t						gBureTime = 4;
 int32_t						gNowTime[3] = { 280, 280, 20 };
+int32_t						gSpinTime = 10;
 
 class WorkBase;
 std::vector<WorkBase*>		gWorks;
 std::vector<std::wstring>	gWorkNames;
 std::mutex					gWorkMutex;
 int32_t						gInitWorkNo=0;
-int32_t						gWorkNo = 0;	//  現在実行中のワーク
+int32_t						gWorkIndex = 0;	//  現在実行中のワーク

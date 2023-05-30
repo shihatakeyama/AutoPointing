@@ -50,13 +50,14 @@ extern CPoint						gWindowPos;
 extern CPoint						gBasePoint;
 extern CPoint						gBurePoint;
 extern int32_t						gBureTime;
+extern int32_t						gSpinTime;
 
 class WorkBase;
 extern std::vector<WorkBase*>		gWorks;
 extern std::vector<std::wstring>	gWorkNames;
 extern std::mutex					gWorkMutex;
 extern int32_t						gInitWorkNo;
-extern int32_t						gWorkNo;
+extern int32_t						gWorkIndex;
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

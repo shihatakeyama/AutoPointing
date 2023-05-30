@@ -28,7 +28,7 @@ int32_t WorkTouch::proc()
 {
 	int32_t ack;
 
-	ack = touchPoint(m_TouchPoint);
+	ack = touchPointAndDelay(m_TouchPoint);
 
 	return ack;
 }
@@ -38,7 +38,7 @@ int32_t WorkTouch::proc()
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 int32_t	WorkTouch::procOne()
 {
-	return touchPoint(m_TouchPoint);
+	return touchPointAndDelay(m_TouchPoint);
 }
 
 

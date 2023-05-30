@@ -73,8 +73,8 @@ public:
 #endif
 
 #ifdef USE_XML	// XMLからへのアクセス
-	int32_t loadXmlNode(const rapidxml::node_t *ParentNode ,const rapidxml::char_t *NodeName);
-	int32_t saveXmlNode(rapidxml::node_t *ParentNode ,rapidxml::document_t &Doc ,const rapidxml::char_t *NodeName) const;
+	int32_t loadXmlNode(const rapidxml::node_t *Node);
+	int32_t saveXmlNode(rapidxml::node_t *&Node ,rapidxml::document_t &Doc) const;
 #endif
 
 	GnrlCom();

@@ -74,13 +74,16 @@ public:
 	afx_msg void OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDrawItemStruct);
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	afx_msg void OnBnClickedButtonNow();
-	void setEndtime(int DistanceSec);
+	void setGuiEndtime(int DistanceSec);
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg virtual void OnDeltaposSpin10(NMHDR *pNMHDR, LRESULT *pResult);
 	CComboBox m_OperationSel;
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
 	afx_msg void OnBnClickedButtonNowshort();
+	void setEndTime(int32_t Time);
 	afx_msg void OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized);
 	CString m_TargetWindowName;
+	CButton m_NowLong;
+	CButton m_NotShort;
 };
