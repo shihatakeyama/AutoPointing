@@ -205,13 +205,15 @@ int GnrlCom::setGuiFrow(CComboBox &Frow) const
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // load()/write()ともにrapidxml::xml_node_tは親ノードを設定して下さい。
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-int32_t GnrlCom::loadXmlNode(const rapidxml::node_t *ParentNode ,const rapidxml::char_t *NodeName)
+int32_t GnrlCom::loadXmlNode(const rapidxml::node_t *Node)
 {
 	int32_t val;
 
+	ASSERT(Node);
+
 	init();	
 
-	rapidxml::node_t *node = ParentNode->first_node(NodeName);
+	const rapidxml::node_t *node = Node;	// ParentNode->first_node(NodeName);
 	if(node == nullptr)	return ERC_ng;
 
 	rapidxml::first_attribute(node ,m_PortNoText	,m_PortNo);
@@ -225,9 +227,11 @@ int32_t GnrlCom::loadXmlNode(const rapidxml::node_t *ParentNode ,const rapidxml:
 	
 	return ERC_ok;
 }
-int32_t GnrlCom::saveXmlNode(rapidxml::node_t *ParentNode ,rapidxml::document_t &Doc ,const rapidxml::char_t *NodeName) const
+int32_t GnrlCom::saveXmlNode(rapidxml::node_t *&Node ,rapidxml::document_t &Doc) const
 {
-	rapidxml::node_t *node = Doc.allocate_node(rapidxml::node_element, NodeName);
+	ASSERT(Node);
+
+	rapidxml::node_t *node = Doc.allocate_node(rapidxml::node_element);
 
 	rapidxml::append_attribute(Doc ,node ,m_PortNoText	,m_PortNo);
 	rapidxml::append_attribute(Doc ,node ,m_BaudRateText,m_BaudRate);
@@ -236,7 +240,8 @@ int32_t GnrlCom::saveXmlNode(rapidxml::node_t *ParentNode ,rapidxml::document_t 
 	rapidxml::append_attribute(Doc ,node ,m_StopbitText	,m_StopBit);
 	rapidxml::append_attribute(Doc ,node ,m_ParityText	,m_Parity);
 
-	rapidxml::append_node(ParentNode ,node);
+	Node = node;
+//--	rapidxml::append_node(ParentNode ,node);
 
 	return ERC_ok;
 }

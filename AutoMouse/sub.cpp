@@ -12,6 +12,7 @@
 #include "global.h"
 #include "GnrlThread.h"
 #include "extern.h"
+#include "GnrlString.h"
 //#include "WorkBase.h"
 #include "sub.h"
 
@@ -85,7 +86,7 @@ void inside(int32_t &Val ,const int32_t &Min ,const int32_t &Max)
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 int32_t AP_pointingDesiredWindow(const CPoint &Point)
 {
-	int32_t i,ack=ERC_ng;
+	int32_t ack=ERC_ng;
 	RECT rec;
 	int32_t new_x,new_y;
 
@@ -112,5 +113,14 @@ int32_t AP_pointingDesiredWindow(const CPoint &Point)
 	}
 
 	return ack;
+}
+
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+// nowボタンのテキストを作成します
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+std::size_t  toNowText(TCHAR *Buf, std::size_t Size, int32_t Time)
+{
+	return Tsprintf_s(Buf, Size, _T("now+%d.%dh"), Time / 100, Time % 100);
 }
 

@@ -21,6 +21,7 @@
 #include "global.h"
 #include "extern.h"
 #include "global.h"
+#include "sub.h"
 
 
 void APD_SleepAppend(int32_t msc);
@@ -77,11 +78,11 @@ CAboutDlg::CAboutDlg(unsigned int FiraWareVersion) : CDialogEx(CAboutDlg::IDD)
 	HGLOBAL hGlobal = LoadResource(NULL,hRsrc);
 	struct VS_VERSIONINFO *pData = (VS_VERSIONINFO*)LockResource(hGlobal);
 	
+	m_StrAppVer.Format(_T("Aplication Version: %08X"), SOFT_VERSION);	//  pData->Value.dwProductVersionLS
+
 	if(FiraWareVersion == 0xFFFFFFFF){
-		m_StrAppVer.Format(_T("Aplication Version: %08X")	, pData->Value.dwProductVersionLS);
 		m_StrFirVer		 = _T("Firmware  Version: --------");
 	}else{
-		m_StrAppVer.Format(_T("Aplication Version: %08X")	, pData->Value.dwProductVersionLS);
 		m_StrFirVer.Format(_T("Firmware  Version: %08X")	, FiraWareVersion);
 	}
 }
@@ -128,6 +129,8 @@ void CAutoMouseDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_COMBO_OPERATION, m_OperationSel);
 	DDX_Text(pDX, IDC_STATIC_TARGET_WINDOW_NAME, m_TargetWindowName);
 	DDV_MaxChars(pDX, m_TargetWindowName, 256);
+	DDX_Control(pDX, IDC_BUTTON_NOWLONG, m_NowLong);
+	DDX_Control(pDX, IDC_BUTTON_NOWSHORT, m_NotShort);
 }
 
 BEGIN_MESSAGE_MAP(CAutoMouseDlg, CDialogEx)
@@ -148,7 +151,7 @@ BEGIN_MESSAGE_MAP(CAutoMouseDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON_COM_CONNECT, &CAutoMouseDlg::OnBnClickedButtonComConnect)
 	ON_WM_DRAWITEM()
 	ON_WM_CTLCOLOR()
-	ON_BN_CLICKED(IDC_BUTTON_NOW, &CAutoMouseDlg::OnBnClickedButtonNow)
+	ON_BN_CLICKED(IDC_BUTTON_NOWLONG, &CAutoMouseDlg::OnBnClickedButtonNow)
 	ON_WM_TIMER()
 	ON_WM_SYSCOMMAND()
 	ON_NOTIFY(UDN_DELTAPOS, IDC_SPIN_10, &CAutoMouseDlg::OnDeltaposSpin10)
@@ -245,6 +248,7 @@ BOOL CAutoMouseDlg::OnInitDialog()
 
 	m_Stop.EnableWindow(FALSE);
 
+	// **** ワーク ****
 #if 0
 //	m_OperationSel.AddString(_T("通常フェス"),0);
 	m_OperationSel.InsertString(-1,_T("通常フェス"));
@@ -256,9 +260,20 @@ BOOL CAutoMouseDlg::OnInitDialog()
 		m_OperationSel.InsertString(-1, e.c_str());
 	}
 #endif
-	m_OperationSel.SetCurSel(0);
+	m_OperationSel.SetCurSel(gWorkIndex);
 
-	OnBnClickedButtonNow();
+	{ // now ボタン
+		const std::size_t size = 16;
+		TCHAR buf[size];
+
+		toNowText(buf, size ,gNowTime[1]);
+		m_NowLong.SetWindowTextW(buf);
+
+		toNowText(buf, size, gNowTime[2]);
+		m_NotShort.SetWindowTextW(buf);
+	}
+
+	setEndTime(gNowTime[0]);
 
 	SetTimer(ET_1s,1000,0);
 
@@ -294,7 +309,7 @@ void CAutoMouseDlg::OnSysCommand(UINT nID, LPARAM lParam)
 {
 	if ((nID & 0xFFF0) == IDM_ABOUTBOX)
 	{
-		int comno,ack;
+		int ack;
 
 		if(!gCom.isOpened()){
 			openCom();
@@ -516,7 +531,7 @@ void CAutoMouseDlg::OnBnClickedButtonStart()
 	setPointVector(curpos ,0 ,0);
 //	m_OperationSel.SetFocus();
 
-	gWorkNo = m_OperationSel.GetCurSel();
+	gWorkIndex = m_OperationSel.GetCurSel();
 
 	gAddSleep = 0;
 	g_Operation = 1;
@@ -569,7 +584,7 @@ void CAutoMouseDlg::OnBnClickedButtonComConnect()
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 void CAutoMouseDlg::openCom()
 {
-	int32_t ack,comno;
+	int32_t comno;
 
 	comno = GnrlComList::getGuiPortNo(m_ComSel);
 	if(comno < 0) return;
@@ -664,6 +679,7 @@ HBRUSH CAutoMouseDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 void CAutoMouseDlg::OnBnClickedButtonNow()
 {
+#if 0
 	time_t now,endtime;
     struct tm *s_tm;
 
@@ -674,13 +690,19 @@ void CAutoMouseDlg::OnBnClickedButtonNow()
 		
 		endtime = now + 3600*2 + 360*8;
 		m_EndTime = endtime;
-		setEndtime(0);
+		setGuiEndtime(0);
 	}
 
 	UpdateData(FALSE);
+#else
+
+	setEndTime(gNowTime[1]);
+
+#endif
 }
 void CAutoMouseDlg::OnBnClickedButtonNowshort()
 {
+#if 0
 	time_t now,endtime;
     struct tm *s_tm;
 
@@ -691,19 +713,45 @@ void CAutoMouseDlg::OnBnClickedButtonNowshort()
 		
 		endtime = now + 360*2;
 		m_EndTime = endtime;
-		setEndtime(0);
+		setGuiEndtime(0);
+	}
+
+	UpdateData(FALSE);
+#else
+
+	setEndTime(gNowTime[2]);
+
+#endif
+}
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+// タイマをセット
+// EndTime: now + Time    Timeは60分を100とします。
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+void CAutoMouseDlg::setEndTime(int32_t Time)
+{
+	time_t now, endtime;
+
+	if (time(&now) == (time_t)-1) {
+		m_StrEndTime = "Error";
+		m_EndTime = (time_t)-1;
+	}
+	else{
+
+		endtime = now + 36 * Time;
+		m_EndTime = endtime;
+		setGuiEndtime(0);
 	}
 
 	UpdateData(FALSE);
 }
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-// +-10分
+//  + or - 10分
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 void CAutoMouseDlg::OnDeltaposSpin10(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>(pNMHDR);
-	// TODO: ここにコントロール通知ハンドラー コードを追加します。
 
     LPNMHDR   pnhm;
 	int		delta;
@@ -712,12 +760,12 @@ void CAutoMouseDlg::OnDeltaposSpin10(NMHDR *pNMHDR, LRESULT *pResult)
     if( pnhm->code == UDN_DELTAPOS ) {
 		delta = pNMUpDown->iDelta;
 		if(delta < 0){
-			// 上方向
-			setEndtime(+60*10);
+			// + 方向
+			setGuiEndtime(+36 * gSpinTime);
 			UpdateData(FALSE);
 		}else if(delta > 0){
-			// 下方向
-			setEndtime(-60*10);
+			// - 方向
+			setGuiEndtime(-36 * gSpinTime);
 			UpdateData(FALSE);
 		}
 	}
@@ -727,7 +775,7 @@ void CAutoMouseDlg::OnDeltaposSpin10(NMHDR *pNMHDR, LRESULT *pResult)
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // m_EndTime を更新して終了時刻を変更します。
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-void CAutoMouseDlg::setEndtime(int DistanceSec)
+void CAutoMouseDlg::setGuiEndtime(int DistanceSec)
 {
 
 	if(m_EndTime == (time_t)-1){

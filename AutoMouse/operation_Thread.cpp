@@ -205,7 +205,7 @@ Uint32 OperationThread(void* Arg)
 	while (gOperationThread.isLife()){
 		if (g_Operation != 0){	// ‰Ò“­’†‚¾‚Á‚½‚çB
 			std::lock_guard<std::mutex> lock(gWorkMutex);
-			gWorks[gWorkNo]->proc();
+			gWorks[gWorkIndex]->proc();
 		}
 		Sleep(100);
 	}

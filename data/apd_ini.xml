@@ -7,46 +7,40 @@
 	<com PortNo="3" BaudRate="115200" Timeout="1000" Stopbit="0" Parity="0"/>
 	<blur x="4" y="4" time="100"/>
 	<active pause_time="3000"/>
-	<end_time time0="280" time1="280" time2="20" />
+	<end_time time0="280" time1="280" time2="20" spin="10"/>
 	<works index="0">
 		<work name="通常フェス" loop_n="0">
 			<touchs type="anyone">
-				<touch x="1220" y="395" delay="0" />
-				<touch x="1210" y="468" delay="0" />
-				<touch x="1220" y="485" delay="0" />
-				<touch x="1200" y="538" delay="0" />
-				<touch x="1220" y="669" delay="0" />
+				<touch x="1220" y="395" delay="2500" />
+				<touch x="1210" y="468" delay="2500" />
+				<touch x="1220" y="485" delay="2500" />
+				<touch x="1200" y="538" delay="2500" />
+				<touch x="1220" y="669" delay="2500" />
 			</touchs>
-			<touch x="1019" y="728" delay="2500" />
+			<touch x="1019" y="728" delay="500" />
 			<touch x="602"  y="503" delay="500" />
-			<touch x="745"  y="619" delay="500" />
-			<wait delay="5000"/>
+			<touch x="745"  y="619" delay="5000" />
 			<touch x="922"  y="731" delay="1000" loop_n="8"/>
 			<touch x="646"  y="747" delay="2500" loop_n="2"/>
-			<touch x="1238" y="82"  delay="1000" />
-			<wait delay="5000"/>
+			<touch x="1238" y="82"  delay="6000" />
 		</work>
 		<work name="決勝フェス" loop_n="0">
-			<touch x="1220" y="393" delay="0" />
-			<touch x="1019" y="728" delay="2500" />
+			<touch x="1220" y="393" delay="2500" />
+			<touch x="1019" y="728" delay="500" />
 			<touch x="602"  y="503" delay="500" />
-			<touch x="745"  y="619" delay="500" />
+			<touch x="745"  y="619" delay="5000" />
 			<touch x="922"  y="731" delay="1000" loop_n="8"/>
-			<touch x="646"  y="747" delay="2500" />
-			<touch x="646"  y="747" delay="700" />
-			<touch x="1238" y="82"  delay="1000" />
-			<wait delay="2000"/>
+			<touch x="646"  y="747" delay="2500" loop_n="2"/>
+			<touch x="1238" y="82"  delay="6000" />
 		</work>
 		<work name="準決勝フェス" loop_n="0">
-			<touch x="1220" y="465" delay="0" />
-			<touch x="1019" y="728" delay="2500" />
+			<touch x="1220" y="466" delay="2500" />
+			<touch x="1019" y="728" delay="500" />
 			<touch x="602"  y="503" delay="500" />
-			<touch x="745"  y="619" delay="500" />
+			<touch x="745"  y="619" delay="5000" />
 			<touch x="922"  y="731" delay="1000" loop_n="8"/>
-			<touch x="646"  y="747" delay="2500" />
-			<touch x="646"  y="747" delay="700" />
-			<touch x="1238" y="82"  delay="1000" />
-			<wait delay="2000"/>
+			<touch x="646"  y="747" delay="2500" loop_n="2"/>
+			<touch x="1238" y="82"  delay="6000" />
 		</work>
 		<work name="おまけ" loop_n="2">
 			<touchs type="each" loop_n="8">

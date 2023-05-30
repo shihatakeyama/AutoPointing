@@ -94,7 +94,10 @@ int32_t initParam()
 		}
 	}
 
-	gCom.loadXmlNode(root ,_T("com"));
+	node = rapidxml::first_node(root ,_T("com"));
+	if (node){
+		gCom.loadXmlNode(node);
+	}
 
 	node = rapidxml::first_node(root, _T("blur"));
 	if (node == nullptr){
@@ -124,6 +127,10 @@ int32_t initParam()
 
 	ack = WorkBase::loadWorkList(gWorks, work, gWorkNames);
 
+	rapidxml::first_attribute(work, _T("index"), gWorkIndex);
+	if (gWorkIndex >= gWorks.size()){
+		gWorkIndex = 0;
+	}
 
 	return ERC_ok;
 }

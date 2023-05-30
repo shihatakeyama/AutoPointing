@@ -44,8 +44,8 @@ typedef wchar_t				TCHAR;				// Microsoft定義キャラクタ 旧Nchar
 
 #endif
 
-#define	Nsprintf(a,b,...)		wsprintf(a,b,__VA_ARGS__)
-#define	Nswprintf_s(a,b,c,...)	swprintf_s(a,b,c,__VA_ARGS__)		// int swprintf_s(wchar_t *buffer,size_t sizeOfBuffer,const wchar_t *format,...);
+#define	Tsprintf(a,b,...)		wsprintf(a,b,__VA_ARGS__)
+#define	Tsprintf_s(a,b,c,...)	swprintf_s(a,b,c,__VA_ARGS__)		// int swprintf_s(wchar_t *buffer,size_t sizeOfBuffer,const wchar_t *format,...);
 
 
 #endif	// GNRL_Nchar_H

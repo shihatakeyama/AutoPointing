@@ -41,7 +41,7 @@ int32_t WorkWait::loadXmlNode(const rapidxml::node_t* Child)
 
 	loadXmlLoop_n(Child);
 
-	attr = rapidxml::first_attribute(Child, _T("wait"), val);
+	attr = rapidxml::first_attribute(Child, _T("delay"), val);
 	if (attr != nullptr){
 		m_WaitMsec = val;
 	}
