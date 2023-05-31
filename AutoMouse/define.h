@@ -1,7 +1,7 @@
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-// AM_defin.h
+// defin.h
 // 
-// AutoMouse 定義
+// AutoPointing 定義
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
 #include <stdint.h>
@@ -15,14 +15,14 @@
 
 
 // ソフトバージョン
-#define		SOFT_VERSION	0x04235300
+#define		SOFT_VERSION	0x04235310
 
 
 #define TRX_BUF_SIZE   	32
 #define RX_TIMEOUT		400
 #define CR				0x0D	// コマンド終端
 
-#define WINDOW_NAME	_T("AutoPointing")
+// #define WINDOW_NAME	_T("AutoPointing")
 
 
 enum E_Notification{

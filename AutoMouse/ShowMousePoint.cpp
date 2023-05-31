@@ -7,8 +7,8 @@
 
 
 #include "stdafx.h"
-#include "AutoMouse.h"
-#include "AutoMouseDlg.h"
+#include "AutoPointing.h"
+#include "AutoPointingDlg.h"
 #include "afxdialogex.h"
 
 #include "Windows.h"
@@ -54,7 +54,7 @@ Uint32 MousePointThread(void *Arg)
 				strw.Format(_T("x=%5d , y=%5d"), point.x - rect.left , point.y - rect.top);
 			}
 
-			pCAutoMouseDlg->OnMousePoint(strm ,strw);
+			pAutoPointingDlg->OnMousePoint(strm, strw);
 
 			oldpoint = point;
 		}

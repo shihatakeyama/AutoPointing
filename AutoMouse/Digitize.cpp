@@ -14,8 +14,6 @@
 #include "GnrlComList.h"
 #include "GnrlCom.h"
 
-//#include "AutoMouseDlg.h"
-
 #include "define.h"
 #include "extern.h"
 #include "global.h"
