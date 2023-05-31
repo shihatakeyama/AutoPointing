@@ -53,6 +53,9 @@ int32_t						gBureTime = 4;
 int32_t						gNowTime[3] = { 280, 280, 20 };
 int32_t						gSpinTime = 10;
 
+class CAutoPointingDlg;
+CAutoPointingDlg			*pAutoPointingDlg;
+
 class WorkBase;
 std::vector<WorkBase*>		gWorks;
 std::vector<std::wstring>	gWorkNames;

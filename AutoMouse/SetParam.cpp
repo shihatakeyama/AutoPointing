@@ -128,7 +128,7 @@ int32_t initParam()
 	ack = WorkBase::loadWorkList(gWorks, work, gWorkNames);
 
 	rapidxml::first_attribute(work, _T("index"), gWorkIndex);
-	if (gWorkIndex >= gWorks.size()){
+	if (gWorkIndex >= static_cast<int32_t>(gWorks.size())){
 		gWorkIndex = 0;
 	}
 

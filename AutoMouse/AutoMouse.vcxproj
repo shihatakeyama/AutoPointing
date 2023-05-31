@@ -14,6 +14,7 @@
     <ProjectGuid>{0CE3FFF7-3C7C-48E5-9ABD-48803CDBC45B}</ProjectGuid>
     <RootNamespace>AutoMouse</RootNamespace>
     <Keyword>MFCProj</Keyword>
+    <ProjectName>AutoPointingDlg</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -109,8 +110,8 @@
     <ClInclude Include="com\GnrlComList.h" />
     <ClInclude Include="define.h" />
     <ClInclude Include="extern.h" />
-    <ClInclude Include="AutoMouse.h" />
-    <ClInclude Include="AutoMouseDlg.h" />
+    <ClInclude Include="AutoPointing.h" />
+    <ClInclude Include="AutoPointingDlg.h" />
     <ClInclude Include="global.h" />
     <ClInclude Include="GnrlDefine.h" />
     <ClInclude Include="GnrlFilepath.h" />
@@ -127,8 +128,8 @@
     <ClInclude Include="WorkWait.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AutoMouse.cpp" />
-    <ClCompile Include="AutoMouseDlg.cpp" />
+    <ClCompile Include="AutoPointing.cpp" />
+    <ClCompile Include="AutoPointingDlg.cpp" />
     <ClCompile Include="com\GnrlCom.cpp" />
     <ClCompile Include="com\GnrlComList.cpp" />
     <ClCompile Include="Digitize.cpp" />
@@ -151,13 +152,13 @@
     <ClCompile Include="WorkWait.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="AutoMouse.rc" />
+    <ResourceCompile Include="AutoPointing.rc" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\AutoMouse.rc2" />
+    <None Include="res\AutoPointing.rc2" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="res\AutoMouse.ico" />
+    <Image Include="res\AutoPointing.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
