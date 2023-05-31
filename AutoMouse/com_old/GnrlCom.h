@@ -1,4 +1,4 @@
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+// ****************************************************************************
 // GnrlCom.h
 //
 // COMポートアクセスの為のクラス
@@ -8,7 +8,7 @@
 //
 // 2018/12/09	isOpened() 追加 
 //
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+// ****************************************************************************
 
 #ifndef GNRLCOM_H
 #define GNRLCOM_H
@@ -45,20 +45,10 @@ public:
 
 	enum EStateBit{
 		ESTATEBIT_clear		= 0,
-		ESTATEBIT_load		= 1,
-		ESTATEBIT_open		= 2,
-		ESTATEBIT_baudrate	= 4,
-		ESTATEBIT_timeout	= 8,
-		ESTATEBIT_good		= 15
-	};
-
-	// 各種モジュールのリターンコード
-	enum E_ComReturnCode{
-		  ECRC_ok		= 0
-		, ECRC_ng		= -101
-		, ECRC_open		= -102
-		, ECRC_baudrate	= -105
-		, ECRC_timeout	= -106
+		ESTATEBIT_open		= 1,
+		ESTATEBIT_baudrate	= 2,
+		ESTATEBIT_timeout	= 4,
+		ESTATEBIT_good		= 7
 	};
 
 #ifdef USE_MFC
@@ -68,6 +58,7 @@ public:
 	enum EStopBit fromGuiStopBit(const CComboBox &StopBit);
 	int fromGuiFrow(const CComboBox &Frow);			// Floaw 無しでよい？
 
+//--	int getGuiPortNo(const CComboBox &BaudRate);
 	int getGuiBaudRate(const CComboBox &BaudRate);
 	int getGuiDataBit(const CComboBox &Data);
 	int getGuiParity(const CComboBox &Parity);
@@ -93,9 +84,9 @@ public:
 
 	// 通信設定
 	void loadParameter(const TCHAR *IniFile = _T("ComSet.ini"), const TCHAR *Section = _T("ComSet"));	// 旧 putParameter()
-	void saveParameter(const TCHAR *IniFile = _T("ComSet.ini"), const TCHAR *Section = _T("ComSet"));
-
 	void putParameter(int PortNo, int Bps, int TimeOut, enum EStopBit StopBit, enum EParity Parity);
+
+	void saveParameter(const TCHAR *IniFile = _T("ComSet.ini"), const TCHAR *Section = _T("ComSet"));
 	void getParameter(int &PortNo, int &Bps, int &TimeOut, enum EStopBit &StopBit, enum EParity &Parity) const;
 
 	// ボーレート(速度bps)を序数に変換
@@ -105,8 +96,7 @@ public:
 	int open();
 	int openAndSetParam();
 	int close();
-	bool isLoad() const				{ return 	m_State & ESTATEBIT_load;		}	// 条件読み成功？	初期条件の場合はFALSEを返します。
-	bool isOpened() const			{ return	m_hFile != EC_FileOpenError;	}
+	int isOpened() const			{ return	m_hFile != EC_FileOpenError; }
 	void setBad()					{ m_State = ESTATEBIT_clear;				}
 	void setGood()					{ m_State = ESTATEBIT_good;					}
 	bool isBad() const				{ return	m_State != ESTATEBIT_good;		}
@@ -117,7 +107,7 @@ public:
 	int read(unsigned char *Data, int Size) const;				// 読み込み
 	int write(const unsigned char *Data, int Size) const ;		// 書き込み
 	const HANDLE getHandle()const {return m_hFile;}				// ファイルポインタの取得
-	int setBaudRate();
+	int setBaudRate(/*int Bps, enum EStopBit StopBit, enum EParity Parity*/);
 
 	// メンバアクセス
 	int getPortNo() const		{ return m_PortNo; }
@@ -127,7 +117,7 @@ private:
 //--public:	//----
 	void init();						// メンバーの初期化
 	void preset();						// 初期設定
-	int setTimeout();
+	int setTimeout(unsigned int  TimeOut);
 
 	HANDLE	m_hFile; 					// ファイルハンドル	
 	int		m_PortNo;					// ポート番号
@@ -151,7 +141,7 @@ private:
 	const static int EC_Write;
 	static void* const EC_FileOpenError;
 	const static int m_BaudRateList[EB_num];
-	int				 m_ComNo;
+	int		m_ComNo;
 };
 
 #endif //GMRLCOM
