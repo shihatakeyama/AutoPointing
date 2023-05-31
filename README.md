@@ -1,3 +1,5 @@
-# AutoPointingDigitizer
-コマンドによって画面にポインティングします
-フォーカス変更
+# AutoPointing
+
+本アプリは、タッチ位置と時間間隔をXMLファイルから読み、条件に従ってComDigitizer へコマンド出力します。
+ComDigitizerはコマンドに従って画面にポインティングします。
+
