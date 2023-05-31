@@ -1,4 +1,4 @@
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+// ****************************************************************************
 // GnrlCom.cpp
 //
 // COMポートアクセスの為のクラス
@@ -14,12 +14,11 @@
 // use: C++,WIN32API
 // Version 1.1
 //
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-// 
 // 履歴
-//   2012/12/31  スペースパリティを追加
+//  2012/12/31  スペースパリティを追加
 //
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+// ****************************************************************************
+
 
 
 #include "stdafx.h"	
@@ -63,7 +62,7 @@ static BOOL WritePrivateProfileInt(LPCTSTR sectionName, LPCTSTR KeyName, int Val
 {
 	TCHAR	str[32];
 
-	Tsprintf_s(str, 32, _T("%d"), Val);
+	swprintf_s(str, 32, _T("%d"), Val);
 	//	_itow(Val, tmp, 10);
 
 	return ::WritePrivateProfileString(sectionName, KeyName, str, FilePath);
@@ -127,7 +126,7 @@ int GnrlCom::setGuiBaudRate(CComboBox &BaudRate) const
 	BaudRate.Clear();
 
 	for (i = 0; i<EB_num; i++){
-		Tsprintf_s(buf, 32, _T("%d"), m_BaudRateList[i]);
+		swprintf_s(buf, 32, _T("%d"), m_BaudRateList[i]);
 		BaudRate.InsertString(i, buf);
 	}
 
@@ -204,18 +203,18 @@ int GnrlCom::setGuiFrow(CComboBox &Frow) const
 //#include "rapidxml_support.h"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-// XML 読み書き
-// load()/save()ともにNodeは自ノードを設定して下さい。
-// save()時に返すNodeは、タグ名が設定されていませんので、呼び元で名前つけて下さい。
+// load()/write()ともにrapidxml::xml_node_tは親ノードを設定して下さい。
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 int32_t GnrlCom::loadXmlNode(const rapidxml::node_t *Node)
 {
 	int32_t val;
 
+	ASSERT(Node);
+
 	init();	
 
-	if (Node == nullptr)	return ECRC_ng;
-	const rapidxml::node_t *node = Node;
+	const rapidxml::node_t *node = Node;	// ParentNode->first_node(NodeName);
+	if(node == nullptr)	return ERC_ng;
 
 	rapidxml::first_attribute(node ,m_PortNoText	,m_PortNo);
 	rapidxml::first_attribute(node ,m_BaudRateText	,m_BaudRate);
@@ -226,13 +225,11 @@ int32_t GnrlCom::loadXmlNode(const rapidxml::node_t *Node)
 	rapidxml::first_attribute(node ,m_ParityText	,val);
 	m_Parity = static_cast<enum EParity>(val);
 	
-	m_State |= ESTATEBIT_load;
-
-	return ECRC_ok;
+	return ERC_ok;
 }
 int32_t GnrlCom::saveXmlNode(rapidxml::node_t *&Node ,rapidxml::document_t &Doc) const
 {
-	if (Node == nullptr)	return ECRC_ng;
+	ASSERT(Node);
 
 	rapidxml::node_t *node = Doc.allocate_node(rapidxml::node_element);
 
@@ -244,14 +241,15 @@ int32_t GnrlCom::saveXmlNode(rapidxml::node_t *&Node ,rapidxml::document_t &Doc)
 	rapidxml::append_attribute(Doc ,node ,m_ParityText	,m_Parity);
 
 	Node = node;
+//--	rapidxml::append_node(ParentNode ,node);
 
-	return ECRC_ok;
+	return ERC_ok;
 }
 #endif
 
 GnrlCom::GnrlCom()
- : m_ComNo(1)
- , m_State(ESTATEBIT_clear)
+// :m_Good(false)
+ : m_State(ESTATEBIT_clear)
 {
 	init();
 	preset();
@@ -263,16 +261,14 @@ GnrlCom::GnrlCom()
 //      Section セクション名
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 GnrlCom::GnrlCom(const TCHAR *IniFile, const TCHAR *Section)
-: m_ComNo(1)
-, m_State(ESTATEBIT_clear)
 {
 	init();
-	preset();
 	loadParameter(IniFile, Section);
 }
 
 GnrlCom::~GnrlCom()
 {
+
 }
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -326,27 +322,8 @@ void GnrlCom::loadParameter(const TCHAR *IniFile, const TCHAR *Section)
 	m_TimeOut	= GetPrivateProfileInt(Section,m_TimeoutText	, m_TimeOut	, file_name);
 	m_StopBit	= (enum GnrlCom::EStopBit)GetPrivateProfileInt(Section, m_StopbitText, m_StopBit, file_name);
 	m_Parity	= (enum GnrlCom::EParity)GetPrivateProfileInt(Section, m_ParityText, m_Parity, file_name);
-
-	m_State |= ESTATEBIT_load;
-}
-void GnrlCom::saveParameter(const TCHAR *IniFile, const TCHAR *Section)
-{
-	TCHAR	file_name[MAX_PATH];
-
-	GnrlComgetFinePath(file_name, MAX_PATH, IniFile);
-
-	// WritePrivateProfileInt(LPCTSTR sectionName, LPCTSTR KeyName, int Val, LPCTSTR FilePath)
-
-	WritePrivateProfileInt(Section, _T("PortNo"), m_PortNo, file_name);
-	WritePrivateProfileInt(Section, _T("BaudRate"), m_BaudRate, file_name);
-	WritePrivateProfileInt(Section, _T("Timeout"), m_TimeOut, file_name);
-	WritePrivateProfileInt(Section, _T("Stopbit"), m_StopBit, file_name);
-	WritePrivateProfileInt(Section, _T("Parity"), m_Parity, file_name);
 }
 
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-// 通信設定を 設定/取得
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 void GnrlCom::putParameter(int ComNum, int Bps, int TimeOut, enum EStopBit StopBit, enum EParity Parity)
 {
 	m_ComNo		= ComNum;
@@ -364,9 +341,6 @@ void GnrlCom::getParameter(int &ComNo, int &Bps, int &TimeOut, enum EStopBit &St
 	StopBit = m_StopBit;		// ストップビット
 	Parity	= m_Parity;			// パリティ
 }
-
-
-
 int GnrlCom::bpsToEbps(int Bps)
 {
 	int	i;
@@ -379,18 +353,11 @@ int GnrlCom::bpsToEbps(int Bps)
 
 	return 0;
 }
-int GnrlCom::ebpsToBps(int EBps)
-{
-	if ((EBps < 0) || (EBps >= EB_num))	{ return m_BaudRateList[EB_300bps]; }
-
-	return m_BaudRateList[EBps];
-}
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+// ****************************************************************************
 // PCのCOMポートをオープンする
 //  戻り値 == 0 成功
 //         < 0 失敗
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+// ****************************************************************************
 int GnrlCom::open()
 {
 	close();	// オープンしていても指示されたのだからオープンをやり直す。
@@ -398,7 +365,7 @@ int GnrlCom::open()
 #if 1
 	DISABLE_C4996//
 	wchar_t buf[16];
-	Tsprintf(buf, _T("\\\\.\\COM%d"), m_ComNo);	// COM番号10以上対応
+	_swprintf(buf, L"\\\\.\\COM%d", m_ComNo);	// COM番号10以上対応
 	m_hFile = CreateFile(buf,
 		GENERIC_READ | GENERIC_WRITE,
 		0,
@@ -411,7 +378,7 @@ int GnrlCom::open()
 	char buf[16];
 	FILE *fp;
 	errno_t error;
-	Tsprintf_s(buf, sizeof(buf) , "\\\\.\\COM%d", m_ComNo);	// COM番号10以上対応
+	sprintf_s(buf, sizeof(buf) , "\\\\.\\COM%d", m_ComNo);	// COM番号10以上対応
 
 	error = fopen_s(&fp, buf, "w");
 	m_hFile = fp;
@@ -421,37 +388,39 @@ int GnrlCom::open()
 #endif
 
 	if (m_hFile == EC_FileOpenError){
-		return ECRC_open;				//	COMオープンNG
+		return ERC_open;				//	COMオープンNG
 	}
 
 	m_State |= ESTATEBIT_open;
 
-	return ECRC_ok;							//  処理成功
+	return ERC_ok;							//  処理成功
 }
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+// ****************************************************************************
 // Comオープンした後にボーレートなどを設定します。
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+// ****************************************************************************
 int GnrlCom::openAndSetParam()
 {
 	int ack;
 
 	ack = open();
-	if (ack < ECRC_ok)	return ack;		// ComOen NG
+	if (ack < ERC_ok)	return ack;		// ComOen NG
+
+//--	Sleep(200);
 
 	ack = setBaudRate();
-	if (ack < ECRC_ok)	return ack;		// ボーレート NG
+	if (ack < ERC_ok)	return ack;		// ボーレート NG
 
-	ack = setTimeout();
-	if (ack < ECRC_ok)	return ack;		// タイムアウト NG
+	ack = setTimeout(m_TimeOut);
+	if (ack < ERC_ok)	return ack;		// タイムアウト NG
 
-	return ECRC_ok;
+	return ERC_ok;
 }
 
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+// ****************************************************************************
 //  通信ボーレート設定
 //  戻り値
 //  関数が成功すると、0 以外の値が返ります。
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+// ****************************************************************************
 int GnrlCom::setBaudRate()
 {
 	int Bps					= m_Bps;
@@ -466,7 +435,7 @@ int GnrlCom::setBaudRate()
 	
 	ack = GetCommConfig(m_hFile, &commconfig, &ncomcfg);
 	if (ack == false){
-		return ECRC_baudrate;
+		return ERC_baudrate;
 	}
 
 	commconfig.dcb.DCBlength=	28;
@@ -572,41 +541,41 @@ int GnrlCom::setBaudRate()
 	commconfig.dwProviderSize		= 0;
 
 	ack = SetCommConfig(m_hFile, &commconfig, ncomcfg);
-	if (ack == false)	return ECRC_baudrate;
+	if (ack == false)	return ERC_baudrate;
 
 	m_State |= ESTATEBIT_baudrate;
 
-	return	ECRC_ok;
+	return	ERC_ok;
 }
 
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+// ****************************************************************************
 //  タイムアウト時間を設定します。
 //  メンバ変数m_TimeOut(ms)経過しても何も受信しない場合、この関数を負えます。
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-int GnrlCom::setTimeout()
+// ****************************************************************************
+int GnrlCom::setTimeout(unsigned int TimeOut)
 {
 	BOOL ack;
 	COMMTIMEOUTS	cto;
 	
 	GetCommTimeouts(m_hFile, &cto );			// タイムアウトの設定状態を取得
 
-	cto.ReadIntervalTimeout			= m_TimeOut;	// ReadTotalTimeoutMultiplierとReadTotalTimeoutConstantが0でMAXWARDならreadfileが即時リターンする
+	cto.ReadIntervalTimeout			= TimeOut;	// ReadTotalTimeoutMultiplierとReadTotalTimeoutConstantが0でMAXWARDならreadfileが即時リターンする
 	cto.ReadTotalTimeoutMultiplier	= 1			;	// 1Byte毎のタイマ  m_TimeOut
-	cto.ReadTotalTimeoutConstant	= m_TimeOut;	// １関数コール毎のタイマ
-	cto.WriteTotalTimeoutMultiplier = m_TimeOut;	// 1Byte毎のタイマ
-	cto.WriteTotalTimeoutConstant	= m_TimeOut;	// １関数コール毎のタイマ
+	cto.ReadTotalTimeoutConstant	= TimeOut;	// １関数コール毎のタイマ
+	cto.WriteTotalTimeoutMultiplier	= TimeOut;	// 1Byte毎のタイマ
+	cto.WriteTotalTimeoutConstant	= TimeOut;	// １関数コール毎のタイマ
 
 	ack = SetCommTimeouts(m_hFile, &cto);			// タイムアウトの状態を設定
-	if (ack == false)	return ECRC_timeout;
+	if (ack == false)	return ERC_timeout;
 
 	m_State |= ESTATEBIT_timeout;
 
-	return ECRC_ok;
+	return ERC_ok;
 }
 
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+// ****************************************************************************
 //  問題無ければ0以上のあいたいを戻す
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+// ****************************************************************************
 int GnrlCom::close()
 {
 	setBad();
@@ -616,16 +585,18 @@ int GnrlCom::close()
 		m_hFile = EC_FileOpenError;
 	}
 
-	return ECRC_ok;
+	return ERC_ok;
 }
 
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+// ****************************************************************************
 //  読み込んだバイト数を戻す
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+// ****************************************************************************
 int GnrlCom::read(unsigned char *Data, int Size) const
 {
 	unsigned long	len;
 
+//--	if(m_hFile == EC_FileOpenError)
+//--		return EC_ComOpen;
 	if (isBad())	return EC_ComOpen;
 
 	if(ReadFile(m_hFile, Data, Size, &len, 0 ) != 0)
@@ -634,9 +605,9 @@ int GnrlCom::read(unsigned char *Data, int Size) const
 	return EC_Read;
 }
 
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+// ****************************************************************************
 //  書き込んだバイト数を戻す
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+// ****************************************************************************
 int GnrlCom::write(const unsigned char *Data, int Size) const
 {
 	unsigned long	len;
@@ -649,13 +620,18 @@ int GnrlCom::write(const unsigned char *Data, int Size) const
 	return EC_Write;
 }
 
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+// ****************************************************************************
 //  メンバーの初期化  clear()がいいかな？
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+// ****************************************************************************
 void GnrlCom::init()
 {
-	close();
 	m_hFile = EC_FileOpenError;
+
+	m_ComNo		= 1;
+	m_Bps		= 9600;					// 速度
+	m_TimeOut	= 1000;					// タイムアウト	
+	m_StopBit	= ESTOPBIT_1;			// ストップビット
+	m_Parity	= EPARITY_no;			// パリティ	
 }
 void GnrlCom::preset()
 {
@@ -666,9 +642,9 @@ void GnrlCom::preset()
 	m_Parity	= EPARITY_no;			// パリティ
 }
 
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+// ****************************************************************************
 //  Comのバッファをパー(クリア)する
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+// ****************************************************************************
 int GnrlCom::clearBuffer() const
 {
 	if(m_hFile != NULL){

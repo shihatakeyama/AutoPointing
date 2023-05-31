@@ -3,7 +3,7 @@
 echo 削除します。宜しいですか？ 
 
 
-del AutoMouse.sdf /S /Q
+del *.sdf /S /Q
 del Debug /S /Q
 rmdir Debug /S /Q
 del Release /S /Q

@@ -197,6 +197,9 @@ BOOL CAutoPointingDlg::OnInitDialog()
 	// TODO: 初期化をここに追加します。
 	pAutoPointingDlg = this;
 
+	// COM サーチ
+	OnBnClickedButtonComserch();
+
 	try{
 		initParam();
 	}
@@ -234,7 +237,7 @@ BOOL CAutoPointingDlg::OnInitDialog()
 
 	m_TargetWindowName = gTargetWindowName.c_str();
 
-	OnBnClickedButtonComserch();
+
 
 	// **** 各種スレッド起動 ****
 	gMouseThread.beginThread(MousePointThread ,NULL ,FALSE);
