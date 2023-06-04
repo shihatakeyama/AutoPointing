@@ -37,6 +37,8 @@
 *.ipch
 *.sdf
 
+*.bak
+
 # User-specific files
 *.suo
 *.user

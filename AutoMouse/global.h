@@ -67,8 +67,8 @@ extern CPoint						gBurePoint;
 extern int32_t						gBureTime;
 extern int32_t						gNowTime[];
 
-class CAutoMouseDlg;
-extern CAutoMouseDlg *pCAutoMouseDlg;
+class CAutoPointingDlg;
+extern CAutoPointingDlg				*pAutoPointingDlg;
 int32_t callOperationThread();
 int32_t getTargetWindowPos(RECT &Rect);
 

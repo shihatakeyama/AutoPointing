@@ -13,8 +13,8 @@
 
 #include "WorkBase.h"
 
-#include "AutoMouse.h"
-#include "AutoMouseDlg.h"
+#include "AutoPointing.h"
+#include "AutoPointingDlg.h"
 #include "afxdialogex.h"
 #include "Windows.h"
 
