@@ -356,6 +356,21 @@ void GnrlCom::putParameter(int ComNum, int Bps, int TimeOut, enum EStopBit StopB
 	m_Parity	= Parity;		// パリティ	
 }
 
+void GnrlCom::saveParameter(const TCHAR *IniFile, const TCHAR *Section)
+{
+	TCHAR	file_name[MAX_PATH];
+
+	GnrlComgetFinePath(file_name, MAX_PATH, IniFile);
+
+	// WritePrivateProfileInt(LPCTSTR sectionName, LPCTSTR KeyName, int Val, LPCTSTR FilePath)
+
+	WritePrivateProfileInt(Section, m_PortNoText	,m_PortNo,	file_name);
+	WritePrivateProfileInt(Section, m_BaudRateText	,m_BaudRate,file_name);
+	WritePrivateProfileInt(Section, m_TimeoutText	,m_TimeOut,	file_name);
+	WritePrivateProfileInt(Section, m_StopbitText	,m_StopBit, file_name);
+	WritePrivateProfileInt(Section, m_ParityText	,m_Parity,	file_name);
+}
+
 void GnrlCom::getParameter(int &ComNo, int &Bps, int &TimeOut, enum EStopBit &StopBit, enum EParity &Parity) const
 {
 	ComNo	= m_ComNo;			// Comの番号
@@ -421,7 +436,7 @@ int GnrlCom::open()
 #endif
 
 	if (m_hFile == EC_FileOpenError){
-		return ECRC_open;				//	COMオープンNG
+		return ESTATEBIT_open;				//	COMオープンNG
 	}
 
 	m_State |= ESTATEBIT_open;
@@ -466,7 +481,7 @@ int GnrlCom::setBaudRate()
 	
 	ack = GetCommConfig(m_hFile, &commconfig, &ncomcfg);
 	if (ack == false){
-		return ECRC_baudrate;
+		return ESTATEBIT_baudrate;
 	}
 
 	commconfig.dcb.DCBlength=	28;
@@ -572,7 +587,7 @@ int GnrlCom::setBaudRate()
 	commconfig.dwProviderSize		= 0;
 
 	ack = SetCommConfig(m_hFile, &commconfig, ncomcfg);
-	if (ack == false)	return ECRC_baudrate;
+	if (ack == false)	return ESTATEBIT_baudrate;
 
 	m_State |= ESTATEBIT_baudrate;
 
@@ -597,7 +612,7 @@ int GnrlCom::setTimeout()
 	cto.WriteTotalTimeoutConstant	= m_TimeOut;	// １関数コール毎のタイマ
 
 	ack = SetCommTimeouts(m_hFile, &cto);			// タイムアウトの状態を設定
-	if (ack == false)	return ECRC_timeout;
+	if (ack == false)	return ESTATEBIT_timeout;
 
 	m_State |= ESTATEBIT_timeout;
 
