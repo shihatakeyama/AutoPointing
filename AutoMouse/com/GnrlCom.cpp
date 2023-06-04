@@ -329,20 +329,6 @@ void GnrlCom::loadParameter(const TCHAR *IniFile, const TCHAR *Section)
 
 	m_State |= ESTATEBIT_load;
 }
-void GnrlCom::saveParameter(const TCHAR *IniFile, const TCHAR *Section)
-{
-	TCHAR	file_name[MAX_PATH];
-
-	GnrlComgetFinePath(file_name, MAX_PATH, IniFile);
-
-	// WritePrivateProfileInt(LPCTSTR sectionName, LPCTSTR KeyName, int Val, LPCTSTR FilePath)
-
-	WritePrivateProfileInt(Section, _T("PortNo"), m_PortNo, file_name);
-	WritePrivateProfileInt(Section, _T("BaudRate"), m_BaudRate, file_name);
-	WritePrivateProfileInt(Section, _T("Timeout"), m_TimeOut, file_name);
-	WritePrivateProfileInt(Section, _T("Stopbit"), m_StopBit, file_name);
-	WritePrivateProfileInt(Section, _T("Parity"), m_Parity, file_name);
-}
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // 通信設定を 設定/取得
@@ -355,7 +341,6 @@ void GnrlCom::putParameter(int ComNum, int Bps, int TimeOut, enum EStopBit StopB
 	m_StopBit	= StopBit;		// ストップビット
 	m_Parity	= Parity;		// パリティ	
 }
-
 void GnrlCom::saveParameter(const TCHAR *IniFile, const TCHAR *Section)
 {
 	TCHAR	file_name[MAX_PATH];
