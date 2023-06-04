@@ -86,9 +86,21 @@ attribute_t* allocate_attribute(document_t &Doc ,const char_t *Name ,const char_
 {
 	return Doc.allocate_attribute(Name, Val ,NameSize ,ValSize);
 }
-char_t* allocate_string(document_t &Doc, const char_t *Str, size_t StrSize)	// null文字は含まないでよいか？？？
+char_t* allocate_string(document_t &Doc, const char_t *Str, size_t StrSize)	// StrSizeはnull文字は含まないので注意
 {
 	return Doc.allocate_string(Str ,StrSize);
+}
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+// ノードに名前をつける
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+void name(node_t *Node ,const char_t *Name)
+{
+	Node->name(Name);
+}
+void name(attribute_t *Attr ,const char_t *Name)
+{
+	Attr->name(Name);
 }
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -113,14 +125,14 @@ node_t *append_node(node_t* Base ,node_t* Child)
 }
 node_t *append_node(document_t &Doc ,node_t* Base ,const char_t *Name ,const char_t *Str)
 {
-	node_t* node = Doc.allocate_node(rapidxml::node_element ,Name, Str);
+	node_t* node = allocate_node(Doc,Name, Str);
 	Base->append_node(node);
 	return node;
 }
 node_t *append_node(document_t &Doc ,node_t* Base ,const char_t *Name ,const string_t &Str)
 {
-	char_t *aloc = Doc.allocate_string(Str.c_str(), Str.length()+1);
-	node_t* node = Doc.allocate_node(rapidxml::node_element ,Name, aloc);	// _T("123")
+	char_t *aloc = allocate_string(Doc ,Str.c_str(), Str.length()+1);
+	node_t* node = allocate_node(Doc ,Name, aloc);
 	Base->append_node(node);
 	return node;
 }
@@ -128,8 +140,8 @@ node_t *append_node(document_t &Doc ,node_t* Base ,const char_t *Name ,const int
 {
 	std::wstring valueString = std::to_wstring(Val);
 
-	char_t *valoc = Doc.allocate_string(valueString.c_str(), valueString.length()+1);
-	node_t* node = Doc.allocate_node(rapidxml::node_element ,Name, valoc);
+	char_t *valoc = allocate_string(Doc ,valueString.c_str(), valueString.length()+1);
+	node_t* node = allocate_node(Doc ,Name, valoc);
 	Base->append_node(node);
 	return node;
 }
@@ -137,8 +149,8 @@ node_t *append_node(document_t &Doc, node_t* Base, const char_t *Name, const uin
 {
 	std::wstring valueString = std::to_wstring(Val);
 
-	char_t *valoc = Doc.allocate_string(valueString.c_str(), valueString.length()+1);
-	node_t* node = Doc.allocate_node(rapidxml::node_element ,Name, valoc);
+	char_t *valoc = allocate_string(Doc ,valueString.c_str(), valueString.length()+1);
+	node_t* node = allocate_node(Doc ,Name, valoc);
 	Base->append_node(node);
 	return node;
 }
@@ -147,18 +159,18 @@ node_t *append_node(document_t &Doc, node_t* Base, const char_t *Name, const uin
 node_t *append_node(document_t &Doc ,node_t* Base ,const char_t *Name ,const double &Val)
 {
 	std::wstring valueString = std::to_wstring(Val);
-	char_t *valoc = Doc.allocate_string(valueString.c_str(), valueString.length()+1);
-	node_t* node = Doc.allocate_node(rapidxml::node_element ,Name, valoc);
+	char_t *valoc = allocate_string(Doc ,valueString.c_str(), valueString.length()+1);
+	node_t* node = allocate_node(Doc ,Name, valoc);
 	Base->append_node(node);
 	return node;
 }
 node_t *append_node_hex(document_t &Doc ,node_t* Base ,const char_t *Name ,const uint32_t &Val)
 {
 	const size_t malloc_size = 8+1;
-	char_t *valoc = Doc.allocate_string(nullptr, malloc_size);
+	char_t *valoc = allocate_string(Doc ,nullptr, malloc_size);
 	std::swprintf(valoc, malloc_size, L"%08X", Val);
 
-	node_t* node = Doc.allocate_node(rapidxml::node_element ,Name, valoc);
+	node_t* node = allocate_node(Doc ,Name, valoc);
 	Base->append_node(node);
 	return node;
 }
@@ -170,32 +182,32 @@ attribute_t *append_attribute(node_t* Base ,attribute_t* Attr)
 }
 attribute_t *append_attribute(document_t &Doc ,node_t* Base ,const char_t *Name ,const char_t *Str)
 {
-	attribute_t* attr = Doc.allocate_attribute(Name ,Str);
+	attribute_t* attr = allocate_attribute(Doc ,Name ,Str);
 	Base->append_attribute(attr);
 	return attr;
 }
 attribute_t *append_attribute(document_t &Doc ,node_t* Base ,const char_t *Name ,const int32_t &Val)
 {
 	std::wstring valueString = std::to_wstring(Val);
-	char_t *valoc = Doc.allocate_string(valueString.c_str(), valueString.length()+1);
-	attribute_t* attr = Doc.allocate_attribute(Name, valoc);
+	char_t *valoc = allocate_string(Doc ,valueString.c_str(), valueString.length()+1);
+	attribute_t* attr = allocate_attribute(Doc ,Name, valoc);
 	Base->append_attribute(attr);
 	return attr;
 }
 attribute_t *append_attribute(document_t &Doc ,node_t* Base ,const char_t *Name ,const double &Val)
 {
 	std::wstring valueString = std::to_wstring(Val);
-	char_t *valoc = Doc.allocate_string(valueString.c_str(), valueString.length()+1);
-	attribute_t* attr = Doc.allocate_attribute(Name, valoc);
+	char_t *valoc = allocate_string(Doc ,valueString.c_str(), valueString.length()+1);
+	attribute_t* attr = allocate_attribute(Doc ,Name, valoc);
 	Base->append_attribute(attr);
 	return attr;
 }
 attribute_t *append_attribute_hex(document_t &Doc ,node_t* Base ,const char_t *Name ,const uint32_t &Val)
 {
 	const size_t malloc_size = 8+1;
-	char_t *valoc = Doc.allocate_string(nullptr, malloc_size);
+	char_t *valoc = allocate_string(Doc ,nullptr, malloc_size);
 	std::swprintf(valoc, malloc_size, _T("%08X"), Val);
-	attribute_t* attr = Doc.allocate_attribute(Name, valoc);
+	attribute_t* attr = allocate_attribute(Doc ,Name, valoc);
 	Base->append_attribute(attr);
 	return attr;
 }
@@ -203,8 +215,8 @@ attribute_t *append_attribute_hex(document_t &Doc ,node_t* Base ,const char_t *N
 attribute_t *append_attribute_check(document_t &Doc ,node_t* Base ,const bool &Val)
 {
 	const size_t malloc_size = 14+1;
-	char_t *valoc = Doc.allocate_string(DisaEnaText[Val], malloc_size );
-	attribute_t* attr = Doc.allocate_attribute(CheckText, valoc);
+	char_t *valoc = allocate_string(Doc ,DisaEnaText[Val], malloc_size );
+	attribute_t* attr = allocate_attribute(Doc ,CheckText, valoc);
 	Base->append_attribute(attr);
 	return attr;
 }
@@ -296,7 +308,7 @@ node_t* next_sibling(const node_t* Node ,const char_t *name, std::size_t name_si
 	return Node->next_sibling(name ,name_size ,true);
 }
 // Node(名)はListの何番目にありますか？
-int32_t find_node_name_index(const node_t* Node , const char_t **List, int32_t &Index)
+int32_t node_name_index(const node_t* Node , const char_t **List, int32_t &Index)
 {
 	if(Node == nullptr)	return -1;
 
@@ -317,12 +329,15 @@ int32_t find_node_name_index(const node_t* Node , const char_t **List, int32_t &
 
 	return -1;	
 }
-/*
-int32_t namecmp(const node_t* Node, const char_t *Name)
+int32_t first_node_name_index(const node_t* Node ,const char_t *name ,const char_t **List, int32_t &Index)
 {
-	return Tstrcmp(Node->name(), Name);
-}*/
+	const node_t* node = first_node(Node ,name);
+	return node_name_index(node ,List,Index);
+}
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // Node(名)がNameと一致しているか？
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 int32_t comp_node_name(const node_t* Node, const char_t *Name)
 {
 	return rapidxml::internal::compare(Node->name(), Node->name_size(), Name, 0, false);
@@ -413,7 +428,7 @@ attribute_t* first_attribute_check(const node_t* Base ,bool &Val)
 	int32_t index;
 	attribute_t* attr = Base->first_attribute(CheckText);
 		
-	find_attribute_val_index(attr, DisaEnaText, index);
+	attribute_val_index(attr, DisaEnaText, index);
 
 	Val = (index != 0);
 
@@ -425,7 +440,7 @@ attribute_t* next_sibling(const attribute_t* Attr ,const char_t *name, std::size
 	return Attr->next_attribute(name ,name_size ,true);
 }
 // Attr(名)はListの何番目にありますか？
-int32_t find_attribute_val_index(const attribute_t* Attr, const char_t **List, int32_t &Index)
+int32_t attribute_val_index(const attribute_t* Attr, const char_t **List, int32_t &Index)
 {
 	if(Attr == nullptr)	return -1;
 
@@ -444,11 +459,20 @@ int32_t find_attribute_val_index(const attribute_t* Attr, const char_t **List, i
 
 	return -1;	
 }
+int32_t first_attribute_val_index(const node_t* Node ,const char_t *AttrName ,const char_t **List, int32_t &Index)
+{
+	const attribute_t* attr = first_attribute(	Node ,AttrName);
+
+	return attribute_val_index(attr ,List, Index);
+}
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // Attr(名)がNameと一致しているか？
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 int32_t comp_attribute_name(const attribute_t* Attr, const char_t *Name)
 {
 	return rapidxml::internal::compare(Attr->name(), Attr->name_size(), Name, 0, false);
 }
 
-};
+};	// namespace rapidxml
 

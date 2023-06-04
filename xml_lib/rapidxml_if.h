@@ -1,11 +1,11 @@
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-// rapidxml_support.h
+// rapidxml_if.h
 //
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
 
-#ifndef RAPIDXML_SUPPORT_H
-#define RAPIDXML_SUPPORT_H
+#ifndef RAPIDXML_IF_H
+#define RAPIDXML_IF_H
 
 
 #include <stdint.h>
@@ -44,6 +44,12 @@ int32_t save_document(document_t &Doc ,const TCHAR *Path);
 node_t* allocate_node(document_t &Doc ,const char_t *Name ,const char_t *Val=nullptr ,size_t NameSize=0 ,size_t ValSize=0);
 attribute_t* allocate_attribute(document_t &Doc ,const char_t *Name ,const char_t *Val ,size_t NameSize=0 ,size_t ValSize=0);
 char_t* allocate_string(document_t &Doc, const char_t *Str = nullptr, size_t StrSize = 0);
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+// –¼‘O‚ð‚Â‚¯‚é
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+void name(node_t *Node ,const char_t *Name);
+void name(attribute_t *Attr ,const char_t *Name);
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // ’lŽæ“¾
@@ -85,8 +91,8 @@ node_t* first_node(const node_t* Base ,const char_t *Name ,uint32_t &Val);
 node_t* first_node(const node_t* Base ,const char_t *Name ,double &Val);
 node_t* first_node_hex(const node_t* Base ,const char_t *Name ,uint32_t &Val);
 node_t* next_sibling(const node_t* Node ,const char_t *name = 0, std::size_t name_size = 0);
-int32_t find_node_name_index(const node_t* Node ,const char_t **List, int32_t &Index);
-//--int32_t namecmp(const node_t* Node, const char_t *Name);
+int32_t node_name_index(const node_t* Node ,const char_t **List, int32_t &Index);		// find_node_name_index
+int32_t first_node_name_index(const node_t* Node ,const char_t *name ,const char_t **List, int32_t &Index);
 int32_t comp_node_name(const node_t* Node, const char_t *Name);
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -102,10 +108,12 @@ attribute_t* first_attribute_hex(const node_t* Base ,const char_t *Name ,uint32_
 attribute_t* first_attribute(const node_t* Base, const char_t *Name, string_t &Str);
 attribute_t* first_attribute_check(const node_t* Base ,bool &Val);
 attribute_t* next_sibling(const attribute_t* Attr ,const char_t *name = 0, std::size_t name_size = 0);
-int32_t find_attribute_val_index(const attribute_t* Attr, const char_t **List, int32_t &Index);
+int32_t attribute_val_index(const attribute_t* Attr, const char_t **List, int32_t &Index);		// find_attribute_val_index
+int32_t first_attribute_val_index(const node_t* node, const char_t *AttrName ,const char_t **List, int32_t &Index);
+
 int32_t comp_attribute_name(const attribute_t* Attr, const char_t *Name);
 
 };
 
-#endif // #ifndef RAPIDXML_SUPPORT_H
+#endif // #ifndef RAPIDXML_IF_H
 
