@@ -170,7 +170,8 @@ int32_t WorkBase::saveWorkList(const std::vector<WorkBase*> &List, rapidxml::doc
 	for (int32_t i = 0; i<List.size(); i++){
 		List[i]->saveXmlNode(Doc ,node);
 		rapidxml::name(node, _T("work"));
-		rapidxml::append_attribute(Doc, node, _T("name"), WorkNames[i].c_str());
+		rapidxml::attribute_t *attr = rapidxml::allocate_attribute(Doc ,_T("name"), WorkNames[i].c_str());
+		rapidxml::insert_attribute(node ,rapidxml::first_attribute(node) ,attr);	// ノードの初めの方にアトリビュートを追加
 		rapidxml::append_node(ProcessXml, node);
 	}
 

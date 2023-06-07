@@ -217,7 +217,7 @@ int32_t GnrlCom::loadXmlNode(const rapidxml::node_t *Node)
 	if (Node == nullptr)	return ECRC_ng;
 	const rapidxml::node_t *node = Node;
 
-	rapidxml::first_attribute(node ,m_PortNoText	,m_PortNo);
+	rapidxml::first_attribute(node ,m_PortNoText	,m_ComNo);
 	rapidxml::first_attribute(node ,m_BaudRateText	,m_BaudRate);
 
 	rapidxml::first_attribute(node ,m_TimeoutText	,m_TimeOut);
@@ -236,7 +236,7 @@ int32_t GnrlCom::saveXmlNode(rapidxml::document_t &Doc ,rapidxml::node_t *&Node)
 
 	rapidxml::node_t *node = Doc.allocate_node(rapidxml::node_element);
 
-	rapidxml::append_attribute(Doc ,node ,m_PortNoText	,m_PortNo);
+	rapidxml::append_attribute(Doc ,node ,m_PortNoText	,m_ComNo);
 	rapidxml::append_attribute(Doc ,node ,m_BaudRateText,m_BaudRate);
 
 	rapidxml::append_attribute(Doc ,node ,m_TimeoutText	,m_TimeOut);
@@ -321,7 +321,7 @@ void GnrlCom::loadParameter(const TCHAR *IniFile, const TCHAR *Section)
 	GnrlComgetFinePath(file_name, MAX_PATH, IniFile);
 #endif
 
-	m_PortNo	= GetPrivateProfileInt(Section, m_PortNoText	, m_PortNo	, file_name);
+	m_ComNo	= GetPrivateProfileInt(Section, m_PortNoText	, m_ComNo	, file_name);
 	m_BaudRate	= GetPrivateProfileInt(Section,m_BaudRateText	, m_BaudRate, file_name);
 	m_TimeOut	= GetPrivateProfileInt(Section,m_TimeoutText	, m_TimeOut	, file_name);
 	m_StopBit	= (enum GnrlCom::EStopBit)GetPrivateProfileInt(Section, m_StopbitText, m_StopBit, file_name);
@@ -349,7 +349,7 @@ void GnrlCom::saveParameter(const TCHAR *IniFile, const TCHAR *Section)
 
 	// WritePrivateProfileInt(LPCTSTR sectionName, LPCTSTR KeyName, int Val, LPCTSTR FilePath)
 
-	WritePrivateProfileInt(Section, m_PortNoText	,m_PortNo,	file_name);
+	WritePrivateProfileInt(Section, m_PortNoText	,m_ComNo,	file_name);
 	WritePrivateProfileInt(Section, m_BaudRateText	,m_BaudRate,file_name);
 	WritePrivateProfileInt(Section, m_TimeoutText	,m_TimeOut,	file_name);
 	WritePrivateProfileInt(Section, m_StopbitText	,m_StopBit, file_name);
@@ -620,6 +620,14 @@ int GnrlCom::close()
 }
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+// 
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+void GnrlCom::setBad()
+{
+	m_State &=	~( ESTATEBIT_open | ESTATEBIT_baudrate | ESTATEBIT_timeout );
+}
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 //  読み込んだバイト数を戻す
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 int GnrlCom::read(unsigned char *Data, int Size) const
@@ -659,7 +667,7 @@ void GnrlCom::init()
 }
 void GnrlCom::preset()
 {
-	m_PortNo	= 1;
+	m_ComNo		= 1;
 	m_BaudRate	= 9600;					// 速度				
 	m_TimeOut	= 1000;					// タイムアウト		
 	m_StopBit	= ESTOPBIT_1;			// ストップビット	

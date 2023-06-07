@@ -72,6 +72,7 @@ node_t *append_node_hex(document_t &Doc ,node_t* Base ,const char_t *Name ,const
 // ‘®«‚É”’l‚ğ’Ç‰Á
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 attribute_t *append_attribute(node_t* Base ,attribute_t* Attr);
+attribute_t *insert_attribute(node_t* Base ,attribute_t* Insert ,attribute_t* Attr);
 attribute_t *append_attribute(document_t &Doc ,node_t* Base ,const char_t *Name ,const char_t *Str);
 attribute_t *append_attribute(document_t &Doc ,node_t* Base ,const char_t *Name ,const int32_t &Val);
 attribute_t *append_attribute(document_t &Doc ,node_t* Base ,const char_t *Name ,const double &Val);

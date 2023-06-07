@@ -107,7 +107,7 @@ public:
 	int close();
 	bool isLoad() const				{ return 	m_State & ESTATEBIT_load;		}	// 条件読み成功？	初期条件の場合はFALSEを返します。
 	bool isOpened() const			{ return	m_hFile != EC_FileOpenError;	}
-	void setBad()					{ m_State = ESTATEBIT_clear;				}
+	void setBad();
 	void setGood()					{ m_State = ESTATEBIT_good;					}
 	bool isBad() const				{ return	m_State != ESTATEBIT_good;		}
 	bool isGood() const				{ return	m_State == ESTATEBIT_good;		}
@@ -120,8 +120,8 @@ public:
 	int setBaudRate();
 
 	// メンバアクセス
-	int getPortNo() const		{ return m_PortNo; }
-	void putPortNo(int Portno)	{ m_PortNo = Portno; }
+	int getComNo() const		{ return m_ComNo; }
+	void putComNo(int Portno)	{ m_ComNo = Portno; }
 
 private:
 //--public:	//----
@@ -130,7 +130,7 @@ private:
 	int setTimeout();
 
 	HANDLE	m_hFile; 					// ファイルハンドル	
-	int		m_PortNo;					// ポート番号
+	int		m_ComNo;					// COM番号
 	int		m_BaudRate;					// 速度				
 	int		m_Bps;						// 速度	
 	enum EParity m_Parity;				// パリティ
@@ -151,7 +151,7 @@ private:
 	const static int EC_Write;
 	static void* const EC_FileOpenError;
 	const static int m_BaudRateList[EB_num];
-	int				 m_ComNo;
+//--	int				 m_ComNo;
 };
 
 #endif //GMRLCOM

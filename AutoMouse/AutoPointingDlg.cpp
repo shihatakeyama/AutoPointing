@@ -289,7 +289,7 @@ void CAutoPointingDlg::OnDestroy()
 
 	g_Operation = 0;
 
-//++	saveXmlIni();
+	saveXmlIni();
 
 	gMouseThread.endThread();
 	gOperationThread.endThread();
@@ -351,6 +351,7 @@ int32_t CAutoPointingDlg::loadXml(const TCHAR *Path)
 	int32_t val;
 	rapidxml::document_t doc;
 	rapidxml::string_t docbuf;
+	std::wstring errmsg;
 
 	// 排他
 	std::lock_guard<std::mutex> lock(gWorkMutex);
@@ -360,15 +361,21 @@ int32_t CAutoPointingDlg::loadXml(const TCHAR *Path)
 		if (ack < 0){ throw std::wstring(_T("load document")); return ERC_ng; }
 	}
 	catch (const std::wstring& e){
-		std::wstring  str(_T("データ読み込み失敗\n"));
-		str += e;
-		throw str;
+//		std::wstring  str(_T("データ読み込み失敗\n"));
+//		str += e;
+//		throw str;
+		errmsg = _T("データ読み込み失敗\n") + e;
 	}
 	catch (const rapidxml::parse_error &e){
-		std::wstring  str(_T("XML データ読み込み失敗\n"));
-		str += CString(e.what()) + '\n' + e.where<rapidxml::char_t>();
+//		std::wstring  str(_T("XML データ読み込み失敗\n"));
+//		str += CString(e.what()) + '\n' + e.where<rapidxml::char_t>();
+//		throw str;
+		errmsg = _T("XML データ読み込み失敗\n") + CString(e.what()) + '\n' + e.where<rapidxml::char_t>();
+	}
 
-		throw str;
+	if(!errmsg.empty()){
+		MessageBox(errmsg.c_str(), gApplicatonName.c_str(), MB_OK);
+		return ERC_ng;
 	}
 
 	// **** 各種パラメータ読み込み ****
@@ -884,7 +891,8 @@ void CAutoPointingDlg::openCom()
 
 	comno = GnrlComList::getGuiPortNo(m_ComPortCombo);
 	if(comno < 0) return;
-	gCom.putParameter(comno ,115200 ,400 ,GnrlCom::ESTOPBIT_1 ,GnrlCom::EPARITY_no);
+//	gCom.putParameter(comno ,115200 ,400 ,GnrlCom::ESTOPBIT_1 ,GnrlCom::EPARITY_no);
+	gCom.putComNo(comno);
 
 	gCom.openAndSetParam();
 
