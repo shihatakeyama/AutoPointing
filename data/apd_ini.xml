@@ -1,6 +1,6 @@
 <AutoPointing version="1.0" encoding="utf-8">
-	<soft_version>01234220</soft_version>
 	<title>DOAX</title>
+	<soft_version>01234220</soft_version>
 	<window denominator="100" vpos="0" hpos="0"/>
 	<target window_name="DOAX VenusVacation" foward_match="false" x="0" y="0"/>
 	<inside check="enable" />

@@ -230,7 +230,7 @@ int32_t GnrlCom::loadXmlNode(const rapidxml::node_t *Node)
 
 	return ECRC_ok;
 }
-int32_t GnrlCom::saveXmlNode(rapidxml::node_t *&Node ,rapidxml::document_t &Doc) const
+int32_t GnrlCom::saveXmlNode(rapidxml::document_t &Doc ,rapidxml::node_t *&Node) const
 {
 	if (Node == nullptr)	return ECRC_ng;
 

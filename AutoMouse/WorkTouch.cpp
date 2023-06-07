@@ -41,19 +41,23 @@ int32_t	WorkTouch::procOne()
 	return touchPointAndDelay(m_TouchPoint);
 }
 
-
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // 単数個/複数個 共通読み書き 各プロセスの内容をXMLオブジェクトへ
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-int32_t WorkTouch::loadXmlNode(const rapidxml::node_t* Child)
+int32_t WorkTouch::loadXmlNode(const rapidxml::node_t* Node)
 {
-	loadXmlLoop_n(Child);
-	loadTouchPoint(Child ,m_TouchPoint);
+	loadTouchPoint(Node, m_TouchPoint);
+	loadXmlLoop_n(Node);
 
 	return ERC_ok;
 }
-int32_t WorkTouch::saveXmlNode(rapidxml::node_t *Parent ,rapidxml::document_t &Doc) const
+int32_t WorkTouch::saveXmlNode(rapidxml::document_t &Doc ,rapidxml::node_t *&Node) const
 {
+	Node = rapidxml::allocate_node(Doc);
+
+	saveTouchPoint(Doc ,Node, m_TouchPoint);
+	saveXmlLoop_n(Doc, Node);
+
 	return ERC_ok;
 }
 

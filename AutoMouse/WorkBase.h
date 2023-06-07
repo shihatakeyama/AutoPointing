@@ -46,12 +46,12 @@ public:
 	static bool isLife();	// true:通常運転中
 
 	// **** 単数個/複数個 共通読み書き 各プロセスの内容をXMLオブジェクトへ ****
-	virtual int32_t loadXmlNode(const rapidxml::node_t* Child);
-	virtual int32_t saveXmlNode(rapidxml::node_t *Parent ,rapidxml::document_t &Doc) const;
+	virtual int32_t loadXmlNode(const rapidxml::node_t* Node);
+	virtual int32_t saveXmlNode(rapidxml::document_t &Doc ,rapidxml::node_t *&Node) const;
 
 	// XMLからプロセスリストを読み込み
 	static int32_t loadWorkList(std::vector<WorkBase*>	&List, rapidxml::node_t* ProcessXml, std::vector<std::wstring> &WorkNames);
-	static int32_t saveWorkList(const std::vector<WorkBase*> &List, rapidxml::document_t &Doc, rapidxml::node_t* ProcessXml);
+	static int32_t saveWorkList(const std::vector<WorkBase*> &List, rapidxml::document_t &Doc, rapidxml::node_t* ProcessXml, const std::vector<std::wstring> &WorkNames);
 
 	// メモリ解放
 	static int32_t clearProcList(std::vector<WorkBase*> &List);
@@ -59,10 +59,12 @@ public:
 
 	// 単体のタッチ位置と遅延の読み書き
 	static int32_t loadTouchPoint(const rapidxml::node_t* Node ,TouchPoint *Point);
-	static int32_t saveTouchPoint(rapidxml::node_t *Parent ,rapidxml::document_t &Doc ,const TouchPoint *Point);
+	static int32_t saveTouchPoint(rapidxml::document_t &Doc ,rapidxml::node_t *Node, const TouchPoint *Point);
 
 	// 回数読み
 	int32_t loadXmlLoop_n(const rapidxml::node_t* Node);
+	int32_t saveXmlLoop_n(rapidxml::document_t &Doc ,rapidxml::node_t* Node) const;
+
 
 protected:
 	int32_t					m_LoopNum;

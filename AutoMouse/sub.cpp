@@ -35,26 +35,25 @@ std::mutex gBPMutex;	// brief period
 // スリープ
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 #define TIC		200
-static int32_t sscdn;
 void APD_Sleep(int32_t msc)
 {
 	int32_t slp;
 
-	sscdn = msc + random(gBureTime);
+	gDelayRemine = msc + random(gBureTime);
 
 	while (g_Operation != 0){
 		std::lock_guard<std::mutex> lock(gBPMutex);
 
-		if (sscdn > TIC){
+		if (gDelayRemine > TIC){
 			slp = TIC;
-			sscdn -= TIC;
+			gDelayRemine -= TIC;
 		}
 		else{
-			slp		= sscdn;
-			sscdn = 0;
+			slp = gDelayRemine;
+			gDelayRemine = 0;
 		}
 		Sleep(slp);
-		if (sscdn == 0){
+		if (gDelayRemine == 0){
 			break;
 		}
 	}
@@ -67,8 +66,8 @@ void APD_SleepAppend(int32_t msc)
 {
 	std::lock_guard<std::mutex> lock(gBPMutex);
 
-	if (sscdn < msc){
-		sscdn = msc;
+	if (gDelayRemine < msc){
+		gDelayRemine = msc;
 	}
 }
 
@@ -105,8 +104,10 @@ int32_t AP_pointingDesiredWindow(const CPoint &Point)
 			new_y = randScatter(Point.y + rec.top  ,gBurePoint.y);
 
 			// 領域内チェック
-			inside(new_x ,rec.left ,rec.right);
-			inside(new_y ,rec.top  ,rec.bottom);
+			if (gInsideCheck){
+				inside(new_x, rec.left, rec.right);
+				inside(new_y, rec.top, rec.bottom);
+			}
 
 			ack = AM_click(new_x ,new_y);
 		}

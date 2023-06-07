@@ -19,7 +19,7 @@
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // クラス名のリスト
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-const TCHAR		*WorkBase::m_ProcNames[] = { _T("touch") ,_T("touchs") ,_T("wait") ,nullptr	};
+const TCHAR		*WorkBase::m_ProcNames[] = { _T("touch"), _T("touchs"), _T("wait") ,nullptr };
 
 
 WorkBase::WorkBase(enum E_ProcType ProcType)
@@ -113,11 +113,11 @@ bool WorkBase::isLife()
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // **** 単数個/複数個 共通読み書き 各プロセスの内容をXMLオブジェクトへ ****
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-int32_t WorkBase::loadXmlNode(const rapidxml::node_t* Child)
+int32_t WorkBase::loadXmlNode(const rapidxml::node_t* Node)
 {
 	return ERC_ng;
 }
-int32_t WorkBase::saveXmlNode(rapidxml::node_t *ProcList ,rapidxml::document_t &Doc) const
+int32_t WorkBase::saveXmlNode(rapidxml::document_t &Doc ,rapidxml::node_t *&ProcList) const
 {
 	return ERC_ng;
 }
@@ -160,8 +160,20 @@ int32_t WorkBase::loadWorkList(std::vector<WorkBase*>	&List, rapidxml::node_t* P
 
 	return ERC_ok;
 }
-int32_t WorkBase::saveWorkList(const std::vector<WorkBase*> &List ,rapidxml::document_t &Doc ,rapidxml::node_t* ProcessXml)
+int32_t WorkBase::saveWorkList(const std::vector<WorkBase*> &List, rapidxml::document_t &Doc, rapidxml::node_t* ProcessXml,const std::vector<std::wstring> &WorkNames)
 {
+	ASSERT(List.size() == WorkNames.size());
+
+	int32_t ack;
+	rapidxml::node_t *node;
+
+	for (int32_t i = 0; i<List.size(); i++){
+		List[i]->saveXmlNode(Doc ,node);
+		rapidxml::name(node, _T("work"));
+		rapidxml::append_attribute(Doc, node, _T("name"), WorkNames[i].c_str());
+		rapidxml::append_node(ProcessXml, node);
+	}
+
 	return ERC_ok;
 }
 
@@ -181,7 +193,6 @@ int32_t WorkBase::clearProcList(std::vector<WorkBase*> &List)
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 int32_t WorkBase::loadTouchPoint(const rapidxml::node_t* Node ,TouchPoint *Point)
 {
-//	int32_t ack;
 	rapidxml::  attribute_t	*attr;
 
 	attr = rapidxml::first_attribute(Node ,_T("x") ,Point->x);
@@ -193,13 +204,17 @@ int32_t WorkBase::loadTouchPoint(const rapidxml::node_t* Node ,TouchPoint *Point
 
 	return ERC_ok;
 }
-int32_t WorkBase::saveTouchPoint(rapidxml::node_t *Parent ,rapidxml::document_t &Doc ,const TouchPoint *Point)
+int32_t WorkBase::saveTouchPoint(rapidxml::document_t &Doc ,rapidxml::node_t *Node, const TouchPoint *Point)
 {
+	rapidxml::append_attribute(Doc, Node, _T("x"), Point->x);
+	rapidxml::append_attribute(Doc, Node, _T("y"), Point->y);
+	rapidxml::append_attribute(Doc, Node, _T("delay"), Point->delay);
+
 	return ERC_ok;
 }
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-// 回数読み
+// ループ回数
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 int32_t WorkBase::loadXmlLoop_n(const rapidxml::node_t* Node)
 {
@@ -212,4 +227,14 @@ int32_t WorkBase::loadXmlLoop_n(const rapidxml::node_t* Node)
 	}
 
 	return ERC_ok;
+}
+int32_t WorkBase::saveXmlLoop_n(rapidxml::document_t &Doc ,rapidxml::node_t* Node) const
+{
+	// ループ1回は出力を省略する。
+	if (m_LoopNum != 1){
+		rapidxml::append_attribute(Doc, Node, _T("loop_n"), m_LoopNum);
+	}
+
+	return ERC_ok;
+
 }

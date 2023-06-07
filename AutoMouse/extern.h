@@ -24,11 +24,11 @@ int32_t clearParam();
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 int randScatter(int CenterVal ,int Width);
 
-int32_t setPointVector(int32_t OperationNo, int32_t Offset_x, int32_t Offset_y);
+//int32_t setPointVector(int32_t OperationNo, int32_t Offset_x, int32_t Offset_y);
 
 // **** ShowMousePoint.cpp ****
-int32_t callMousePointThread();
-uint32_t MousePointThread(void *Arg);
+//int32_t callMousePointThread();
+//uint32_t MousePointThread(void *Arg);
 //DWORD WINAPI MousePointThread(LPVOID Arg);
 
 // **** ShowMousePoint.cpp ****
@@ -41,7 +41,7 @@ int32_t APD_sendCommand(Uint8 Comand1 ,Uint8 Comand2 ,const Uint8 *Data ,Uint8 L
 
 //extern int32_t g_Life;
 extern int32_t	g_Operation;
-extern int32_t	gAddSleep;
+extern int32_t	gActivePauseTime;
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // デジタイザコマンド

@@ -17,6 +17,7 @@
 #include "GnrlCom.h"
 #include "WorkBase.h"
 
+#if 0
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // XML ファイル読み込み
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -74,7 +75,6 @@ int32_t initParam()
 	}
 
 	 // ウインドウ表示初期位置
-	gEWindowPosBit = EWP_none;
 	node = rapidxml::first_node(root, _T("window"));
 	if (node){
 		const TCHAR *vname[] = {_T("top")	,_T("center") ,_T("bottom")};
@@ -145,6 +145,7 @@ int32_t clearParam()
 	return ERC_ok;
 }
 
+#endif
 
 
 

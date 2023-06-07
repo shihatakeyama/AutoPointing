@@ -41,7 +41,7 @@ int32_t save_document(document_t &Doc ,const TCHAR *Path);
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // アロケート
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-node_t* allocate_node(document_t &Doc ,const char_t *Name ,const char_t *Val=nullptr ,size_t NameSize=0 ,size_t ValSize=0);
+node_t* allocate_node(document_t &Doc, const char_t *Name = nullptr, const char_t *Val = nullptr, size_t NameSize = 0, size_t ValSize = 0);
 attribute_t* allocate_attribute(document_t &Doc ,const char_t *Name ,const char_t *Val ,size_t NameSize=0 ,size_t ValSize=0);
 char_t* allocate_string(document_t &Doc, const char_t *Str = nullptr, size_t StrSize = 0);
 
