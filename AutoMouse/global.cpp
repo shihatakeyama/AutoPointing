@@ -28,13 +28,15 @@ GnrlThread	gMouseThread;
 GnrlThread	gOperationThread;
 GnrlThread	gRecvThread;
 
+int32_t	 gDelayRemine = 0;
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // シリアル通信
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 GnrlCom		gCom;
 
 int32_t		g_Operation = 0;		// 稼働状態
-int32_t		gAddSleep = 0;
+int32_t		gActivePauseTime = 5000;
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -44,7 +46,7 @@ std::vector<AM_Point>		gPointVector;		/// ターゲットウインドウ座標基準
 
 std::wstring				gTitle;
 std::wstring				gTargetWindowName;
-enum E_WindowPosBit			gEWindowPosBit=EWP_none;		// ウインドウ位置
+bool						gInsideCheck = true;			// ポイント位置がウインドウ枠内に収まっているかチェック
 int32_t						gWindowDenominator=100;
 CPoint						gWindowPos;
 CPoint						gBasePoint;		// Pointing オフセット

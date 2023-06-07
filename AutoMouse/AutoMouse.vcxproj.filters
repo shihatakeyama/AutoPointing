@@ -107,9 +107,6 @@
     <ClCompile Include="GnrlString.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="SetParam.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="global.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>

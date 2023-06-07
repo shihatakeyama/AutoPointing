@@ -41,7 +41,7 @@ int32_t save_document(document_t &Doc ,const TCHAR *Path);
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // アロケート
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-node_t* allocate_node(document_t &Doc ,const char_t *Name ,const char_t *Val=nullptr ,size_t NameSize=0 ,size_t ValSize=0);
+node_t* allocate_node(document_t &Doc, const char_t *Name = nullptr, const char_t *Val = nullptr, size_t NameSize = 0, size_t ValSize = 0);
 attribute_t* allocate_attribute(document_t &Doc ,const char_t *Name ,const char_t *Val ,size_t NameSize=0 ,size_t ValSize=0);
 char_t* allocate_string(document_t &Doc, const char_t *Str = nullptr, size_t StrSize = 0);
 
@@ -72,6 +72,7 @@ node_t *append_node_hex(document_t &Doc ,node_t* Base ,const char_t *Name ,const
 // 属性に数値を追加
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 attribute_t *append_attribute(node_t* Base ,attribute_t* Attr);
+attribute_t *insert_attribute(node_t* Base ,attribute_t* Insert ,attribute_t* Attr);
 attribute_t *append_attribute(document_t &Doc ,node_t* Base ,const char_t *Name ,const char_t *Str);
 attribute_t *append_attribute(document_t &Doc ,node_t* Base ,const char_t *Name ,const int32_t &Val);
 attribute_t *append_attribute(document_t &Doc ,node_t* Base ,const char_t *Name ,const double &Val);

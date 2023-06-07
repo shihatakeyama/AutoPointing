@@ -18,11 +18,18 @@ public:
 	enum { IDD = IDD_AUTOMOUSE_DIALOG };
 
 //	void OnUpdatedata();
-	void OnMousePoint(CString Strm ,CString Strw);
+	void sendMousePoint(const CString &Strm ,const CString &Strw);
 
 	enum E_Timer{
-		ET_1s = 1
+		ET_100ms = 1
 	};
+
+	int32_t loadXmlIni();
+	int32_t loadXmlGui();
+	int32_t loadXml(const TCHAR *Path);
+	int32_t saveXmlIni();
+	int32_t saveXmlGui();
+	int32_t saveXml(const TCHAR *Path);
 
 protected:
 
@@ -49,6 +56,7 @@ public:
 private:
 	CString m_Pointm;	// モニタ座標
 	CString m_Pointw;	// ウインドウ座標
+	CString m_Delay;
 	CString m_StrEndTime;
 	CBrush m_CbrCom[3]; 
 	time_t	m_EndTime;
@@ -65,7 +73,7 @@ public:
 //--	afx_msg void OnBnClickedButton2();
 	// Com番号選択
 	afx_msg void OnBnClickedButtonComserch();
-	CComboBox m_ComSel;
+	CComboBox m_ComPortCombo;
 	afx_msg void OnBnClickedButtonComConnect();
 
 	void openCom();

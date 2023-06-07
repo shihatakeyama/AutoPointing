@@ -21,24 +21,7 @@ WorkTouchs::~WorkTouchs()
 {
 	clearTouchPoints();
 }
-#if 0
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-// 信号処理  各処理共通呼び出し処理
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-int32_t WorkTouchs::proc()
-{
-	int32_t ack=ERC_ok;
-	int32_t i;
 
-	for(i=0;m_LoopNum==0 ? true : i<m_LoopNum;i++){
-		if (!isLife())		return ERC_ok;
-		ack = procOne();
-		if (ack < ERC_ok)	return ack;
-	}
-
-	return ack;
-}
-#endif
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // 1週するのみ
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -73,23 +56,20 @@ int32_t	WorkTouchs::procOne()
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // 単数個/複数個 共通読み書き 各プロセスの内容をXMLオブジェクトへ
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-int32_t WorkTouchs::loadXmlNode(const rapidxml::node_t* Child)
+int32_t WorkTouchs::loadXmlNode(const rapidxml::node_t* Node)
 {
 	int32_t ack;
 	int32_t val;
 
-//	rapidxml::attribute_t *attr = rapidxml::first_attribute(Child ,_T("type"));
-	ack = rapidxml::first_attribute_val_index(Child ,_T("type") ,m_ModeNames ,val);
+	ack = rapidxml::first_attribute_val_index(Node, _T("type"), m_ModeNames, val);
 	if(ack < ERC_ok){
 	}else{
 		m_Mode	= static_cast<E_WorkTouchsMode>(val);
 	}
 
-	loadXmlLoop_n(Child);
-
 #if 1
 	// プロセスの数読み込み
-	const rapidxml::node_t* itr = rapidxml::first_node(Child);
+	const rapidxml::node_t* itr = rapidxml::first_node(Node);
 	while(itr){
 		int32_t idx;
 		WorkBase *wb;
@@ -104,11 +84,27 @@ int32_t WorkTouchs::loadXmlNode(const rapidxml::node_t* Child)
 		itr = rapidxml::next_sibling(itr);
 	}
 #endif
+	loadXmlLoop_n(Node);
 
 	return ERC_ok;
 }
-int32_t WorkTouchs::saveXmlNode(rapidxml::node_t *Parent ,rapidxml::document_t &Doc) const
+int32_t WorkTouchs::saveXmlNode(rapidxml::document_t &Doc ,rapidxml::node_t *&Node) const
 {
+	int32_t ack;
+
+	Node = rapidxml::allocate_node(Doc);
+	rapidxml::append_attribute(Doc, Node, _T("type"), m_ModeNames[m_Mode]);
+
+	for (int32_t i = 0; i<m_TouchPoints.size(); i++){
+		const WorkBase *wb = m_TouchPoints[i];
+		rapidxml::node_t *child;	//  = rapidxml::append_node(Doc, Node, wb->getProcName());
+		wb->saveXmlNode(Doc, child);
+		rapidxml::name(child, wb->getProcName());
+		rapidxml::append_node(Node, child);
+	}
+
+	saveXmlLoop_n(Doc, Node);
+
 	return ERC_ok;
 }
 

@@ -72,7 +72,7 @@ namespace GnrlComList{
 	}
 	int setGuiComList(CComboBox &ComList ,const GnrlCom &Com)
 	{
-		return setGuiComList(ComList ,Com.getPortNo());
+		return setGuiComList(ComList ,Com.getComNo());
 	}
 
 	// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -80,7 +80,7 @@ namespace GnrlComList{
 	// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	int getGuiPortNo(const CComboBox &ComList, GnrlCom &ComNo)
 	{
-		ComNo.putPortNo(GnrlComList::getGuiPortNo(ComList));
+		ComNo.putComNo(GnrlComList::getGuiPortNo(ComList));
 		return 0;
 	}
 	int getGuiPortNo(const CComboBox &ComList)

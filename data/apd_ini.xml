@@ -17,30 +17,39 @@
 				<touch x="1200" y="538" delay="2500" />
 				<touch x="1220" y="669" delay="2500" />
 			</touchs>
-			<touch x="1019" y="728" delay="500" />
+			<touch x="1019" y="728" delay="1000" />
 			<touch x="602"  y="503" delay="500" />
 			<touch x="745"  y="619" delay="6000" />
 			<touch x="922"  y="731" delay="1000" loop_n="8"/>
 			<touch x="646"  y="747" delay="2500" loop_n="2"/>
-			<touch x="1238" y="82"  delay="6000" />
+			<touch x="1238" y="82"  delay="2000" loop_n="10"/>
 		</work>
 		<work name="決勝フェス" loop_n="0">
 			<touch x="1220" y="393" delay="2500" />
-			<touch x="1019" y="728" delay="500" />
+			<touch x="1019" y="728" delay="1000" />
 			<touch x="602"  y="503" delay="500" />
 			<touch x="745"  y="619" delay="6000" />
 			<touch x="922"  y="731" delay="1000" loop_n="8"/>
 			<touch x="646"  y="747" delay="2500" loop_n="2"/>
-			<touch x="1238" y="82"  delay="6000" />
+			<touch x="1238" y="82"  delay="2000" loop_n="10"/>
 		</work>
 		<work name="準決勝フェス" loop_n="0">
 			<touch x="1220" y="466" delay="2500" />
-			<touch x="1019" y="728" delay="500" />
+			<touch x="1019" y="728" delay="1000" />
 			<touch x="602"  y="503" delay="500" />
 			<touch x="745"  y="619" delay="6000" />
 			<touch x="922"  y="731" delay="1000" loop_n="8"/>
 			<touch x="646"  y="747" delay="2500" loop_n="2"/>
-			<touch x="1238" y="82"  delay="6000" />
+			<touch x="1238" y="82"  delay="2000" loop_n="10"/>
+		</work>
+		<work name="5フェス" loop_n="0">
+			<touch x="1239" y="684" delay="2500" />
+			<touch x="1019" y="728" delay="1000" />
+			<touch x="602"  y="503" delay="500" />
+			<touch x="745"  y="619" delay="6000" />
+			<touch x="922"  y="731" delay="1000" loop_n="8"/>
+			<touch x="646"  y="747" delay="2500" loop_n="2"/>
+			<touch x="1238" y="82"  delay="2000" loop_n="10"/>
 		</work>
 		<work name="おまけ" loop_n="2">
 			<touchs type="each" loop_n="8">

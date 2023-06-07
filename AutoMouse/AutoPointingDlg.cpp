@@ -4,11 +4,9 @@
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
 #include "stdafx.h"
-#include "AutoPointing.h"
-#include "AutoPointingDlg.h"
+
 #include "afxdialogex.h"
 #include "vector"
-
 #include "Windows.h"
 
 #include "GnrlNumerical.h"
@@ -22,7 +20,13 @@
 #include "extern.h"
 #include "global.h"
 #include "sub.h"
+#include "GnrlDefine.h"
+#include "GnrlFilepath.h"
+#include "GnrlCom.h"
+#include "WorkBase.h"
 
+#include "AutoPointing.h"
+#include "AutoPointingDlg.h"
 
 void APD_SleepAppend(int32_t msc);
 
@@ -109,6 +113,7 @@ CAutoPointingDlg::CAutoPointingDlg(CWnd* pParent /*=NULL*/)
 	, m_StrEndTime(_T(""))
 	, m_EndTime((time_t)-1)
 	, m_TargetWindowName(_T(""))
+	, m_Delay(_T(""))
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -121,7 +126,7 @@ void CAutoPointingDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_BUTTON_START, m_Start);
 	DDX_Control(pDX, IDC_BUTTON_STOP, m_Stop);
 	//  DDX_Control(pDX, IDC_COMBO_COMNO, m_ComNoCombo);
-	DDX_Control(pDX, IDC_COMBO_COMSEL, m_ComSel);
+	DDX_Control(pDX, IDC_COMBO_COMSEL, m_ComPortCombo);
 	DDX_Control(pDX, IDC_BUTTON_COM_CONNECT, mButtonConnect);
 	DDX_Text(pDX, IDC_STATIC_END_TIME, m_StrEndTime);
 	DDX_Control(pDX, IDC_COMBO_OPERATION, m_OperationSel);
@@ -129,6 +134,7 @@ void CAutoPointingDlg::DoDataExchange(CDataExchange* pDX)
 	DDV_MaxChars(pDX, m_TargetWindowName, 256);
 	DDX_Control(pDX, IDC_BUTTON_NOWLONG, m_NowLong);
 	DDX_Control(pDX, IDC_BUTTON_NOWSHORT, m_NotShort);
+	DDX_Text(pDX, IDC_STATIC_DELAY, m_Delay);
 }
 
 BEGIN_MESSAGE_MAP(CAutoPointingDlg, CDialogEx)
@@ -176,6 +182,12 @@ BOOL CAutoPointingDlg::OnInitDialog()
 	if (pSysMenu != NULL)
 	{
 		BOOL bNameValid;
+		// Load/Save
+		pSysMenu->InsertMenu(1, MF_SEPARATOR);
+		pSysMenu->InsertMenu(1, MF_STRING, IDC_LOAD_XML, _T("LOAD"));
+		pSysMenu->InsertMenu(1, MF_STRING, IDC_SAVE_XML, _T("SAVE"));
+
+		// バージョン情報
 		CString strAboutMenu;
 		bNameValid = strAboutMenu.LoadString(IDS_ABOUTBOX);
 		ASSERT(bNameValid);
@@ -197,9 +209,11 @@ BOOL CAutoPointingDlg::OnInitDialog()
 	// TODO: 初期化をここに追加します。
 	pAutoPointingDlg = this;
 
+	loadXmlIni();
+
 	// COM サーチ
 	OnBnClickedButtonComserch();
-
+#if 0
 	try{
 		initParam();
 	}
@@ -208,6 +222,7 @@ BOOL CAutoPointingDlg::OnInitDialog()
 		MessageBox(e.c_str(), gApplicatonName.c_str(), MB_OK | MB_ICONSTOP);		// MB_ICONERROR ,
 		return false;
 	}
+#endif
 
 	{ // 初期ウインドウ位置  ※Dialogの｢プロパティ｣>｢Center｣で値をTRUEにしておかないと中央に戻されてしまう。
 
@@ -240,7 +255,7 @@ BOOL CAutoPointingDlg::OnInitDialog()
 
 
 	// **** 各種スレッド起動 ****
-	gMouseThread.beginThread(MousePointThread ,NULL ,FALSE);
+//--	gMouseThread.beginThread(MousePointThread ,NULL ,FALSE);
 
 	gOperationThread.beginThread(OperationThread ,NULL ,FALSE);
 
@@ -249,19 +264,6 @@ BOOL CAutoPointingDlg::OnInitDialog()
 
 	m_Stop.EnableWindow(FALSE);
 
-	// **** ワーク ****
-#if 0
-//	m_OperationSel.AddString(_T("通常フェス"),0);
-	m_OperationSel.InsertString(-1,_T("通常フェス"));
-	m_OperationSel.InsertString(-1,_T("決勝フェス"));
-	m_OperationSel.InsertString(-1,_T("準決勝フェス"));
-	m_OperationSel.InsertString(-1,_T("10連ガチャ"));
-#else
-	for (const auto &e : gWorkNames){
-		m_OperationSel.InsertString(-1, e.c_str());
-	}
-#endif
-	m_OperationSel.SetCurSel(gWorkIndex);
 
 	{ // now ボタン
 		const std::size_t size = 16;
@@ -276,7 +278,7 @@ BOOL CAutoPointingDlg::OnInitDialog()
 
 	setEndTime(gNowTime[0]);
 
-	SetTimer(ET_1s,1000,0);
+	SetTimer(ET_100ms, 100, 0);
 
 
 	return TRUE;  // フォーカスをコントロールに設定した場合を除き、TRUE を返します。
@@ -287,6 +289,8 @@ void CAutoPointingDlg::OnDestroy()
 
 	g_Operation = 0;
 
+	saveXmlIni();
+
 	gMouseThread.endThread();
 	gOperationThread.endThread();
 	gRecvThread.endThread();
@@ -295,38 +299,319 @@ void CAutoPointingDlg::OnDestroy()
 	gOperationThread.isEndThread(1000);
 	gRecvThread.isEndThread(1000);
 
-	KillTimer(ET_1s);
+	KillTimer(ET_100ms);
 
 	GnrlComList::clearComList();
 
-	clearParam();
+//--	clearParam();
+
+	WorkBase::clearProcList(gWorks);
+	gWorkNames.clear();
+
 //	g_Life = 0;
 }
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+// XML save/load
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+int32_t CAutoPointingDlg::loadXmlIni()
+{
+	int32_t ack;
+	TCHAR InitFilePath[MAX_PATH];
+
+	ack = GnrlFilepath::getModuleAttachmentFilePath(InitFilePath, MAX_PATH, _T("apd_ini.xml"));
+	if (ack <= 0)	throw std::wstring(_T("apd_ini.xml がありません"));
+
+	return loadXml(InitFilePath);
+}
+int32_t CAutoPointingDlg::loadXmlGui()
+{
+	CFileDialog dlgFile(TRUE);
+	OPENFILENAME &ofn = dlgFile.GetOFN();
+	ofn.lpstrTitle = _T("パラメータを開く");
+	ofn.lpstrFilter = _T("All Files\0*.*\0Process Files\0*.prc\0Log Files\0*.log\0");
+	ofn.Flags |= OFN_SHOWHELP;
+
+	if (dlgFile.DoModal() == IDOK){
+		try{
+			loadXml(dlgFile.GetPathName());
+//			setGui();
+		}
+		catch (std::exception e){
+			MessageBox(CString(e.what()));
+			return ERC_ng;
+		}
+	}
+
+	return ERC_ok;
+}
+int32_t CAutoPointingDlg::loadXml(const TCHAR *Path)
+{
+	int32_t ack;
+	int32_t val;
+	rapidxml::document_t doc;
+	rapidxml::string_t docbuf;
+	std::wstring errmsg;
+
+	// 排他
+	std::lock_guard<std::mutex> lock(gWorkMutex);
+
+	try{
+		ack = rapidxml::load_document(doc, Path, docbuf);
+		if (ack < 0){ throw std::wstring(_T("load document")); return ERC_ng; }
+	}
+	catch (const std::wstring& e){
+//		std::wstring  str(_T("データ読み込み失敗\n"));
+//		str += e;
+//		throw str;
+		errmsg = _T("データ読み込み失敗\n") + e;
+	}
+	catch (const rapidxml::parse_error &e){
+//		std::wstring  str(_T("XML データ読み込み失敗\n"));
+//		str += CString(e.what()) + '\n' + e.where<rapidxml::char_t>();
+//		throw str;
+		errmsg = _T("XML データ読み込み失敗\n") + CString(e.what()) + '\n' + e.where<rapidxml::char_t>();
+	}
+
+	if(!errmsg.empty()){
+		MessageBox(errmsg.c_str(), gApplicatonName.c_str(), MB_OK);
+		return ERC_ng;
+	}
+
+	// **** 各種パラメータ読み込み ****
+
+	rapidxml::node_t *root = doc.first_node();
+	rapidxml::node_t *node;
+	if (rapidxml::comp_node_name(root, gApplicatonName.c_str()) != 0){
+		throw std::wstring(_T("XML の書式が違います"));
+	}
+
+	rapidxml::first_node(root, _T("title"), gTitle);
+
+	node = rapidxml::first_node(root, _T("target"));
+	if (node){
+		rapidxml::first_attribute(node, _T("window_name"), gTargetWindowName);
+		rapidxml::first_attribute(node, _T("x"), val);	gBasePoint.x = val;
+		rapidxml::first_attribute(node, _T("y"), val);	gBasePoint.y = val;
+	}
+
+	// ウインドウ内収まりチェック
+	node = rapidxml::first_node(root, _T("inside"));
+	if (node){
+		rapidxml::first_attribute_check(node, gInsideCheck);
+	}
+
+	// ウインドウ表示初期位置
+	node = rapidxml::first_node(root, _T("window"));
+	if (node){
+		rapidxml::attribute_t *attr;
+
+		attr = rapidxml::first_attribute(node, _T("denominator"), gWindowDenominator);
+
+		attr = rapidxml::first_attribute(node, _T("vpos"), val);
+		if (attr){
+			gWindowPos.x = val;
+		}
+
+		attr = rapidxml::first_attribute(node, _T("hpos"), val);
+		if (attr){
+			gWindowPos.y = val;
+		}
+	}
+
+	// COM
+	node = rapidxml::first_node(root, _T("com"));
+	if (node){
+		gCom.loadXmlNode(node);
+	}
+
+	// ブレ
+	node = rapidxml::first_node(root, _T("blur"));
+	if (node == nullptr){
+		gBurePoint = CPoint(4, 4);
+		gBureTime = 4;
+	}
+	else{
+		rapidxml::first_attribute(node, _T("x"), val);	gBurePoint.x = val;
+		rapidxml::first_attribute(node, _T("y"), val);	gBurePoint.y = val;
+		rapidxml::first_attribute(node, _T("time"), val);	gBureTime = val;
+	}
+
+	// アクティブ時のポーズ
+	node = rapidxml::first_node(root, _T("active"));
+	if (node){
+		rapidxml::first_attribute(node, _T("pause_time"), gActivePauseTime);
+	}
+
+	// 終了時刻
+	node = rapidxml::first_node(root, _T("end_time"));
+	if (node == nullptr){
+	}
+	else{
+		rapidxml::first_attribute(node, _T("time0"), gNowTime[0]);
+		rapidxml::first_attribute(node, _T("time1"), gNowTime[1]);
+		rapidxml::first_attribute(node, _T("time2"), gNowTime[2]);
+		rapidxml::first_attribute(node, _T("spin"),	gSpinTime);
+	}
+
+	// ワーク読み込み
+	rapidxml::node_t *work = rapidxml::first_node(root, _T("works"));
+	if (work == nullptr){
+		throw std::wstring(_T("XML にworks タグがありません。"));
+	}
+
+	ack = WorkBase::loadWorkList(gWorks, work, gWorkNames);
+
+	rapidxml::first_attribute(work, _T("index"), gWorkIndex);
+	if (gWorkIndex >= static_cast<int32_t>(gWorks.size())){
+		gWorkIndex = 0;
+	}
+
+	// **** ワーク ****
+	for (const auto &e : gWorkNames){
+		m_OperationSel.InsertString(-1, e.c_str());
+	}
+
+	m_OperationSel.SetCurSel(gWorkIndex);
+
+
+	return ERC_ok;
+}
+int32_t CAutoPointingDlg::saveXmlIni()
+{
+	int32_t ack;
+	TCHAR InitFilePath[MAX_PATH];
+
+	ack = GnrlFilepath::getModuleAttachmentFilePath(InitFilePath, MAX_PATH, _T("apd_ini.xml"));
+	if (ack <= 0)	throw std::wstring(_T("apd_ini.xml がありません"));
+
+	return saveXml(InitFilePath);
+}
+int32_t CAutoPointingDlg::saveXmlGui()
+{
+	CFileDialog dlgFile(FALSE);
+	OPENFILENAME &ofn = dlgFile.GetOFN();
+	ofn.lpstrTitle = _T("パラメータを保存");
+	ofn.lpstrFilter = _T("All Files\0*.*\0Process Files\0*.prc\0Log Files\0*.log\0");
+	ofn.Flags |= OFN_SHOWHELP;
+
+	if (dlgFile.DoModal() == IDOK){
+		try{
+			//			getGui();
+			CString filepath = dlgFile.GetPathName();
+			saveXml(filepath);
+		}
+		catch (std::exception e){
+			MessageBox(CString(e.what()));
+			return ERC_ng;
+		}
+	}
+	return ERC_ok;
+}
+int32_t CAutoPointingDlg::saveXml(const TCHAR *Path)
+{
+	int32_t ack;
+	int32_t val;
+	rapidxml::document_t doc;
+	rapidxml::node_t *root = rapidxml::allocate_node(doc, gApplicatonName.c_str());
+	rapidxml::node_t *node;
+	rapidxml::attribute_t *attr;
+
+	rapidxml::append_attribute(doc, root, _T("version"), _T("1.0"));
+	rapidxml::append_attribute(doc, root, _T("encoding"), _T("utf-8"));
+
+	// 排他
+	std::lock_guard<std::mutex> lock(gWorkMutex);
+
+	// **** 各種パラメータ書き込み ****
+	rapidxml::append_node(doc ,root, _T("title"), gTitle);
+
+	rapidxml::append_node_hex(doc, root, _T("soft_version"), SOFT_VERSION);
+
+	node = rapidxml::append_node(doc, root, _T("target"));
+//	attr = rapidxml::allocate_attribute(doc, _T("window_name"), gTargetWindowName.c_str());
+	rapidxml::append_attribute(doc ,node , _T("window_name"), gTargetWindowName.c_str());
+	rapidxml::append_attribute(doc, node, _T("x"), gBasePoint.x);
+	rapidxml::append_attribute(doc, node, _T("y"), gBasePoint.y);
+
+	// ウインドウ内収まりチェック
+	node = rapidxml::append_node(doc ,root, _T("inside"));
+	rapidxml::append_attribute_check(doc, node, gInsideCheck);
+
+	// ウインドウ表示初期位置
+	node = rapidxml::append_node(doc, root, _T("window"));
+	rapidxml::append_attribute(doc, node, _T("denominator"), gWindowDenominator);
+	rapidxml::append_attribute(doc, node, _T("vpos"), gWindowPos.x);
+	rapidxml::append_attribute(doc, node, _T("hpos"), gWindowPos.y);
+
+	// COM
+	GnrlComList::getGuiPortNo(m_ComPortCombo, gCom);
+	gCom.saveXmlNode(doc ,node);
+	rapidxml::name(node, _T("com"));
+	rapidxml::append_node(root, node);
+
+	// ブレ
+	node = rapidxml::append_node(doc ,root , _T("blur"));
+	rapidxml::append_attribute(doc, node, _T("x"), gBurePoint.x);
+	rapidxml::append_attribute(doc, node, _T("y"), gBurePoint.y);
+	rapidxml::append_attribute(doc, node, _T("time"), gBureTime);
+
+	// アクティブ時のポーズ
+	node = rapidxml::append_node(doc, root, _T("active"));
+	rapidxml::append_attribute(doc, node, _T("pause_time"), gActivePauseTime);
+
+	// 終了時刻
+	node = rapidxml::append_node(doc,root , _T("end_time"));
+	rapidxml::append_attribute(doc, node, _T("time0"), gNowTime[0]);
+	rapidxml::append_attribute(doc, node, _T("time1"), gNowTime[1]);
+	rapidxml::append_attribute(doc, node, _T("time2"), gNowTime[2]);
+	rapidxml::append_attribute(doc, node, _T("spin"), gSpinTime);
+
+	// ワーク
+	node = rapidxml::append_node(doc, root ,_T("works"));
+	rapidxml::append_attribute(doc, node, _T("index"), gWorkIndex);
+	ack = WorkBase::saveWorkList(gWorks, doc ,node, gWorkNames);
+
+	// XML書き込み
+	doc.append_node(root);
+	ack = rapidxml::save_document(doc, Path);
+
+	return ack;
+}
+
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // ユーザーがバージョンボタンクリック
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 void CAutoPointingDlg::OnSysCommand(UINT nID, LPARAM lParam)
 {
-	if ((nID & 0xFFF0) == IDM_ABOUTBOX)
-	{
-		int ack;
+	int ack;
 
-		if(!gCom.isOpened()){
+	switch (nID){
+//	if ((nID & 0xFFFF) == IDM_ABOUTBOX){
+	case IDM_ABOUTBOX:
+	{
+		if (!gCom.isOpened()){
 			openCom();
 		}
 
 		ack = APD_sendCommand(0x99, 0x99, NULL, 0);
-		if(ack < 0){
+		if (ack < 0){
 			CAboutDlg dlgAbout(0xFFFFFFFF);
-			dlgAbout.DoModal();		
+			dlgAbout.DoModal();
 		}
+		break;
 	}
-	else
-	{
+	case IDC_LOAD_XML:
+		loadXmlGui();
+		break;
+	case IDC_SAVE_XML:
+		saveXmlGui();
+		break;
+	default:
 		CDialogEx::OnSysCommand(nID, lParam);
 	}
-	CDialogEx::OnSysCommand(nID, lParam);
+//--	CDialogEx::OnSysCommand(nID, lParam);
 }
 
 // ダイアログに最小化ボタンを追加する場合、アイコンを描画するための
@@ -371,8 +656,41 @@ HCURSOR CAutoPointingDlg::OnQueryDragIcon()
 void CAutoPointingDlg::OnTimer(UINT_PTR nIDEvent)
 {
 	time_t now;
+	static int32_t delay = 0;
+	static POINT oldpoint = { 0, 0 };
+	Sint32 ack;
 
-	if(nIDEvent == ET_1s){
+	if (nIDEvent == ET_100ms){
+		// **** Delay 表示 ****
+		if (delay != gDelayRemine){
+			delay = gDelayRemine;
+			m_Delay.Format(_T("%4d.%03d"), delay/1000 ,delay%1000);
+		}
+
+		// **** 座標表示 ****
+		RECT rect;
+		POINT point;
+
+		GetCursorPos(&point);
+
+		if ((point.x != oldpoint.x) || (point.y != oldpoint.y)){
+
+			m_Pointm.Format(_T("x=%5d , y=%5d"), point.x, point.y);
+
+			ack = getTargetWindowPos(rect);
+			if (ack < 0){
+				m_Pointw = _T("-------  -------");
+			}
+			else{
+				m_Pointw.Format(_T("x=%5d , y=%5d"), point.x - rect.left, point.y - rect.top);
+			}
+
+			oldpoint = point;
+
+			UpdateData(false);
+		}
+
+		// **** 終了判定 ****
 		if ((g_Operation == 0) || (time(&now) == (time_t)-1) || (m_EndTime == (time_t)-1) ) {
 			return;
 		}
@@ -383,7 +701,6 @@ void CAutoPointingDlg::OnTimer(UINT_PTR nIDEvent)
 		if(m_EndTime < now){
 			OnBnClickedButtonStop();
 		}
-		if (gAddSleep!=0) gAddSleep--;
 	}
 
 	CDialogEx::OnTimer(nIDEvent);
@@ -416,7 +733,6 @@ BOOL CAutoPointingDlg::PreTranslateMessage(MSG* pMsg)
 //	case WA_INACTIVE:
 	case WM_CHILDACTIVATE:
 	case WM_CLOSE:
-//		gAddSleep = 5;
 		break;
 
 	}
@@ -433,7 +749,7 @@ LRESULT CAutoPointingDlg::OnUpdatedataA(WPARAM wParam, LPARAM lParam)
 	return 0; // メッセージ固有の戻り値を返す
 }
 
-void CAutoPointingDlg::OnMousePoint(CString Strm ,CString Strw)
+void CAutoPointingDlg::sendMousePoint(const CString &Strm ,const CString &Strw)
 {
 	m_Pointm = Strm;
 	m_Pointw = Strw;
@@ -517,12 +833,10 @@ void CAutoPointingDlg::OnBnClickedButtonStart()
 	}
 
 	curpos = m_OperationSel.GetCurSel();
-	setPointVector(curpos ,0 ,0);
-//	m_OperationSel.SetFocus();
+//	setPointVector(curpos ,0 ,0);
 
 	gWorkIndex = m_OperationSel.GetCurSel();
 
-	gAddSleep = 0;
 	g_Operation = 1;
 	m_Start.EnableWindow(FALSE);
 	m_Stop.EnableWindow(TRUE);
@@ -547,12 +861,12 @@ void CAutoPointingDlg::OnBnClickedButtonComserch()
 	int32_t i;
 	CString str;
 
-	GnrlComList::setGuiComList(m_ComSel ,gCom);
+	GnrlComList::setGuiComList(m_ComPortCombo, gCom);
 
-	for(i=0;i<m_ComSel.GetCount();i++){
-		m_ComSel.GetLBText(i, str);
+	for (i = 0; i<m_ComPortCombo.GetCount(); i++){
+		m_ComPortCombo.GetLBText(i, str);
 		if(str.Find(_T("Arduino")) >=0){
-			m_ComSel.SetCurSel(i);
+			m_ComPortCombo.SetCurSel(i);
 		}
 	}
 }
@@ -575,17 +889,12 @@ void CAutoPointingDlg::openCom()
 {
 	int32_t comno;
 
-	comno = GnrlComList::getGuiPortNo(m_ComSel);
+	comno = GnrlComList::getGuiPortNo(m_ComPortCombo);
 	if(comno < 0) return;
-	gCom.putParameter(comno ,115200 ,400 ,GnrlCom::ESTOPBIT_1 ,GnrlCom::EPARITY_no);
+//	gCom.putParameter(comno ,115200 ,400 ,GnrlCom::ESTOPBIT_1 ,GnrlCom::EPARITY_no);
+	gCom.putComNo(comno);
 
-#if 1
-//--mButtonConnect.SetWindowText(L"OpenStart");
-//--mButtonConnect.UpdateData(FALSE);
-gCom.openAndSetParam();
-//--mButtonConnect.SetWindowText(L"Open終了");
-//--mButtonConnect.UpdateData(FALSE);
-#endif
+	gCom.openAndSetParam();
 
 	if(gCom.isBad()){
 		gCom.close();
@@ -616,34 +925,6 @@ void CAutoPointingDlg::OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDrawItemStruct)
 	CDialogEx::OnDrawItem(nIDCtl, lpDrawItemStruct);
 }
 
-
-
-#if 0
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-// 描画する必要があるときに呼ばれる
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-void CAutoPointingDlg::OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDrawItemStruct)
-{
-	// TODO: ここにメッセージ ハンドラー コードを追加するか、既定の処理を呼び出します。
-    CDC* pDC = CDC::FromHandle(lpDrawItemStruct->hDC);
-	CString caption;
-
-	switch(nIDCtl){
-		case IDC_BUTTON_COM_CONNECT:
-	    pDC->DrawFrameControl(&lpDrawItemStruct->rcItem, DFC_BUTTON, DFCS_BUTTONPUSH);
-	    pDC->SetTextColor(RGB(0xFF, 0, 0));
-        GetDlgItem(nIDCtl)->GetWindowText(caption);
-        pDC->DrawText(caption,&lpDrawItemStruct->rcItem, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
-		break;
-	
-	default:
-		CDialogEx::OnDrawItem(nIDCtl, lpDrawItemStruct);
-		break;
-
-	}
-}
-
-#endif
 
 HBRUSH CAutoPointingDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
@@ -790,8 +1071,8 @@ void CAutoPointingDlg::OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized)
 	CDialogEx::OnActivate(nState, pWndOther, bMinimized);
 
 	if ((nState == WA_ACTIVE) || (nState == WA_CLICKACTIVE)){
-		gAddSleep = 6;		// アクティブになってから少しウエイトして、操作の人間の時間与える
-		APD_SleepAppend(6000);
+//		gAddSleep = 6;		// アクティブになってから少しウエイトして、操作の人間の時間与える
+		APD_SleepAppend(gActivePauseTime);
 
 	}
 

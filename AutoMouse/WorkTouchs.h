@@ -30,8 +30,8 @@ public:
 	virtual int32_t	procOne();		// 1週するのみ
 
 	// **** 単数個/複数個 共通読み書き 各プロセスの内容をXMLオブジェクトへ ****
-	virtual int32_t loadXmlNode(const rapidxml::node_t* Child);
-	virtual int32_t saveXmlNode(rapidxml::node_t *Parent ,rapidxml::document_t &Doc) const;
+	virtual int32_t loadXmlNode(const rapidxml::node_t* Node);
+	virtual int32_t saveXmlNode(rapidxml::document_t &Doc ,rapidxml::node_t *&Node) const;
 
 private:
 	enum E_WorkTouchsMode		m_Mode;

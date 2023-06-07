@@ -126,14 +126,16 @@ node_t *append_node(node_t* Base ,node_t* Child)
 node_t *append_node(document_t &Doc ,node_t* Base ,const char_t *Name ,const char_t *Str)
 {
 	node_t* node = allocate_node(Doc,Name, Str);
-	Base->append_node(node);
+//--	Base->append_node(node);
+	append_node(Base ,node);
 	return node;
 }
 node_t *append_node(document_t &Doc ,node_t* Base ,const char_t *Name ,const string_t &Str)
 {
 	char_t *aloc = allocate_string(Doc ,Str.c_str(), Str.length()+1);
 	node_t* node = allocate_node(Doc ,Name, aloc);
-	Base->append_node(node);
+//--	Base->append_node(node);
+	append_node(Base ,node);
 	return node;
 }
 node_t *append_node(document_t &Doc ,node_t* Base ,const char_t *Name ,const int32_t &Val)
@@ -142,7 +144,8 @@ node_t *append_node(document_t &Doc ,node_t* Base ,const char_t *Name ,const int
 
 	char_t *valoc = allocate_string(Doc ,valueString.c_str(), valueString.length()+1);
 	node_t* node = allocate_node(Doc ,Name, valoc);
-	Base->append_node(node);
+//--	Base->append_node(node);
+	append_node(Base ,node);
 	return node;
 }
 node_t *append_node(document_t &Doc, node_t* Base, const char_t *Name, const uint32_t &Val)
@@ -151,7 +154,8 @@ node_t *append_node(document_t &Doc, node_t* Base, const char_t *Name, const uin
 
 	char_t *valoc = allocate_string(Doc ,valueString.c_str(), valueString.length()+1);
 	node_t* node = allocate_node(Doc ,Name, valoc);
-	Base->append_node(node);
+//--	Base->append_node(node);
+	append_node(Base ,node);
 	return node;
 }
 
@@ -161,7 +165,8 @@ node_t *append_node(document_t &Doc ,node_t* Base ,const char_t *Name ,const dou
 	std::wstring valueString = std::to_wstring(Val);
 	char_t *valoc = allocate_string(Doc ,valueString.c_str(), valueString.length()+1);
 	node_t* node = allocate_node(Doc ,Name, valoc);
-	Base->append_node(node);
+//--	Base->append_node(node);
+	append_node(Base ,node);
 	return node;
 }
 node_t *append_node_hex(document_t &Doc ,node_t* Base ,const char_t *Name ,const uint32_t &Val)
@@ -171,7 +176,8 @@ node_t *append_node_hex(document_t &Doc ,node_t* Base ,const char_t *Name ,const
 	std::swprintf(valoc, malloc_size, L"%08X", Val);
 
 	node_t* node = allocate_node(Doc ,Name, valoc);
-	Base->append_node(node);
+//--	Base->append_node(node);
+	append_node(Base ,node);
 	return node;
 }
 
@@ -180,10 +186,17 @@ attribute_t *append_attribute(node_t* Base ,attribute_t* Attr)
 	Base->append_attribute(Attr);
 	return Attr;
 }
+attribute_t *insert_attribute(node_t* Base ,attribute_t* Insert ,attribute_t* Attr)
+{
+	Base->insert_attribute(Insert ,Attr);
+	return Attr;
+}
+
 attribute_t *append_attribute(document_t &Doc ,node_t* Base ,const char_t *Name ,const char_t *Str)
 {
 	attribute_t* attr = allocate_attribute(Doc ,Name ,Str);
-	Base->append_attribute(attr);
+//--	Base->append_attribute(attr);
+	append_attribute(Base ,attr);
 	return attr;
 }
 attribute_t *append_attribute(document_t &Doc ,node_t* Base ,const char_t *Name ,const int32_t &Val)
@@ -191,7 +204,8 @@ attribute_t *append_attribute(document_t &Doc ,node_t* Base ,const char_t *Name 
 	std::wstring valueString = std::to_wstring(Val);
 	char_t *valoc = allocate_string(Doc ,valueString.c_str(), valueString.length()+1);
 	attribute_t* attr = allocate_attribute(Doc ,Name, valoc);
-	Base->append_attribute(attr);
+//--	Base->append_attribute(attr);
+	append_attribute(Base ,attr);
 	return attr;
 }
 attribute_t *append_attribute(document_t &Doc ,node_t* Base ,const char_t *Name ,const double &Val)
@@ -199,7 +213,8 @@ attribute_t *append_attribute(document_t &Doc ,node_t* Base ,const char_t *Name 
 	std::wstring valueString = std::to_wstring(Val);
 	char_t *valoc = allocate_string(Doc ,valueString.c_str(), valueString.length()+1);
 	attribute_t* attr = allocate_attribute(Doc ,Name, valoc);
-	Base->append_attribute(attr);
+//--	Base->append_attribute(attr);
+	append_attribute(Base ,attr);
 	return attr;
 }
 attribute_t *append_attribute_hex(document_t &Doc ,node_t* Base ,const char_t *Name ,const uint32_t &Val)
@@ -208,7 +223,8 @@ attribute_t *append_attribute_hex(document_t &Doc ,node_t* Base ,const char_t *N
 	char_t *valoc = allocate_string(Doc ,nullptr, malloc_size);
 	std::swprintf(valoc, malloc_size, _T("%08X"), Val);
 	attribute_t* attr = allocate_attribute(Doc ,Name, valoc);
-	Base->append_attribute(attr);
+//--	Base->append_attribute(attr);
+	append_attribute(Base ,attr);
 	return attr;
 }
 // ノードの Disable/Enable を出力します。
@@ -217,7 +233,8 @@ attribute_t *append_attribute_check(document_t &Doc ,node_t* Base ,const bool &V
 	const size_t malloc_size = 14+1;
 	char_t *valoc = allocate_string(Doc ,DisaEnaText[Val], malloc_size );
 	attribute_t* attr = allocate_attribute(Doc ,CheckText, valoc);
-	Base->append_attribute(attr);
+//--	Base->append_attribute(attr);
+	append_attribute(Base ,attr);
 	return attr;
 }
 
@@ -251,7 +268,7 @@ rapidxml::node_t* first_node(const node_t* Base ,const char_t *Name ,char_t **St
 }
 node_t* first_node(const node_t* Base ,const char_t *Name ,std::wstring &Str)
 {
-	node_t* node = Base->first_node(Name);
+	node_t* node = first_node(Base ,Name);	// Base->first_node(Name);
 	if(node == nullptr){
 		Str.clear();
 		return nullptr;
@@ -264,7 +281,7 @@ node_t* first_node(const node_t* Base ,const char_t *Name ,std::wstring &Str)
 
 node_t* first_node(const node_t* Base ,const char_t *Name ,int32_t &Val)
 {
-	node_t* node = Base->first_node(Name);
+	node_t* node = first_node(Base ,Name);	// Base->first_node(Name);
 	if(node == nullptr)	return nullptr;
 
 	Val = std::stoi(node->value());
@@ -273,7 +290,7 @@ node_t* first_node(const node_t* Base ,const char_t *Name ,int32_t &Val)
 }
 node_t* first_node(const node_t* Base ,const char_t *Name ,uint32_t &Val)
 {
-	node_t* node = Base->first_node(Name);
+	node_t* node = first_node(Base ,Name); // Base->first_node(Name);
 	if(node == nullptr)	return nullptr;
 
 //--	Val = std::stoi(node->value());
@@ -284,7 +301,7 @@ node_t* first_node(const node_t* Base ,const char_t *Name ,uint32_t &Val)
 
 node_t* first_node(const node_t* Base ,const char_t *Name ,double &Val)
 {
-	node_t* node = Base->first_node(Name);
+	node_t* node = first_node(Base ,Name); // Base->first_node(Name);
 	if(node == nullptr)	return nullptr;
 
 	Val = std::stof(node->value());
@@ -293,7 +310,7 @@ node_t* first_node(const node_t* Base ,const char_t *Name ,double &Val)
 }
 node_t* first_node_hex(const node_t* Base ,const char_t *Name ,uint32_t &Val)
 {
-	node_t* node = Base->first_node(Name);
+	node_t* node = first_node(Base ,Name); // Base->first_node(Name);
 	if(node == nullptr)	return nullptr;
 
 //	std::swscanf(node->value() ,_T("%08X") ,&Val);

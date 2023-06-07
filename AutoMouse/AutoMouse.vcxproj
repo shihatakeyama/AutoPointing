@@ -139,7 +139,6 @@
     <ClCompile Include="GnrlThread.cpp" />
     <ClCompile Include="GnrlNumerical.cpp" />
     <ClCompile Include="operation_Thread.cpp" />
-    <ClCompile Include="SetParam.cpp" />
     <ClCompile Include="WorkBase.cpp" />
     <ClCompile Include="WorkTouch.cpp" />
     <ClCompile Include="WorkTouchs.cpp" />
@@ -165,7 +164,7 @@
   </ImportGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties RESOURCE_FILE="AutoMouse.rc" />
+      <UserProperties RESOURCE_FILE="" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

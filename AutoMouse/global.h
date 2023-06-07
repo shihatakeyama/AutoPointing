@@ -29,6 +29,7 @@ extern GnrlThread gMouseThread;
 extern GnrlThread gOperationThread;
 extern GnrlThread gRecvThread;
 
+extern int32_t gDelayRemine;
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // シリアル通信
@@ -44,7 +45,7 @@ extern std::vector<AM_Point>		gPointVector;		/// ターゲットウインドウ座標基準
 
 extern std::wstring					gTitle;
 extern std::wstring					gTargetWindowName;
-extern enum E_WindowPosBit			gEWindowPosBit;
+extern bool							gInsideCheck;
 extern int32_t						gWindowDenominator;
 extern CPoint						gWindowPos;
 extern CPoint						gBasePoint;

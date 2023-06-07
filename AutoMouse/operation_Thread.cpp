@@ -32,6 +32,7 @@
 #include "sub.h"
 
 
+#if 0
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // ワーク一周のトランザクション
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -55,38 +56,6 @@ int32_t RotatingHorse1(const AM_Point *Point, int32_t Len)
 
 	return 0;
 }
-int32_t RotatingHorse2(const AM_Point *Point, int32_t Len)
-{
-	int32_t i,ack;
-	int32_t new_x,new_y;
-	RECT rec;
-
-	for (i = 0; i<Len; i++){
-
-		while (gAddSleep){
-			Sleep(1000);	// 追加でSleepさせたい場合
-		}
-
-		if ((gOperationThread.isLife() == FALSE) || (g_Operation == 0) || !gCom.isOpened()){
-			return 0;
-		}
-
-		ack = getTargetWindowPos(rec);
-		if(ack >= 0){
-		
-			new_x = randScatter(Point[i].x + rec.left ,Point[i].randx);
-			new_y = randScatter(Point[i].y + rec.top  ,Point[i].randy);
-
-			AM_click(new_x ,new_y);
-		}
-
-	    Sleep(Point[i].wait + random(Point[i].wait>>2));
-
-	}
-
-	return 0;
-}
-
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // Point List
@@ -184,24 +153,14 @@ int32_t setPointVector(int32_t OperationNo ,int32_t Offset_x ,int32_t Offset_y)
 
 	return 0;
 }
+#endif
+
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // 操作スレッド
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 Uint32 OperationThread(void* Arg)
 {
-#if 0
-	// 旧仕様
-	while (gOperationThread.isLife()){
-		if (g_Operation != 0){	// 稼働中だったら。
-			RotatingHorse2(&gPointVector[0], gPointVector.size());
-		}
-		Sleep(1000);
-	}
-#else
-//	int32_t WorkNo = 0;
-	// 排他
-
 	while (gOperationThread.isLife()){
 		if (g_Operation != 0){	// 稼働中だったら。
 			std::lock_guard<std::mutex> lock(gWorkMutex);
@@ -210,18 +169,6 @@ Uint32 OperationThread(void* Arg)
 		Sleep(100);
 	}
 
-#endif
-
-///	ghOperationThread = NULL;
-
 	return 0;
 }
 
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-// 受信をポーリングされながら
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-Uint32 Recv_chk()
-{
-	return 0;
-}

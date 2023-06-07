@@ -25,7 +25,7 @@
 //HANDLE ghMouseThread = NULL;
 //DWORD gdwThreadId;
 
-
+#if 0
 // *********************************************************************************
 // 現在のマウスポインタ位置を更新する。
 // *********************************************************************************
@@ -54,7 +54,7 @@ Uint32 MousePointThread(void *Arg)
 				strw.Format(_T("x=%5d , y=%5d"), point.x - rect.left , point.y - rect.top);
 			}
 
-			pAutoPointingDlg->OnMousePoint(strm, strw);
+			pAutoPointingDlg->sendMousePoint(strm, strw);
 
 			oldpoint = point;
 		}
@@ -63,4 +63,6 @@ Uint32 MousePointThread(void *Arg)
 
 	return 0;
 }
+
+#endif
 
