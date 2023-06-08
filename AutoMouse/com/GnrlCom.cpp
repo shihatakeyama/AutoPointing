@@ -226,7 +226,7 @@ int32_t GnrlCom::loadXmlNode(const rapidxml::node_t *Node)
 	rapidxml::first_attribute(node ,m_ParityText	,val);
 	m_Parity = static_cast<enum EParity>(val);
 	
-	m_State |= ESTATEBIT_load;
+	m_State |= ESTATEBIT_param;
 
 	return ECRC_ok;
 }
@@ -285,10 +285,10 @@ int GnrlComgetFinePath(TCHAR *OutFilePath,int OutBufSize , const TCHAR *IniFileN
 	int		ret;
 
 	pc = Tstrrchr(IniFileName, '\\');
-	if(pc == NULL)
+	if(pc == nullptr)
 	{
 //		strcpy(OutFilePath,__argv[0]);	// コマンド引数から自プログラム位置を取得
-		ret = GetModuleFileName(NULL, OutFilePath, MAX_PATH);
+		ret = GetModuleFileName(nullptr, OutFilePath, MAX_PATH);
 		if(ret <= 0)
 			return ret;
 		cpc = Tstrrchr(OutFilePath, '\\');
@@ -327,7 +327,7 @@ void GnrlCom::loadParameter(const TCHAR *IniFile, const TCHAR *Section)
 	m_StopBit	= (enum GnrlCom::EStopBit)GetPrivateProfileInt(Section, m_StopbitText, m_StopBit, file_name);
 	m_Parity	= (enum GnrlCom::EParity)GetPrivateProfileInt(Section, m_ParityText, m_Parity, file_name);
 
-	m_State |= ESTATEBIT_load;
+	m_State |= ESTATEBIT_param;
 }
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -651,7 +651,7 @@ int GnrlCom::write(const unsigned char *Data, int Size) const
 
 	if (isBad())	return EC_ComOpen;
 
-	if(WriteFile( m_hFile, Data, Size, &len, NULL) != 0)
+	if(WriteFile( m_hFile, Data, Size, &len, nullptr) != 0)
 		return len;						// 読み込めた分だけテキストファイルに書き込む
 	
 	return EC_Write;
@@ -672,6 +672,8 @@ void GnrlCom::preset()
 	m_TimeOut	= 1000;					// タイムアウト		
 	m_StopBit	= ESTOPBIT_1;			// ストップビット	
 	m_Parity	= EPARITY_no;			// パリティ
+
+	m_State |= ESTATEBIT_param;
 }
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -679,7 +681,7 @@ void GnrlCom::preset()
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 int GnrlCom::clearBuffer() const
 {
-	if(m_hFile != NULL){
+	if(m_hFile != nullptr){
 		return PurgeComm(m_hFile, PURGE_TXABORT|PURGE_RXABORT|PURGE_TXCLEAR|PURGE_RXCLEAR);
 	}
 	return EC_ComOpen;					// 送受信できないのでエラーとする

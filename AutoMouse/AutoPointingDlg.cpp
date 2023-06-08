@@ -108,12 +108,12 @@ END_MESSAGE_MAP()
 
 CAutoPointingDlg::CAutoPointingDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CAutoPointingDlg::IDD, pParent)
-	, m_Pointm(_T(""))
-	, m_Pointw(_T(""))
+//	, m_Pointm(_T(""))
+//	, m_Pointw(_T(""))
 	, m_StrEndTime(_T(""))
 	, m_EndTime((time_t)-1)
 	, m_TargetWindowName(_T(""))
-	, m_Delay(_T(""))
+//--	, m_Delay(_T("0.000"))
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -121,8 +121,8 @@ CAutoPointingDlg::CAutoPointingDlg(CWnd* pParent /*=NULL*/)
 void CAutoPointingDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
-	DDX_Text(pDX, IDC_STATIC_POINTM, m_Pointm);
-	DDX_Text(pDX, IDC_STATIC_POINTW, m_Pointw);
+	//  DDX_Text(pDX, IDC_STATIC_POINTM, m_Pointm);
+	//  DDX_Text(pDX, IDC_STATIC_POINTW, m_Pointw);
 	DDX_Control(pDX, IDC_BUTTON_START, m_Start);
 	DDX_Control(pDX, IDC_BUTTON_STOP, m_Stop);
 	//  DDX_Control(pDX, IDC_COMBO_COMNO, m_ComNoCombo);
@@ -134,7 +134,10 @@ void CAutoPointingDlg::DoDataExchange(CDataExchange* pDX)
 	DDV_MaxChars(pDX, m_TargetWindowName, 256);
 	DDX_Control(pDX, IDC_BUTTON_NOWLONG, m_NowLong);
 	DDX_Control(pDX, IDC_BUTTON_NOWSHORT, m_NotShort);
-	DDX_Text(pDX, IDC_STATIC_DELAY, m_Delay);
+	//  DDX_Text(pDX, IDC_STATIC_DELAY, m_Delay);
+	DDX_Control(pDX, IDC_STATIC_DELAY, m_Delay);
+	DDX_Control(pDX, IDC_STATIC_POINTM, m_Pointm);
+	DDX_Control(pDX, IDC_STATIC_POINTW, m_Pointw);
 }
 
 BEGIN_MESSAGE_MAP(CAutoPointingDlg, CDialogEx)
@@ -511,11 +514,9 @@ int32_t CAutoPointingDlg::saveXmlGui()
 int32_t CAutoPointingDlg::saveXml(const TCHAR *Path)
 {
 	int32_t ack;
-	int32_t val;
 	rapidxml::document_t doc;
 	rapidxml::node_t *root = rapidxml::allocate_node(doc, gApplicatonName.c_str());
 	rapidxml::node_t *node;
-	rapidxml::attribute_t *attr;
 
 	rapidxml::append_attribute(doc, root, _T("version"), _T("1.0"));
 	rapidxml::append_attribute(doc, root, _T("encoding"), _T("utf-8"));
@@ -662,9 +663,12 @@ void CAutoPointingDlg::OnTimer(UINT_PTR nIDEvent)
 
 	if (nIDEvent == ET_100ms){
 		// **** Delay 表示 ****
+		CString str;
 		if (delay != gDelayRemine){
 			delay = gDelayRemine;
-			m_Delay.Format(_T("%4d.%03d"), delay/1000 ,delay%1000);
+			str.Format(_T("%4d.%03d"), delay / 1000, delay % 1000);
+			m_Delay.SetWindowText(str);
+			m_Delay.UpdateData(false);
 		}
 
 		// **** 座標表示 ****
@@ -675,19 +679,21 @@ void CAutoPointingDlg::OnTimer(UINT_PTR nIDEvent)
 
 		if ((point.x != oldpoint.x) || (point.y != oldpoint.y)){
 
-			m_Pointm.Format(_T("x=%5d , y=%5d"), point.x, point.y);
+			str.Format(_T("x=%5d , y=%5d"), point.x, point.y);
+			m_Pointm.SetWindowText(str);
+			m_Pointm.UpdateData(false);
 
 			ack = getTargetWindowPos(rect);
 			if (ack < 0){
-				m_Pointw = _T("-------  -------");
+				str = _T("-------  -------");
 			}
 			else{
-				m_Pointw.Format(_T("x=%5d , y=%5d"), point.x - rect.left, point.y - rect.top);
+				str.Format(_T("x=%5d , y=%5d"), point.x - rect.left, point.y - rect.top);
 			}
+			m_Pointw.SetWindowText(str);
+			m_Pointw.UpdateData(false);
 
 			oldpoint = point;
-
-			UpdateData(false);
 		}
 
 		// **** 終了判定 ****
@@ -747,14 +753,6 @@ LRESULT CAutoPointingDlg::OnUpdatedataA(WPARAM wParam, LPARAM lParam)
 	UpdateData(FALSE);
 
 	return 0; // メッセージ固有の戻り値を返す
-}
-
-void CAutoPointingDlg::sendMousePoint(const CString &Strm ,const CString &Strw)
-{
-	m_Pointm = Strm;
-	m_Pointw = Strw;
-
-	this->PostMessage(WM_UPDATEDATA, 0);
 }
 
 LRESULT CAutoPointingDlg::OnShowVersion(WPARAM wParam, LPARAM lParam)
@@ -833,7 +831,6 @@ void CAutoPointingDlg::OnBnClickedButtonStart()
 	}
 
 	curpos = m_OperationSel.GetCurSel();
-//	setPointVector(curpos ,0 ,0);
 
 	gWorkIndex = m_OperationSel.GetCurSel();
 
@@ -1087,4 +1084,3 @@ void recvVersion(const uint8_t *Data, uint8_t Len)
 
 	pAutoPointingDlg->PostMessage(WM_SHOW_VERSION, ver);
 }
-

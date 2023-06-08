@@ -45,7 +45,7 @@ public:
 
 	enum EStateBit{
 		ESTATEBIT_clear		= 0,
-		ESTATEBIT_load		= 1,
+		ESTATEBIT_param		= 1,
 		ESTATEBIT_open		= 2,
 		ESTATEBIT_baudrate	= 4,
 		ESTATEBIT_timeout	= 8,
@@ -105,7 +105,7 @@ public:
 	int open();
 	int openAndSetParam();
 	int close();
-	bool isLoad() const				{ return 	m_State & ESTATEBIT_load;		}	// 条件読み成功？	初期条件の場合はFALSEを返します。
+	bool isLoad() const				{ return 	m_State & ESTATEBIT_param; }	// 条件読み成功？	初期条件の場合はFALSEを返します。
 	bool isOpened() const			{ return	m_hFile != EC_FileOpenError;	}
 	void setBad();
 	void setGood()					{ m_State = ESTATEBIT_good;					}

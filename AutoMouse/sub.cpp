@@ -13,7 +13,7 @@
 #include "GnrlThread.h"
 #include "extern.h"
 #include "GnrlString.h"
-//#include "WorkBase.h"
+
 #include "sub.h"
 
 
@@ -39,7 +39,9 @@ void APD_Sleep(int32_t msc)
 {
 	int32_t slp;
 
+	gBPMutex.lock();
 	gDelayRemine = msc + random(gBureTime);
+	gBPMutex.unlock();
 
 	while (g_Operation != 0){
 		std::lock_guard<std::mutex> lock(gBPMutex);
@@ -64,6 +66,8 @@ void APD_Sleep(int32_t msc)
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 void APD_SleepAppend(int32_t msc)
 {
+	if (g_Operation == 0) return;
+
 	std::lock_guard<std::mutex> lock(gBPMutex);
 
 	if (gDelayRemine < msc){

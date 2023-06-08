@@ -89,9 +89,6 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="ShowMousePoint.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="operation_Thread.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
