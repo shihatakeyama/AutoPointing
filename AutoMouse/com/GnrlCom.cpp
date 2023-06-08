@@ -333,10 +333,10 @@ void GnrlCom::loadParameter(const TCHAR *IniFile, const TCHAR *Section)
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // 通信設定を 設定/取得
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-void GnrlCom::putParameter(int ComNum, int Bps, int TimeOut, enum EStopBit StopBit, enum EParity Parity)
+void GnrlCom::putParameter(int ComNum, int BaudRate, int TimeOut, enum EStopBit StopBit, enum EParity Parity)
 {
 	m_ComNo		= ComNum;
-	m_Bps		= Bps;			// 速度	
+	m_BaudRate	= BaudRate;			// 速度	
 	m_TimeOut	= TimeOut;		// タイムアウト	
 	m_StopBit	= StopBit;		// ストップビット
 	m_Parity	= Parity;		// パリティ	
@@ -356,10 +356,10 @@ void GnrlCom::saveParameter(const TCHAR *IniFile, const TCHAR *Section)
 	WritePrivateProfileInt(Section, m_ParityText	,m_Parity,	file_name);
 }
 
-void GnrlCom::getParameter(int &ComNo, int &Bps, int &TimeOut, enum EStopBit &StopBit, enum EParity &Parity) const
+void GnrlCom::getParameter(int &ComNo, int &BaudRate, int &TimeOut, enum EStopBit &StopBit, enum EParity &Parity) const
 {
 	ComNo	= m_ComNo;			// Comの番号
-	Bps		= m_Bps;			// 速度		
+	BaudRate= m_BaudRate;		// 速度		
 	TimeOut	= m_TimeOut;		// タイムアウト
 	StopBit = m_StopBit;		// ストップビット
 	Parity	= m_Parity;			// パリティ
@@ -454,7 +454,7 @@ int GnrlCom::openAndSetParam()
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 int GnrlCom::setBaudRate()
 {
-	int Bps					= m_Bps;
+	int Bps = m_BaudRate;
 	enum EStopBit StopBit	= m_StopBit;
 	enum EParity Parity		= m_Parity;
 
