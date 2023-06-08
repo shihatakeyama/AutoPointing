@@ -24,14 +24,7 @@ int32_t clearParam();
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 int randScatter(int CenterVal ,int Width);
 
-//int32_t setPointVector(int32_t OperationNo, int32_t Offset_x, int32_t Offset_y);
-
-// **** ShowMousePoint.cpp ****
-//int32_t callMousePointThread();
-//uint32_t MousePointThread(void *Arg);
-//DWORD WINAPI MousePointThread(LPVOID Arg);
-
-// **** ShowMousePoint.cpp ****
+// **** operation_Thread.cpp ****
 uint32_t OperationThread(void* Arg);
 uint32_t RecvRootine(void* Arg);
 int32_t RotatingHorse(const AM_Point *Point, int32_t Len);

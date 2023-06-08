@@ -9,7 +9,9 @@
 #include "WorkTouchs.h"
 
 
-
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+// ï∂éöóÒÉeÅ[ÉuÉã
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 const TCHAR		*WorkTouchs::m_ModeNames[]	= { _T("each") ,_T("anyone") };
 
 WorkTouchs::WorkTouchs()
@@ -90,12 +92,10 @@ int32_t WorkTouchs::loadXmlNode(const rapidxml::node_t* Node)
 }
 int32_t WorkTouchs::saveXmlNode(rapidxml::document_t &Doc ,rapidxml::node_t *&Node) const
 {
-	int32_t ack;
-
 	Node = rapidxml::allocate_node(Doc);
 	rapidxml::append_attribute(Doc, Node, _T("type"), m_ModeNames[m_Mode]);
 
-	for (int32_t i = 0; i<m_TouchPoints.size(); i++){
+	for (uint32_t i = 0; i<m_TouchPoints.size(); i++){
 		const WorkBase *wb = m_TouchPoints[i];
 		rapidxml::node_t *child;	//  = rapidxml::append_node(Doc, Node, wb->getProcName());
 		wb->saveXmlNode(Doc, child);

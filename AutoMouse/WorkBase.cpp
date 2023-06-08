@@ -164,10 +164,9 @@ int32_t WorkBase::saveWorkList(const std::vector<WorkBase*> &List, rapidxml::doc
 {
 	ASSERT(List.size() == WorkNames.size());
 
-	int32_t ack;
 	rapidxml::node_t *node;
 
-	for (int32_t i = 0; i<List.size(); i++){
+	for (uint32_t i = 0; i<List.size(); i++){
 		List[i]->saveXmlNode(Doc ,node);
 		rapidxml::name(node, _T("work"));
 		rapidxml::attribute_t *attr = rapidxml::allocate_attribute(Doc ,_T("name"), WorkNames[i].c_str());
