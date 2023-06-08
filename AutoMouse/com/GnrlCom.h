@@ -45,7 +45,7 @@ public:
 
 	enum EStateBit{
 		ESTATEBIT_clear		= 0,
-		ESTATEBIT_load		= 1,
+		ESTATEBIT_param		= 1,
 		ESTATEBIT_open		= 2,
 		ESTATEBIT_baudrate	= 4,
 		ESTATEBIT_timeout	= 8,
@@ -95,8 +95,8 @@ public:
 	void loadParameter(const TCHAR *IniFile = _T("ComSet.ini"), const TCHAR *Section = _T("ComSet"));	// 旧 putParameter()
 	void saveParameter(const TCHAR *IniFile = _T("ComSet.ini"), const TCHAR *Section = _T("ComSet"));
 
-	void putParameter(int PortNo, int Bps, int TimeOut, enum EStopBit StopBit, enum EParity Parity);
-	void getParameter(int &PortNo, int &Bps, int &TimeOut, enum EStopBit &StopBit, enum EParity &Parity) const;
+	void putParameter(int PortNo, int BaudRate, int TimeOut, enum EStopBit StopBit, enum EParity Parity);
+	void getParameter(int &PortNo, int &BaudRate, int &TimeOut, enum EStopBit &StopBit, enum EParity &Parity) const;
 
 	// ボーレート(速度bps)を序数に変換
 	static int bpsToEbps(int Bps);
@@ -105,7 +105,7 @@ public:
 	int open();
 	int openAndSetParam();
 	int close();
-	bool isLoad() const				{ return 	m_State & ESTATEBIT_load;		}	// 条件読み成功？	初期条件の場合はFALSEを返します。
+	bool isLoad() const				{ return 	m_State & ESTATEBIT_param; }	// 条件読み成功？	初期条件の場合はFALSEを返します。
 	bool isOpened() const			{ return	m_hFile != EC_FileOpenError;	}
 	void setBad();
 	void setGood()					{ m_State = ESTATEBIT_good;					}
@@ -129,13 +129,13 @@ private:
 	void preset();						// 初期設定
 	int setTimeout();
 
-	HANDLE	m_hFile; 					// ファイルハンドル	
-	int		m_ComNo;					// COM番号
-	int		m_BaudRate;					// 速度				
-	int		m_Bps;						// 速度	
-	enum EParity m_Parity;				// パリティ
-	enum EStopBit m_StopBit;			// ストップビット
-	int		m_TimeOut;					// タイムアウト
+	HANDLE			m_hFile; 			// ファイルハンドル	
+	int				m_ComNo;			// COM番号
+	int				m_BaudRate;			// 速度				
+//--	int				m_Bps;				// 速度	
+	enum EParity	m_Parity;			// パリティ
+	enum EStopBit	m_StopBit;			// ストップビット
+	int				m_TimeOut;			// タイムアウト
 	unsigned int	m_State;
 
 	// 文字列定義
@@ -146,12 +146,11 @@ private:
 	const static TCHAR	*m_ParityText;
 
 	// 定数定義 
-	const static int EC_ComOpen;
-	const static int EC_Read;
-	const static int EC_Write;
-	static void* const EC_FileOpenError;
-	const static int m_BaudRateList[EB_num];
-//--	int				 m_ComNo;
+	const static int	EC_ComOpen;
+	const static int	EC_Read;
+	const static int	EC_Write;
+	static void* const	EC_FileOpenError;
+	const static int	m_BaudRateList[EB_num];
 };
 
 #endif //GMRLCOM

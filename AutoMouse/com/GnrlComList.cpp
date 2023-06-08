@@ -169,9 +169,9 @@ namespace GnrlComList{
 		int 	i, j, min;
 		char	s;
 
-		if (((h = GetModuleHandle( _T("kernel32.dll"))) != NULL) &&
-			(GetProcAddress(h, "QueryDosDeviceA") != NULL) &&
-			(QueryDosDevice(NULL, devicesBuff, 65535) != 0)) {
+		if (((h = GetModuleHandle( _T("kernel32.dll"))) != nullptr) &&
+			(GetProcAddress(h, "QueryDosDeviceA") != nullptr) &&
+			(QueryDosDevice(nullptr, devicesBuff, 65535) != 0)) {
 			p = devicesBuff;
 			while (*p != L'\0') {
 				if (_tcsncmp(p, _T("COM"), 3) == 0 && p[3] != L'\0')	// strcmp()
@@ -206,7 +206,7 @@ namespace GnrlComList{
 				Tsprintf(buf, _T("\\\\.\\COM%d"), i);	// 
 
 				Tfopen_s(&fp ,buf, _T("r"));
-				if (fp != NULL) {	// fopen()
+				if (fp != nullptr) {	// fopen()
 					fclose(fp);
 					ComPortTable[comports++] = i;
 				}
@@ -238,7 +238,7 @@ namespace GnrlComList{
 		GUID ClassGuid[1];
 		DWORD dwRequiredSize;
 		BOOL bRet;
-		HDEVINFO DeviceInfoSet = NULL;
+		HDEVINFO DeviceInfoSet = nullptr;
 		SP_DEVINFO_DATA DeviceInfoData;
 		DWORD dwMemberIndex = 0;
 		int i;
@@ -260,7 +260,7 @@ namespace GnrlComList{
 		}
 
 		DeviceInfoSet =
-			SetupDiGetClassDevs(&ClassGuid[0], NULL, NULL, DIGCF_PRESENT | DIGCF_PROFILE);
+			SetupDiGetClassDevs(&ClassGuid[0], nullptr, nullptr, DIGCF_PRESENT | DIGCF_PROFILE);
 
 		if (DeviceInfoSet) {
 			dwMemberIndex = 0;
@@ -271,7 +271,7 @@ namespace GnrlComList{
 				DWORD dwReqSize = 0;
 				DWORD dwPropType;
 				DWORD dwType = REG_SZ;
-				HKEY hKey = NULL;
+				HKEY hKey = nullptr;
 
 				bRet = SetupDiGetDeviceRegistryProperty(DeviceInfoSet,
 					&DeviceInfoData,
