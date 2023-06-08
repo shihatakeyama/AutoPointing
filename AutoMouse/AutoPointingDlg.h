@@ -17,9 +17,6 @@ public:
 // ダイアログ データ
 	enum { IDD = IDD_AUTOMOUSE_DIALOG };
 
-//	void OnUpdatedata();
-	void sendMousePoint(const CString &Strm ,const CString &Strw);
-
 	enum E_Timer{
 		ET_100ms = 1
 	};
@@ -54,9 +51,11 @@ public:
 private:
 public:
 private:
-	CString m_Pointm;	// モニタ座標
-	CString m_Pointw;	// ウインドウ座標
-	CString m_Delay;
+//	CString m_Pointm;
+	// モニタ座標
+//	CString m_Pointw;
+	// ウインドウ座標
+//	CString m_Delay;
 	CString m_StrEndTime;
 	CBrush m_CbrCom[3]; 
 	time_t	m_EndTime;
@@ -95,4 +94,7 @@ public:
 	CString m_TargetWindowName;
 	CButton m_NowLong;
 	CButton m_NotShort;
+	CStatic m_Delay;
+	CStatic m_Pointm;
+	CStatic m_Pointw;
 };
