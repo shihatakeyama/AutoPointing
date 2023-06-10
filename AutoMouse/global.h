@@ -29,7 +29,7 @@ extern GnrlThread gMouseThread;
 extern GnrlThread gOperationThread;
 extern GnrlThread gRecvThread;
 
-extern int32_t gDelayRemine;
+extern volatile int32_t	gDelayRemine;
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // ƒVƒŠƒAƒ‹’ÊM

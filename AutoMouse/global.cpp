@@ -28,7 +28,7 @@ GnrlThread	gMouseThread;
 GnrlThread	gOperationThread;
 GnrlThread	gRecvThread;
 
-int32_t	 gDelayRemine = 0;
+volatile int32_t	gDelayRemine = 0;
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // シリアル通信
@@ -62,5 +62,5 @@ class WorkBase;
 std::vector<WorkBase*>		gWorks;
 std::vector<std::wstring>	gWorkNames;
 std::mutex					gWorkMutex;
-int32_t						gInitWorkNo=0;
+int32_t						gInitWorkNo= 0;
 int32_t						gWorkIndex = 0;	//  現在実行中のワーク

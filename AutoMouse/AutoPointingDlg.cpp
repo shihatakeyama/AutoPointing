@@ -409,7 +409,7 @@ int32_t CAutoPointingDlg::loadXml(const TCHAR *Path)
 	if (node){
 		rapidxml::attribute_t *attr;
 
-		attr = rapidxml::first_attribute(node, _T("denominator"), gWindowDenominator);
+//		attr = rapidxml::first_attribute(node, _T("denominator"), gWindowDenominator);
 
 		attr = rapidxml::first_attribute(node, _T("vpos"), val);
 		if (attr){
@@ -463,9 +463,8 @@ int32_t CAutoPointingDlg::loadXml(const TCHAR *Path)
 		throw std::wstring(_T("XML にworks タグがありません。"));
 	}
 
-	ack = WorkBase::loadWorkList(gWorks, work, gWorkNames);
-
 	rapidxml::first_attribute(work, _T("index"), gWorkIndex);
+	ack = WorkBase::loadWorkList(gWorks, work, gWorkNames);
 	if (gWorkIndex >= static_cast<int32_t>(gWorks.size())){
 		gWorkIndex = 0;
 	}
@@ -540,8 +539,23 @@ int32_t CAutoPointingDlg::saveXml(const TCHAR *Path)
 	rapidxml::append_attribute_check(doc, node, gInsideCheck);
 
 	// ウインドウ表示初期位置
+	{ // 初期ウインドウ位置  ※Dialogの｢プロパティ｣>｢Center｣で値をTRUEにしておかないと中央に戻されてしまう。
+
+		RECT  rect;
+		int32_t width  = GetSystemMetrics(SM_CXSCREEN);		// スクリーンの幅を取得
+		int32_t height = GetSystemMetrics(SM_CYSCREEN);		// スクリーンの高さを取得
+
+		GetWindowRect(&rect);
+		
+		// 自ウインドウの大きさを引く
+		width -= rect.right  - rect.left;
+		height-= rect.bottom - rect.top;
+
+		gWindowPos.x	= rect.left * gWindowDenominator / width;
+		gWindowPos.y	= rect.top  * gWindowDenominator / height;
+	}
 	node = rapidxml::append_node(doc, root, _T("window"));
-	rapidxml::append_attribute(doc, node, _T("denominator"), gWindowDenominator);
+//	rapidxml::append_attribute(doc, node, _T("denominator"), gWindowDenominator);
 	rapidxml::append_attribute(doc, node, _T("vpos"), gWindowPos.x);
 	rapidxml::append_attribute(doc, node, _T("hpos"), gWindowPos.y);
 
@@ -570,6 +584,7 @@ int32_t CAutoPointingDlg::saveXml(const TCHAR *Path)
 
 	// ワーク
 	node = rapidxml::append_node(doc, root ,_T("works"));
+	gWorkIndex = m_OperationSel.GetCurSel();
 	rapidxml::append_attribute(doc, node, _T("index"), gWorkIndex);
 	ack = WorkBase::saveWorkList(gWorks, doc ,node, gWorkNames);
 
@@ -652,7 +667,7 @@ HCURSOR CAutoPointingDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-// タイマー
+// 周期タイマー
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 void CAutoPointingDlg::OnTimer(UINT_PTR nIDEvent)
 {
@@ -795,10 +810,8 @@ int32_t getTargetWindowPos(RECT &Rect)
 
 	::GetWindowRect( hWndChild, &Rect );		//デスクトップのハンドルからその(画面の)大きさを取得
 
-	return 0;
+	return ERC_ok;
 }
-
-int32_t gPointListLen;
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // 開始 ボタン押された
@@ -922,7 +935,9 @@ void CAutoPointingDlg::OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDrawItemStruct)
 	CDialogEx::OnDrawItem(nIDCtl, lpDrawItemStruct);
 }
 
-
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+// オーナー描画
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 HBRUSH CAutoPointingDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
 	HBRUSH hbr = CDialogEx::OnCtlColor(pDC, pWnd, nCtlColor);
@@ -946,49 +961,11 @@ HBRUSH CAutoPointingDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 void CAutoPointingDlg::OnBnClickedButtonNow()
 {
-#if 0
-	time_t now,endtime;
-    struct tm *s_tm;
-
-	if (time(&now) == (time_t)-1) {
-		m_StrEndTime = "Error";
-		m_EndTime = (time_t)-1;
-	}else{
-		
-		endtime = now + 3600*2 + 360*8;
-		m_EndTime = endtime;
-		setGuiEndtime(0);
-	}
-
-	UpdateData(FALSE);
-#else
-
 	setEndTime(gNowTime[1]);
-
-#endif
 }
 void CAutoPointingDlg::OnBnClickedButtonNowshort()
 {
-#if 0
-	time_t now,endtime;
-    struct tm *s_tm;
-
-	if (time(&now) == (time_t)-1) {
-		m_StrEndTime = "Error";
-		m_EndTime = (time_t)-1;
-	}else{
-		
-		endtime = now + 360*2;
-		m_EndTime = endtime;
-		setGuiEndtime(0);
-	}
-
-	UpdateData(FALSE);
-#else
-
 	setEndTime(gNowTime[2]);
-
-#endif
 }
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -1049,15 +1026,10 @@ void CAutoPointingDlg::setGuiEndtime(int DistanceSec)
 		return;
 	}
 	m_EndTime +=DistanceSec;
-#if 0
-	struct tm *s_tm;
-	s_tm = localtime(&m_EndTime);
-	m_StrEndTime.Format(_T("%d/%02d/%02d %02d:%02d:%02d"), s_tm->tm_year + 1900, s_tm->tm_mon + 1, s_tm->tm_mday, s_tm->tm_hour, s_tm->tm_min, s_tm->tm_sec);
-#else
+
 	struct tm s_tm;
 	localtime_s(&s_tm, &m_EndTime);
 	m_StrEndTime.Format(_T("%d/%02d/%02d %02d:%02d:%02d"), s_tm.tm_year + 1900, s_tm.tm_mon + 1, s_tm.tm_mday, s_tm.tm_hour, s_tm.tm_min, s_tm.tm_sec);
-#endif
 }
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

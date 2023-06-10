@@ -44,20 +44,21 @@ void APD_Sleep(int32_t msc)
 	gBPMutex.unlock();
 
 	while (g_Operation != 0){
-		std::lock_guard<std::mutex> lock(gBPMutex);
-
-		if (gDelayRemine > TIC){
-			slp = TIC;
-			gDelayRemine -= TIC;
-		}
-		else{
-			slp = gDelayRemine;
-			gDelayRemine = 0;
+		{
+			std::lock_guard<std::mutex> lock(gBPMutex);
+			if (gDelayRemine == 0){
+				break;
+			}
+			if (gDelayRemine > TIC){
+				slp = TIC;
+				gDelayRemine -= TIC;
+			}
+			else{
+				slp = gDelayRemine;
+				gDelayRemine = 0;
+			}
 		}
 		Sleep(slp);
-		if (gDelayRemine == 0){
-			break;
-		}
 	}
 }
 
