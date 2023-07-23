@@ -43,8 +43,9 @@ int32_t	WorkTouchs::procOne()
 	case EPTM_anyone:
 		{
 		if (!isLife())	return ERC_ok;
-		int32_t rdm = rand() % m_TouchPoints.size();
-		ack = m_TouchPoints[rdm]->proc();
+		int32_t rdm = rand();
+		int32_t idx = rdm  % m_TouchPoints.size();
+		ack = m_TouchPoints[idx]->proc();
 		}
 		break;
 	default:

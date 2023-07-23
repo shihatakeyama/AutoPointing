@@ -37,6 +37,9 @@
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 Uint32 OperationThread(void* Arg)
 {
+	uint32_t seed  = time( NULL );		// スレッド中でrand()する場合は当スレッド中でsrand()しないとsrandが効かない。？
+	srand(seed);  
+
 	while (gOperationThread.isLife()){
 		if (g_Operation != 0){	// 稼働中だったら。
 			std::lock_guard<std::mutex> lock(gWorkMutex);
