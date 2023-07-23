@@ -207,7 +207,9 @@ BOOL CAutoPointingDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 小さいアイコンの設定
 
 
-	srand( (unsigned)time( NULL ) );  
+	uint32_t seed  = time( NULL );
+	srand(seed);  
+
 
 	// TODO: 初期化をここに追加します。
 	pAutoPointingDlg = this;
@@ -252,9 +254,9 @@ BOOL CAutoPointingDlg::OnInitDialog()
 	m_CbrCom[0].CreateSolidBrush(RGB(0x80, 0x80, 0x80)); 
 	m_CbrCom[1].CreateSolidBrush(RGB(0x00, 0x00, 0xFF)); 
 
-
-	m_TargetWindowName = gTargetWindowName.c_str();
-
+	// ターゲットウインドウ名をGUIへ反映
+//	m_TargetWindowName = gTargetWindowName.c_str();
+	m_TargetWindowName = gTargetWindowName[0];	// 外部からのハッキング対策 1文字のみ反映
 
 
 	// **** 各種スレッド起動 ****
