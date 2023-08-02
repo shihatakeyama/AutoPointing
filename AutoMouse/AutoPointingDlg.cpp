@@ -255,8 +255,19 @@ BOOL CAutoPointingDlg::OnInitDialog()
 	m_CbrCom[1].CreateSolidBrush(RGB(0x00, 0x00, 0xFF)); 
 
 	// ターゲットウインドウ名をGUIへ反映
-//	m_TargetWindowName = gTargetWindowName.c_str();
+#if SPY_MODE == 0
+	m_TargetWindowName = gTargetWindowName.c_str();
+#elif SPY_MODE == 1
 	m_TargetWindowName = gTargetWindowName[0];	// 外部からのハッキング対策 1文字のみ反映
+#endif
+
+	// ダイアログウインドウ名設定
+#if SPY_MODE == 0
+	SetWindowText(_T("AutoPointing"));
+#elif SPY_MODE == 1
+	SetWindowText(_T("AP"));
+#endif
+
 
 
 	// **** 各種スレッド起動 ****

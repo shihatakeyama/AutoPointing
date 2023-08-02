@@ -15,12 +15,14 @@
 
 
 // ソフトバージョン
-#define		SOFT_VERSION	0x04237230
+#define		SOFT_VERSION	0x04238020
+
+#define		SPY_MODE		1		// 外部から自ウインドウ名をキャプチャされるのを防ぐ
 
 
 #define TRX_BUF_SIZE   	32
 #define RX_TIMEOUT		400
-#define CR				0x0D	// コマンド終端
+#define CR				0x0D		// コマンド終端
 
 // #define WINDOW_NAME	_T("AutoPointing")
 
