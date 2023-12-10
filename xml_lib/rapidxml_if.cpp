@@ -36,6 +36,7 @@ const static char_t	*DisaEnaText[]	= {_T("disable") ,_T("enable")};
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 int32_t load_document(document_t &Doc ,const TCHAR *Path ,string_t &DocBuf)
 {
+	int32_t ack;
 	ifstream_t ifs;
 
 	ifs.imbue(std::locale("Japanese", LC_CTYPE));	// ‘SŠp•¶šUTF8o—Í‚·‚éê‡
