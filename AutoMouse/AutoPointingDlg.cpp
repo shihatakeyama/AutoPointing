@@ -386,6 +386,11 @@ int32_t CAutoPointingDlg::loadXml(const TCHAR *Path)
 	// **** 各種パラメータ読み込み ****
 
 	rapidxml::node_t *root = doc.first_node();
+	if(root == nullptr){
+		throw std::wstring(_T("XML の書式が壊れています。"));
+	}
+
+
 	rapidxml::node_t *node;
 	if (rapidxml::comp_node_name(root, gApplicatonName.c_str()) != 0){
 		throw std::wstring(_T("XML の書式が違います"));
