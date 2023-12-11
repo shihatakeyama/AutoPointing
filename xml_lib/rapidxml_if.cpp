@@ -12,6 +12,8 @@
 #include <string>
 #include <cstring>
 
+//#include "rapidxml.h"
+#include "rapidxml.h"
 #include "rapidxml_print.hpp"	// std::ofstream << rapidxml::xml_document<>
 #include "rapidxml_if.h"
 

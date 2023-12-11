@@ -69,6 +69,8 @@ public:
 	int32_t loadXmlComment(const rapidxml::node_t* Node);
 	int32_t saveXmlComment(rapidxml::document_t &Doc ,rapidxml::node_t* Node) const;
 
+	// ƒRƒƒ“ƒg•\¦
+	void SendComment(const std::wstring &Txt);
 
 protected:
 	int32_t					m_LoopNum;

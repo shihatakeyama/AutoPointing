@@ -16,6 +16,8 @@
 #include "WorkTouchs.h"
 #include "WorkWait.h"
 
+
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // クラス名のリスト
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -87,7 +89,6 @@ int32_t WorkBase::touchPointAndDelay(const TouchPoint *Point)
 	// RUN中であればタッチ操作します。
 	if(isLife()){
 		ack = AP_pointingDesiredWindow(CPoint(Point->x,Point->y));
-		if (ack < ERC_ok)	return ack;
 	}
 
 	delay(Point->delay);
@@ -238,6 +239,7 @@ int32_t WorkBase::saveXmlLoop_n(rapidxml::document_t &Doc ,rapidxml::node_t* Nod
 	return ERC_ok;
 }
 
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // コメント
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -261,3 +263,5 @@ int32_t WorkBase::saveXmlComment(rapidxml::document_t &Doc ,rapidxml::node_t* No
 
 	return ERC_ok;
 }
+
+

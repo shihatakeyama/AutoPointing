@@ -44,6 +44,7 @@ protected:
 	// í«â¡
 	afx_msg LRESULT OnUpdatedataA(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnShowVersion(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnComment(WPARAM wParam, LPARAM lParam);
 
 	DECLARE_MESSAGE_MAP()
 public:
@@ -69,7 +70,8 @@ public:
 	afx_msg void OnBnClickedButtonStop();
 	CButton m_Start;
 	CButton m_Stop;
-//--	afx_msg void OnBnClickedButton2();
+
+
 	// Comî‘çÜëIë
 	afx_msg void OnBnClickedButtonComserch();
 	CComboBox m_ComPortCombo;

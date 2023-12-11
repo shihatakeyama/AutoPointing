@@ -37,7 +37,7 @@
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 Uint32 OperationThread(void* Arg)
 {
-	uint32_t seed  = time( NULL );		// スレッド中でrand()する場合は当スレッド中でsrand()しないとsrandが効かない。？
+	uint32_t seed = static_cast<uint32_t>(time(NULL));		// スレッド中でrand()する場合は当スレッド中でsrand()しないとsrandが効かない。？
 	srand(seed);  
 
 	while (gOperationThread.isLife()){

@@ -15,12 +15,14 @@
 
 
 // ソフトバージョン
-#define		SOFT_VERSION	0x04237230
+#define		SOFT_VERSION	0x0423C110
+
+#define		SPY_MODE		1		// 外部から自ウインドウ名をキャプチャされるのを防ぐ
 
 
 #define TRX_BUF_SIZE   	32
 #define RX_TIMEOUT		400
-#define CR				0x0D	// コマンド終端
+#define CR				0x0D		// コマンド終端
 
 // #define WINDOW_NAME	_T("AutoPointing")
 
@@ -73,9 +75,10 @@ enum E_ReturnCode {
 	ERC_othererr	= -99
 };
 
-
+// ユーザー使用メッセージID
 #define WM_UPDATEDATA	(WM_APP+100)
 #define WM_SHOW_VERSION (WM_APP+101)
+#define WM_COMMENT		(WM_APP+102)
 
 
 #endif // #ifndef AM_DEFIN_H

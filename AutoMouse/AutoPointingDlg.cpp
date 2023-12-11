@@ -150,6 +150,7 @@ BEGIN_MESSAGE_MAP(CAutoPointingDlg, CDialogEx)
 	// 追加
 	ON_MESSAGE(WM_UPDATEDATA, OnUpdatedataA)
 	ON_MESSAGE(WM_SHOW_VERSION, OnShowVersion)
+	ON_MESSAGE(WM_COMMENT	,OnComment)
 
 	ON_BN_CLICKED(IDC_BUTTON_START, &CAutoPointingDlg::OnBnClickedButtonStart)
 	ON_BN_CLICKED(IDC_BUTTON_STOP, &CAutoPointingDlg::OnBnClickedButtonStop)
@@ -255,12 +256,25 @@ BOOL CAutoPointingDlg::OnInitDialog()
 	m_CbrCom[1].CreateSolidBrush(RGB(0x00, 0x00, 0xFF)); 
 
 	// ターゲットウインドウ名をGUIへ反映
-//	m_TargetWindowName = gTargetWindowName.c_str();
+#if SPY_MODE == 0
+	m_TargetWindowName = gTargetWindowName.c_str();
+#elif SPY_MODE == 1
 	m_TargetWindowName = gTargetWindowName[0];	// 外部からのハッキング対策 1文字のみ反映
+#endif
+
+	// ダイアログウインドウ名設定
+#if SPY_MODE == 0
+	SetWindowText(_T("AutoPointing"));
+#elif SPY_MODE == 1
+	SetWindowText(_T("AP"));
+#endif
+
 
 
 	// **** 各種スレッド起動 ****
 //--	gMouseThread.beginThread(MousePointThread ,NULL ,FALSE);
+
+
 
 	gOperationThread.beginThread(OperationThread ,NULL ,FALSE);
 
@@ -785,6 +799,24 @@ LRESULT CAutoPointingDlg::OnShowVersion(WPARAM wParam, LPARAM lParam)
 	return 0; // メッセージ固有の戻り値を返す
 }
 
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+// コメント表示
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+void WorkBase::SendComment(const std::wstring &Txt)
+{
+	const WCHAR *pc = Txt.c_str();
+
+	SendMessageA(pAutoPointingDlg->m_hWnd, WM_COMMENT, reinterpret_cast<WPARAM>(pc), 0);
+}
+
+LRESULT CAutoPointingDlg::OnComment(WPARAM wParam, LPARAM lParam)
+{
+	::SetDlgItemText(m_hWnd, IDC_STATIC_COMMENT, reinterpret_cast<WCHAR*>(wParam));
+
+
+	return 0;
+}
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // ボタン押された
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -827,6 +859,13 @@ void CAutoPointingDlg::OnBnClickedButtonStart()
 {
 	int32_t curpos,ack;
 
+
+	if (gWorks.size() < gWorkIndex){
+		MessageBox(_T("稼働条件が見つかりません。"), gApplicatonName.c_str(), MB_OK | MB_ICONSTOP);
+		return;
+	}
+
+
 	if(!gCom.isOpened()){
 		openCom();
 	}
@@ -844,11 +883,13 @@ void CAutoPointingDlg::OnBnClickedButtonStart()
 	AM_setDisplayResolution(rec.right ,rec.bottom);
 //	AM_click(321 ,421);
 
+#if 1	// ターゲットウインドウが存在するかチェック
 	ack = getTargetWindowPos(rec);
 	if(ack < 0){
 		MessageBox(_T("ターゲットウインドウが見つかりません。"), gApplicatonName.c_str(), MB_OK | MB_ICONSTOP);
 		return;
 	}
+#endif
 
 	curpos = m_OperationSel.GetCurSel();
 
@@ -1039,6 +1080,16 @@ void CAutoPointingDlg::setGuiEndtime(int DistanceSec)
 	m_StrEndTime.Format(_T("%d/%02d/%02d %02d:%02d:%02d"), s_tm.tm_year + 1900, s_tm.tm_mon + 1, s_tm.tm_mday, s_tm.tm_hour, s_tm.tm_min, s_tm.tm_sec);
 }
 
+#include "MyTemplate.h"
+
+typedef MyTemplateA<TCHAR> mta_t;
+
+template <class T>
+void MyTemplate<T>::printValue(T value) {
+	std::cout << "Value: " << value << std::endl;
+}
+
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // ウインドウがアクティブになった
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -1050,9 +1101,22 @@ void CAutoPointingDlg::OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized)
 //		gAddSleep = 6;		// アクティブになってから少しウエイトして、操作の人間の時間与える
 		APD_SleepAppend(gActivePauseTime);
 
+
+		mta_t mt;
+
+		mt.printValueA(44);
+
 	}
 
 }
+
+
+
+//template class MyTemplate<int>;  // int型に対する具体化
+
+
+
+
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // デジタイザのバージョン をメインスレッドへ通知
@@ -1062,4 +1126,8 @@ void recvVersion(const uint8_t *Data, uint8_t Len)
 	Uint32 ver = Uint8ArrowToUint32(&Data[2]);
 
 	pAutoPointingDlg->PostMessage(WM_SHOW_VERSION, ver);
+
+
 }
+
+

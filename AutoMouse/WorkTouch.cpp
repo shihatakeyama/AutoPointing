@@ -38,6 +38,13 @@ int32_t WorkTouch::proc()
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 int32_t	WorkTouch::procOne()
 {
+//	setGuiComment(m_Comment);
+	SendComment(m_Comment);
+
+	if (!m_Comment.empty()){
+		TRACE(m_Comment.c_str());
+	}
+
 	return touchPointAndDelay(m_TouchPoint);
 }
 
@@ -48,6 +55,7 @@ int32_t WorkTouch::loadXmlNode(const rapidxml::node_t* Node)
 {
 	loadTouchPoint(Node, m_TouchPoint);
 	loadXmlLoop_n(Node);
+	loadXmlComment(Node);
 
 	
 
@@ -59,6 +67,7 @@ int32_t WorkTouch::saveXmlNode(rapidxml::document_t &Doc ,rapidxml::node_t *&Nod
 
 	saveTouchPoint(Doc ,Node, m_TouchPoint);
 	saveXmlLoop_n(Doc, Node);
+	saveXmlComment(Doc, Node);
 
 	return ERC_ok;
 }
