@@ -1075,6 +1075,16 @@ void CAutoPointingDlg::setGuiEndtime(int DistanceSec)
 	m_StrEndTime.Format(_T("%d/%02d/%02d %02d:%02d:%02d"), s_tm.tm_year + 1900, s_tm.tm_mon + 1, s_tm.tm_mday, s_tm.tm_hour, s_tm.tm_min, s_tm.tm_sec);
 }
 
+#include "MyTemplate.h"
+
+typedef MyTemplateA<TCHAR> mta_t;
+
+template <class T>
+void MyTemplate<T>::printValue(T value) {
+	std::cout << "Value: " << value << std::endl;
+}
+
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // ウインドウがアクティブになった
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -1086,9 +1096,22 @@ void CAutoPointingDlg::OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized)
 //		gAddSleep = 6;		// アクティブになってから少しウエイトして、操作の人間の時間与える
 		APD_SleepAppend(gActivePauseTime);
 
+
+		mta_t mt;
+
+		mt.printValueA(44);
+
 	}
 
 }
+
+
+
+//template class MyTemplate<int>;  // int型に対する具体化
+
+
+
+
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // デジタイザのバージョン をメインスレッドへ通知
@@ -1098,4 +1121,8 @@ void recvVersion(const uint8_t *Data, uint8_t Len)
 	Uint32 ver = Uint8ArrowToUint32(&Data[2]);
 
 	pAutoPointingDlg->PostMessage(WM_SHOW_VERSION, ver);
+
+
 }
+
+

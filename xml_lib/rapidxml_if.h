@@ -15,6 +15,12 @@
 
 namespace rapidxml{
 
+//	class base_t;
+//	class attribute_t;
+//	class node_t;
+//	class document_t;
+
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // 各種型定義
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -26,6 +32,8 @@ typedef	xml_attribute<char_t>	attribute_t;
 typedef std::wstring			string_t;
 typedef std::wofstream			ofstream_t;
 typedef std::wifstream			ifstream_t;
+
+
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // 本ライブラリのバージョン
