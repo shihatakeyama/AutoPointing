@@ -33,6 +33,8 @@ int32_t	WorkTouchs::procOne()
 	int32_t ack = ERC_ok;
 	if(m_TouchPoints.size() == 0)	return ERC_ng;
 
+//	SendComment(m_Comment);
+
 	switch(m_Mode){
 	case EPTM_each:
 		for(i=0;i<m_TouchPoints.size();i++){
@@ -88,6 +90,7 @@ int32_t WorkTouchs::loadXmlNode(const rapidxml::node_t* Node)
 	}
 #endif
 	loadXmlLoop_n(Node);
+	loadXmlComment(Node);
 
 	return ERC_ok;
 }
@@ -105,6 +108,7 @@ int32_t WorkTouchs::saveXmlNode(rapidxml::document_t &Doc ,rapidxml::node_t *&No
 	}
 
 	saveXmlLoop_n(Doc, Node);
+	saveXmlComment(Doc, Node);
 
 	return ERC_ok;
 }
