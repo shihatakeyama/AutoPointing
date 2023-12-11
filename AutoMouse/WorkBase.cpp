@@ -239,6 +239,7 @@ int32_t WorkBase::saveXmlLoop_n(rapidxml::document_t &Doc ,rapidxml::node_t* Nod
 	return ERC_ok;
 }
 
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // ÉRÉÅÉìÉg
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

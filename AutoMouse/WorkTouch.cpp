@@ -57,6 +57,8 @@ int32_t WorkTouch::loadXmlNode(const rapidxml::node_t* Node)
 	loadXmlLoop_n(Node);
 	loadXmlComment(Node);
 
+	
+
 	return ERC_ok;
 }
 int32_t WorkTouch::saveXmlNode(rapidxml::document_t &Doc ,rapidxml::node_t *&Node) const
