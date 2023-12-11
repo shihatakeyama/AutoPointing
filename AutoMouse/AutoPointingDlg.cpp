@@ -150,6 +150,7 @@ BEGIN_MESSAGE_MAP(CAutoPointingDlg, CDialogEx)
 	// 追加
 	ON_MESSAGE(WM_UPDATEDATA, OnUpdatedataA)
 	ON_MESSAGE(WM_SHOW_VERSION, OnShowVersion)
+	ON_MESSAGE(WM_COMMENT	,OnComment)
 
 	ON_BN_CLICKED(IDC_BUTTON_START, &CAutoPointingDlg::OnBnClickedButtonStart)
 	ON_BN_CLICKED(IDC_BUTTON_STOP, &CAutoPointingDlg::OnBnClickedButtonStop)
@@ -272,6 +273,8 @@ BOOL CAutoPointingDlg::OnInitDialog()
 
 	// **** 各種スレッド起動 ****
 //--	gMouseThread.beginThread(MousePointThread ,NULL ,FALSE);
+
+
 
 	gOperationThread.beginThread(OperationThread ,NULL ,FALSE);
 
@@ -791,6 +794,24 @@ LRESULT CAutoPointingDlg::OnShowVersion(WPARAM wParam, LPARAM lParam)
 	return 0; // メッセージ固有の戻り値を返す
 }
 
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+// コメント表示
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+void WorkBase::SendComment(const std::wstring &Txt)
+{
+	const WCHAR *pc = Txt.c_str();
+
+	SendMessageA(pAutoPointingDlg->m_hWnd, WM_COMMENT, reinterpret_cast<WPARAM>(pc), 0);
+}
+
+LRESULT CAutoPointingDlg::OnComment(WPARAM wParam, LPARAM lParam)
+{
+	::SetDlgItemText(m_hWnd, IDC_STATIC_COMMENT, reinterpret_cast<WCHAR*>(wParam));
+
+
+	return 0;
+}
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // ボタン押された
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -833,6 +854,13 @@ void CAutoPointingDlg::OnBnClickedButtonStart()
 {
 	int32_t curpos,ack;
 
+
+	if (gWorks.size() < gWorkIndex){
+		MessageBox(_T("稼働条件が見つかりません。"), gApplicatonName.c_str(), MB_OK | MB_ICONSTOP);
+		return;
+	}
+
+
 	if(!gCom.isOpened()){
 		openCom();
 	}
@@ -850,11 +878,13 @@ void CAutoPointingDlg::OnBnClickedButtonStart()
 	AM_setDisplayResolution(rec.right ,rec.bottom);
 //	AM_click(321 ,421);
 
+#if 1	// ターゲットウインドウが存在するかチェック
 	ack = getTargetWindowPos(rec);
 	if(ack < 0){
 		MessageBox(_T("ターゲットウインドウが見つかりません。"), gApplicatonName.c_str(), MB_OK | MB_ICONSTOP);
 		return;
 	}
+#endif
 
 	curpos = m_OperationSel.GetCurSel();
 
