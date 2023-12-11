@@ -236,5 +236,28 @@ int32_t WorkBase::saveXmlLoop_n(rapidxml::document_t &Doc ,rapidxml::node_t* Nod
 	}
 
 	return ERC_ok;
+}
 
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+// ÉRÉÅÉìÉg
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+int32_t WorkBase::loadXmlComment(const rapidxml::node_t* Node)
+{
+	rapidxml::string_t str;
+	rapidxml::attribute_t *attr;
+
+	attr = rapidxml::first_attribute(Node, _T("comment"), str);
+	if (attr != nullptr){
+		m_Comment = str;
+	}
+
+	return ERC_ok;
+}
+int32_t WorkBase::saveXmlComment(rapidxml::document_t &Doc ,rapidxml::node_t* Node) const
+{
+	if (!m_Comment.empty()){
+		rapidxml::append_attribute(Doc, Node, _T("comment"), m_Comment.c_str());
+	}
+
+	return ERC_ok;
 }
