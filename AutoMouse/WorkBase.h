@@ -65,9 +65,14 @@ public:
 	int32_t loadXmlLoop_n(const rapidxml::node_t* Node);
 	int32_t saveXmlLoop_n(rapidxml::document_t &Doc ,rapidxml::node_t* Node) const;
 
+	// ÉRÉÅÉìÉg
+	int32_t loadXmlComment(const rapidxml::node_t* Node);
+	int32_t saveXmlComment(rapidxml::document_t &Doc ,rapidxml::node_t* Node) const;
+
 
 protected:
 	int32_t					m_LoopNum;
+	std::wstring			m_Comment;
 	const static TCHAR		*m_ProcNames[];
 
 private:
