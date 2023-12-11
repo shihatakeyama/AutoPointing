@@ -50,7 +50,7 @@
 
 // XML 
 #define USE_XML
-#include "rapidxml.hpp"
+#include "rapidxml.h"
 #include "rapidxml_utils.hpp"
 #include "rapidxml_iterators.hpp"
 #include "rapidxml_std.hpp"
