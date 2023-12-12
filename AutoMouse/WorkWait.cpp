@@ -52,7 +52,7 @@ int32_t WorkWait::loadXmlNode(const rapidxml::node_t* Child)
 }
 int32_t WorkWait::saveXmlNode(rapidxml::document_t &Doc ,rapidxml::node_t *&Node) const
 {
-	Node = rapidxml::allocate_node(Doc);
+	Node = Doc.allocate_node(rapidxml::node_element);
 
 	rapidxml::append_attribute(Doc, Node, _T("delay"), m_WaitMsec);
 	saveXmlLoop_n(Doc, Node);

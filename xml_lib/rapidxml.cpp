@@ -11,6 +11,8 @@
 #include <string>
 #include <cstring>
 
+
+//--#include "rapidxml_define.h"
 //#include "rapidxml_if.h"
 
 //#include "rapidxml.h"
@@ -31,9 +33,6 @@
 //--{
 
 //--public:
-
-
-
 
 namespace rapidxml{
 
@@ -1030,6 +1029,61 @@ namespace rapidxml{
 	}
 
 
+
+	///////////////////////////////////////////////////////////////////////////
+	// XML document
+
+
+	//! Constructs empty XML document
+	template <>
+	xml_document<Ch>::xml_document()
+		: xml_node<Ch>(node_document)
+	{
+	}
+	/*
+	template <>
+	void xml_document<Ch>::parse(Ch *text)
+	{
+		assert(text);
+
+		// Remove current contents
+		this->remove_all_nodes();
+		this->remove_all_attributes();
+
+		// Parse BOM, if any
+		parse_bom<Flags>(text);
+
+		// Parse children
+		while (1)
+		{
+			// Skip whitespace before node
+			skip<whitespace_pred, Flags>(text);
+			if (*text == 0)
+				break;
+
+			// Parse and append new child
+			if (*text == Ch('<'))
+			{
+				++text;     // Skip '<'
+				if (xml_node<Ch> *node = parse_node<Flags>(text))
+					this->append_node(node);
+			}
+			else
+				RAPIDXML_PARSE_ERROR("expected <", text);
+		}
+
+	}
+	*/
+
+	//! Clears the document by deleting all nodes and clearing the memory pool.
+	//! All nodes owned by document pool are destroyed.
+	template <>
+	void xml_document<Ch>::clear()
+	{
+		this->remove_all_nodes();
+		this->remove_all_attributes();
+		memory_pool<Ch>::clear();
+	}
 
 
 };

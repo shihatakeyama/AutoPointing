@@ -39,10 +39,10 @@
     <ClInclude Include="rapidxml_if.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="rapidxml_old.h">
+    <ClInclude Include="rapidxml.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="rapidxml.h">
+    <ClInclude Include="rapidxml_define.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

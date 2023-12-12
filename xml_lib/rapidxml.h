@@ -860,10 +860,7 @@ namespace rapidxml
     public:
 
         //! Constructs empty XML document
-        xml_document()
-            : xml_node<Ch>(node_document)
-        {
-        }
+		xml_document();
 
         //! Parses zero-terminated XML string according to given flags.
         //! Passed string will be modified by the parser, unless rapidxml::parse_non_destructive flag is used.
@@ -877,7 +874,7 @@ namespace rapidxml
         //! Each new call to parse removes previous nodes and attributes (if any), but does not clear memory pool.
         //! \param text XML data to parse; pointer is non-const to denote fact that this data may be modified by the parser.
         template<int Flags>
-        void parse(Ch *text)
+		void parse(Ch *text)
         {
             assert(text);
             
@@ -911,12 +908,12 @@ namespace rapidxml
 
         //! Clears the document by deleting all nodes and clearing the memory pool.
         //! All nodes owned by document pool are destroyed.
-        void clear()
-        {
+		void clear();
+/*        {
             this->remove_all_nodes();
             this->remove_all_attributes();
             memory_pool<Ch>::clear();
-        }
+        }*/
         
     private:
 
