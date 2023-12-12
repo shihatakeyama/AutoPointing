@@ -412,7 +412,7 @@ int32_t CAutoPointingDlg::loadXml(const TCHAR *Path)
 
 	rapidxml::first_node(root, _T("title"), gTitle);
 
-	node = rapidxml::first_node(root, _T("target"));
+	node = root->first_node(_T("target"));	//  rapidxml::first_node(root, _T("target"));
 	if (node){
 		rapidxml::first_attribute(node, _T("window_name"), gTargetWindowName);
 		rapidxml::first_attribute(node, _T("x"), val);	gBasePoint.x = val;
@@ -420,13 +420,13 @@ int32_t CAutoPointingDlg::loadXml(const TCHAR *Path)
 	}
 
 	// ウインドウ内収まりチェック
-	node = rapidxml::first_node(root, _T("inside"));
+	node = root->first_node(_T("inside"));	//   rapidxml::first_node(root, _T("inside"));
 	if (node){
 		rapidxml::first_attribute_check(node, gInsideCheck);
 	}
 
 	// ウインドウ表示初期位置
-	node = rapidxml::first_node(root, _T("window"));
+	node = root->first_node(_T("window"));	//   rapidxml::first_node(root, _T("window"));
 	if (node){
 		rapidxml::attribute_t *attr;
 
@@ -444,13 +444,13 @@ int32_t CAutoPointingDlg::loadXml(const TCHAR *Path)
 	}
 
 	// COM
-	node = rapidxml::first_node(root, _T("com"));
+	node = root->first_node(_T("com"));
 	if (node){
 		gCom.loadXmlNode(node);
 	}
 
 	// ブレ
-	node = rapidxml::first_node(root, _T("blur"));
+	node = root->first_node(_T("blur"));
 	if (node == nullptr){
 		gBurePoint = CPoint(4, 4);
 		gBureTime = 4;
@@ -462,13 +462,13 @@ int32_t CAutoPointingDlg::loadXml(const TCHAR *Path)
 	}
 
 	// アクティブ時のポーズ
-	node = rapidxml::first_node(root, _T("active"));
+	node = root->first_node(_T("active"));
 	if (node){
 		rapidxml::first_attribute(node, _T("pause_time"), gActivePauseTime);
 	}
 
 	// 終了時刻
-	node = rapidxml::first_node(root, _T("end_time"));
+	node = root->first_node(_T("end_time"));
 	if (node == nullptr){
 	}
 	else{
@@ -479,7 +479,7 @@ int32_t CAutoPointingDlg::loadXml(const TCHAR *Path)
 	}
 
 	// ワーク読み込み
-	rapidxml::node_t *work = rapidxml::first_node(root, _T("works"));
+	rapidxml::node_t *work = root->first_node(_T("works"));
 	if (work == nullptr){
 		throw std::wstring(_T("XML にworks タグがありません。"));
 	}
@@ -535,7 +535,7 @@ int32_t CAutoPointingDlg::saveXml(const TCHAR *Path)
 {
 	int32_t ack;
 	rapidxml::document_t doc;
-	rapidxml::node_t *root = rapidxml::allocate_node(doc, gApplicatonName.c_str());
+	rapidxml::node_t *root = doc.allocate_node(rapidxml::node_element ,gApplicatonName.c_str());
 	rapidxml::node_t *node;
 
 	rapidxml::append_attribute(doc, root, _T("version"), _T("1.0"));
@@ -583,8 +583,9 @@ int32_t CAutoPointingDlg::saveXml(const TCHAR *Path)
 	// COM
 	GnrlComList::getGuiPortNo(m_ComPortCombo, gCom);
 	gCom.saveXmlNode(doc ,node);
-	rapidxml::name(node, _T("com"));
-	rapidxml::append_node(root, node);
+	node->name(_T("com"));
+//--	rapidxml::append_node(root, node);
+	root->append_node(node);
 
 	// ブレ
 	node = rapidxml::append_node(doc ,root , _T("blur"));

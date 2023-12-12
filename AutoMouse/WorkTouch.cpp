@@ -63,7 +63,7 @@ int32_t WorkTouch::loadXmlNode(const rapidxml::node_t* Node)
 }
 int32_t WorkTouch::saveXmlNode(rapidxml::document_t &Doc ,rapidxml::node_t *&Node) const
 {
-	Node = rapidxml::allocate_node(Doc);
+	Node = Doc.allocate_node(rapidxml::node_element);
 
 	saveTouchPoint(Doc ,Node, m_TouchPoint);
 	saveXmlLoop_n(Doc, Node);

@@ -155,7 +155,7 @@ int32_t WorkBase::loadWorkList(std::vector<WorkBase*>	&List, rapidxml::node_t* P
 		List.push_back(proc);
 		WorkNames.push_back(name);
 
-		node = rapidxml::next_sibling(node);
+		node = node->next_sibling();
 	}
 
 
@@ -169,10 +169,10 @@ int32_t WorkBase::saveWorkList(const std::vector<WorkBase*> &List, rapidxml::doc
 
 	for (uint32_t i = 0; i<List.size(); i++){
 		List[i]->saveXmlNode(Doc ,node);
-		rapidxml::name(node, _T("work"));
-		rapidxml::attribute_t *attr = rapidxml::allocate_attribute(Doc ,_T("name"), WorkNames[i].c_str());
-		rapidxml::insert_attribute(node ,rapidxml::first_attribute(node) ,attr);	// ノードの初めの方にアトリビュートを追加
-		rapidxml::append_node(ProcessXml, node);
+		node->name(_T("work"));
+		rapidxml::attribute_t *attr = Doc.allocate_attribute(_T("name"), WorkNames[i].c_str());
+		node->insert_attribute(node->first_attribute(), attr);	// ノードの初めの方にアトリビュートを追加
+		ProcessXml->append_node(node);
 	}
 
 	return ERC_ok;

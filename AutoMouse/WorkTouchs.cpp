@@ -74,7 +74,7 @@ int32_t WorkTouchs::loadXmlNode(const rapidxml::node_t* Node)
 
 #if 1
 	// ƒvƒƒZƒX‚Ì”“Ç‚Ýž‚Ý
-	const rapidxml::node_t* itr = rapidxml::first_node(Node);
+	const rapidxml::node_t* itr = Node->first_node();	//-- rapidxml::first_node(Node);
 	while(itr){
 		int32_t idx;
 		WorkBase *wb;
@@ -86,7 +86,7 @@ int32_t WorkTouchs::loadXmlNode(const rapidxml::node_t* Node)
 		wb->loadXmlNode(itr);
 		m_TouchPoints.push_back(wb);
 		
-		itr = rapidxml::next_sibling(itr);
+		itr = itr->next_sibling();
 	}
 #endif
 	loadXmlLoop_n(Node);
@@ -96,15 +96,16 @@ int32_t WorkTouchs::loadXmlNode(const rapidxml::node_t* Node)
 }
 int32_t WorkTouchs::saveXmlNode(rapidxml::document_t &Doc ,rapidxml::node_t *&Node) const
 {
-	Node = rapidxml::allocate_node(Doc);
+	Node = Doc.allocate_node(rapidxml::node_element);
 	rapidxml::append_attribute(Doc, Node, _T("type"), m_ModeNames[m_Mode]);
 
 	for (uint32_t i = 0; i<m_TouchPoints.size(); i++){
 		const WorkBase *wb = m_TouchPoints[i];
 		rapidxml::node_t *child;	//  = rapidxml::append_node(Doc, Node, wb->getProcName());
 		wb->saveXmlNode(Doc, child);
-		rapidxml::name(child, wb->getProcName());
-		rapidxml::append_node(Node, child);
+		child->name(wb->getProcName());
+//--		rapidxml::append_node(Node, child);
+		Node->append_node(child);
 	}
 
 	saveXmlLoop_n(Doc, Node);
