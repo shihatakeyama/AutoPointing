@@ -49,7 +49,6 @@ extern bool							gInsideCheck;
 extern int32_t						gWindowDenominator;
 extern CPoint						gWindowPos;
 extern CPoint						gBasePoint;
-extern CPoint						gBurePoint;
 extern int32_t						gBureTime;
 extern int32_t						gSpinTime;
 
@@ -65,6 +64,7 @@ extern int32_t						gWorkIndex;
 // äeéÌê›íË
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 extern CPoint						gBurePoint;
+extern CPoint						gWindowMargin;
 extern int32_t						gBureTime;
 extern int32_t						gNowTime[];
 

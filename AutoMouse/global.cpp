@@ -50,7 +50,8 @@ bool						gInsideCheck = true;			// ポイント位置がウインドウ枠内に収まっているか
 int32_t						gWindowDenominator=100;
 CPoint						gWindowPos;
 CPoint						gBasePoint;		// Pointing オフセット
-CPoint						gBurePoint = CPoint(4,4);
+CPoint						gBurePoint = CPoint(8,8);
+CPoint						gWindowMargin = CPoint(-1,-1);
 int32_t						gBureTime = 4;
 int32_t						gNowTime[3] = { 280, 280, 20 };
 int32_t						gSpinTime = 10;

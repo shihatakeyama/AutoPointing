@@ -15,9 +15,9 @@
 
 
 // ソフトバージョン
-#define		SOFT_VERSION	0x0423C110
+#define		SOFT_VERSION	0x0423C170
 
-#define		SPY_MODE		1		// 外部から自ウインドウ名をキャプチャされるのを防ぐ
+#define		SPY_MODE		0		// 1:外部から自ウインドウ名をキャプチャされるのを防ぐ
 
 
 #define TRX_BUF_SIZE   	32
