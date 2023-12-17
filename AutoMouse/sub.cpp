@@ -79,7 +79,7 @@ void APD_SleepAppend(int32_t msc)
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // Valの値がMinとMaxの範囲内に無ければ、範囲内に収めます。
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-void inside(int32_t &Val ,const int32_t &Min ,const int32_t &Max)
+void limit(int32_t &Val ,const int32_t &Min ,const int32_t &Max)
 {
 	if(Val < Min)	Val = Min;
 	if(Val > Max)	Val = Max;
@@ -110,8 +110,12 @@ int32_t AP_pointingDesiredWindow(const CPoint &Point)
 
 			// 領域内チェック
 			if (gInsideCheck){
-				inside(new_x, rec.left, rec.right);
-				inside(new_y, rec.top, rec.bottom);
+// t-b
+//new_y = 1023;
+//int32_t height = rec.bottom -rec.top;
+// t-e
+				limit(new_x, rec.left, rec.right+gWindowMargin.x);
+				limit(new_y, rec.top, rec.bottom+gWindowMargin.y);
 			}
 
 			ack = AM_click(new_x ,new_y);
