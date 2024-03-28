@@ -217,13 +217,13 @@ int32_t GnrlCom::loadXmlNode(const rapidxml::node_t *Node)
 	if (Node == nullptr)	return ECRC_ng;
 	const rapidxml::node_t *node = Node;
 
-	rapidxml::first_attribute(node ,m_PortNoText	,m_ComNo);
-	rapidxml::first_attribute(node ,m_BaudRateText	,m_BaudRate);
+	node->first_attribute(m_PortNoText, m_ComNo);
+	node->first_attribute(m_BaudRateText, m_BaudRate);
 
-	rapidxml::first_attribute(node ,m_TimeoutText	,m_TimeOut);
-	rapidxml::first_attribute(node ,m_StopbitText	,val);
+	node->first_attribute(m_TimeoutText, m_TimeOut);
+	node->first_attribute(m_StopbitText, val);
 	m_StopBit	= static_cast<enum EStopBit>(val);	
-	rapidxml::first_attribute(node ,m_ParityText	,val);
+	node->first_attribute(m_ParityText, val);
 	m_Parity = static_cast<enum EParity>(val);
 	
 	m_State |= ESTATEBIT_param;
@@ -236,12 +236,12 @@ int32_t GnrlCom::saveXmlNode(rapidxml::document_t &Doc ,rapidxml::node_t *&Node)
 
 	rapidxml::node_t *node = Doc.allocate_node(rapidxml::node_element);
 
-	rapidxml::append_attribute(Doc ,node ,m_PortNoText	,m_ComNo);
-	rapidxml::append_attribute(Doc ,node ,m_BaudRateText,m_BaudRate);
+	node->append_attribute(Doc, m_PortNoText, m_ComNo);
+	node->append_attribute(Doc, m_BaudRateText, m_BaudRate);
 
-	rapidxml::append_attribute(Doc ,node ,m_TimeoutText	,m_TimeOut);
-	rapidxml::append_attribute(Doc ,node ,m_StopbitText	,m_StopBit);
-	rapidxml::append_attribute(Doc ,node ,m_ParityText	,m_Parity);
+	node->append_attribute(Doc, m_TimeoutText, m_TimeOut);
+	node->append_attribute(Doc, m_StopbitText, m_StopBit);
+	node->append_attribute(Doc, m_ParityText, m_Parity);
 
 	Node = node;
 

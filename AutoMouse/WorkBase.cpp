@@ -136,14 +136,14 @@ int32_t WorkBase::loadWorkList(std::vector<WorkBase*>	&List, rapidxml::node_t* P
 
 	// ワークの数だけループします。
 	while (node){
-		rapidxml::attribute_t *attr = rapidxml::first_attribute(node, _T("name"), name);
+		rapidxml::attribute_t *attr = node->first_attribute(_T("name"), name);
 
 		int32_t idx;
 #if 0
 		ack = rapidxml::find_node_name_index(node, m_ProcNames, idx);	// ノード名が _T("works") である事を確認。 
 		if (ack < 0)	break;
 #else
-		ack = rapidxml::comp_node_name(node, _T("work"));
+		ack = node->comp_node_name(_T("work"));
 		if (ack < 0)	throw std::wstring(_T("not work"));
 
 		idx = EPT_touchs;
@@ -196,20 +196,20 @@ int32_t WorkBase::loadTouchPoint(const rapidxml::node_t* Node ,TouchPoint *Point
 {
 	rapidxml::  attribute_t	*attr;
 
-	attr = rapidxml::first_attribute(Node ,_T("x") ,Point->x);
+	attr = Node->first_attribute(_T("x"), Point->x);
 	if(attr == nullptr)	throw _T("x");
-	attr = rapidxml::first_attribute(Node ,_T("y") ,Point->y);
+	attr = Node->first_attribute(_T("y"), Point->y);
 	if(attr == nullptr)	throw _T("y");
-	attr = rapidxml::first_attribute(Node ,_T("delay") ,Point->delay);
+	attr = Node->first_attribute(_T("delay"), Point->delay);
 	if(attr == nullptr)	throw _T("delay");
 
 	return ERC_ok;
 }
 int32_t WorkBase::saveTouchPoint(rapidxml::document_t &Doc ,rapidxml::node_t *Node, const TouchPoint *Point)
 {
-	rapidxml::append_attribute(Doc, Node, _T("x"), Point->x);
-	rapidxml::append_attribute(Doc, Node, _T("y"), Point->y);
-	rapidxml::append_attribute(Doc, Node, _T("delay"), Point->delay);
+	Node->append_attribute(Doc, _T("x"), Point->x);
+	Node->append_attribute(Doc, _T("y"), Point->y);
+	Node->append_attribute(Doc, _T("delay"), Point->delay);
 
 	return ERC_ok;
 }
@@ -222,7 +222,7 @@ int32_t WorkBase::loadXmlLoop_n(const rapidxml::node_t* Node)
 	int32_t n;
 	rapidxml::attribute_t *attr;
 
-	attr = rapidxml::first_attribute(Node, _T("loop_n"), n);
+	attr = Node->first_attribute(_T("loop_n"), n);
 	if (attr != nullptr){
 		m_LoopNum = n;
 	}
@@ -233,7 +233,7 @@ int32_t WorkBase::saveXmlLoop_n(rapidxml::document_t &Doc ,rapidxml::node_t* Nod
 {
 	// ループ1回は出力を省略する。
 	if (m_LoopNum != 1){
-		rapidxml::append_attribute(Doc, Node, _T("loop_n"), m_LoopNum);
+		Node->append_attribute(Doc, _T("loop_n"), m_LoopNum);
 	}
 
 	return ERC_ok;
@@ -248,7 +248,7 @@ int32_t WorkBase::loadXmlComment(const rapidxml::node_t* Node)
 	rapidxml::string_t str;
 	rapidxml::attribute_t *attr;
 
-	attr = rapidxml::first_attribute(Node, _T("comment"), str);
+	attr = Node->first_attribute(_T("comment"), str);
 	if (attr != nullptr){
 		m_Comment = str;
 	}
@@ -258,7 +258,7 @@ int32_t WorkBase::loadXmlComment(const rapidxml::node_t* Node)
 int32_t WorkBase::saveXmlComment(rapidxml::document_t &Doc ,rapidxml::node_t* Node) const
 {
 	if (!m_Comment.empty()){
-		rapidxml::append_attribute(Doc, Node, _T("comment"), m_Comment.c_str());
+		Node->append_attribute(Doc, _T("comment"), m_Comment.c_str());
 	}
 
 	return ERC_ok;

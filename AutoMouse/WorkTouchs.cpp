@@ -66,7 +66,7 @@ int32_t WorkTouchs::loadXmlNode(const rapidxml::node_t* Node)
 	int32_t ack;
 	int32_t val;
 
-	ack = rapidxml::first_attribute_val_index(Node, _T("type"), m_ModeNames, val);
+	ack = Node->first_attribute_val_index(_T("type"), m_ModeNames, val);
 	if(ack < ERC_ok){
 	}else{
 		m_Mode	= static_cast<E_WorkTouchsMode>(val);
@@ -79,7 +79,7 @@ int32_t WorkTouchs::loadXmlNode(const rapidxml::node_t* Node)
 		int32_t idx;
 		WorkBase *wb;
 
-		ack = rapidxml::node_name_index(itr, m_ProcNames, idx);	// ノード名が _T("works") である事を確認。 
+		ack = itr->node_name_index(m_ProcNames, idx);	// ノード名が _T("works") である事を確認。 
 		wb = WorkBase::newProc(static_cast<WorkBase::E_ProcType>(idx));
 		if (wb == nullptr)	throw std::wstring(_T("ワーク名が不一致"));
 
@@ -97,7 +97,7 @@ int32_t WorkTouchs::loadXmlNode(const rapidxml::node_t* Node)
 int32_t WorkTouchs::saveXmlNode(rapidxml::document_t &Doc ,rapidxml::node_t *&Node) const
 {
 	Node = Doc.allocate_node(rapidxml::node_element);
-	rapidxml::append_attribute(Doc, Node, _T("type"), m_ModeNames[m_Mode]);
+	Node->append_attribute(Doc, _T("type"), m_ModeNames[m_Mode]);
 
 	for (uint32_t i = 0; i<m_TouchPoints.size(); i++){
 		const WorkBase *wb = m_TouchPoints[i];

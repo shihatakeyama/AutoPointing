@@ -41,7 +41,7 @@ int32_t WorkWait::loadXmlNode(const rapidxml::node_t* Child)
 	int32_t val;
 	rapidxml::attribute_t *attr;
 
-	attr = rapidxml::first_attribute(Child, _T("delay"), val);
+	attr = Child->first_attribute(_T("delay"), val);
 	if (attr != nullptr){
 		m_WaitMsec = val;
 	}
@@ -54,7 +54,7 @@ int32_t WorkWait::saveXmlNode(rapidxml::document_t &Doc ,rapidxml::node_t *&Node
 {
 	Node = Doc.allocate_node(rapidxml::node_element);
 
-	rapidxml::append_attribute(Doc, Node, _T("delay"), m_WaitMsec);
+	Node->append_attribute(Doc, _T("delay"), m_WaitMsec);
 	saveXmlLoop_n(Doc, Node);
 	saveXmlComment(Doc, Node);
 
