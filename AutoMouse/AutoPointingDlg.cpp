@@ -406,23 +406,23 @@ int32_t CAutoPointingDlg::loadXml(const TCHAR *Path)
 
 
 	rapidxml::node_t *node;
-	if (rapidxml::comp_node_name(root, gApplicatonName.c_str()) != 0){
+	if (root->comp_node_name(gApplicatonName.c_str()) != 0){
 		throw std::wstring(_T("XML の書式が違います"));
 	}
 
-	rapidxml::first_node(root, _T("title"), gTitle);
+	root->first_node(_T("title"), gTitle);
 
 	node = root->first_node(_T("target"));	//  rapidxml::first_node(root, _T("target"));
 	if (node){
-		rapidxml::first_attribute(node, _T("window_name"), gTargetWindowName);
-		rapidxml::first_attribute(node, _T("x"), val);	gBasePoint.x = val;
-		rapidxml::first_attribute(node, _T("y"), val);	gBasePoint.y = val;
+		node->first_attribute(_T("window_name"), gTargetWindowName);
+		node->first_attribute(_T("x"), val);	gBasePoint.x = val;
+		node->first_attribute(_T("y"), val);	gBasePoint.y = val;
 	}
 
 	// ウインドウ内収まりチェック
 	node = root->first_node(_T("inside"));	//   rapidxml::first_node(root, _T("inside"));
 	if (node){
-		rapidxml::first_attribute_check(node, gInsideCheck);
+		node->first_attribute_check(gInsideCheck);
 	}
 
 	// ウインドウ表示初期位置
@@ -432,12 +432,12 @@ int32_t CAutoPointingDlg::loadXml(const TCHAR *Path)
 
 //		attr = rapidxml::first_attribute(node, _T("denominator"), gWindowDenominator);
 
-		attr = rapidxml::first_attribute(node, _T("vpos"), val);
+		attr = node->first_attribute(_T("vpos"), val);
 		if (attr){
 			gWindowPos.x = val;
 		}
 
-		attr = rapidxml::first_attribute(node, _T("hpos"), val);
+		attr = node->first_attribute(_T("hpos"), val);
 		if (attr){
 			gWindowPos.y = val;
 		}
@@ -456,15 +456,15 @@ int32_t CAutoPointingDlg::loadXml(const TCHAR *Path)
 		gBureTime = 4;
 	}
 	else{
-		rapidxml::first_attribute(node, _T("x"), val);	gBurePoint.x = val;
-		rapidxml::first_attribute(node, _T("y"), val);	gBurePoint.y = val;
-		rapidxml::first_attribute(node, _T("time"), val);	gBureTime = val;
+		node->first_attribute(_T("x"), val);	gBurePoint.x = val;
+		node->first_attribute(_T("y"), val);	gBurePoint.y = val;
+		node->first_attribute(_T("time"), val);	gBureTime = val;
 	}
 
 	// アクティブ時のポーズ
 	node = root->first_node(_T("active"));
 	if (node){
-		rapidxml::first_attribute(node, _T("pause_time"), gActivePauseTime);
+		node->first_attribute(_T("pause_time"), gActivePauseTime);
 	}
 
 	// 終了時刻
@@ -472,10 +472,10 @@ int32_t CAutoPointingDlg::loadXml(const TCHAR *Path)
 	if (node == nullptr){
 	}
 	else{
-		rapidxml::first_attribute(node, _T("time0"), gNowTime[0]);
-		rapidxml::first_attribute(node, _T("time1"), gNowTime[1]);
-		rapidxml::first_attribute(node, _T("time2"), gNowTime[2]);
-		rapidxml::first_attribute(node, _T("spin"),	gSpinTime);
+		node->first_attribute(_T("time0"), gNowTime[0]);
+		node->first_attribute(_T("time1"), gNowTime[1]);
+		node->first_attribute(_T("time2"), gNowTime[2]);
+		node->first_attribute(_T("spin") , gSpinTime);
 	}
 
 	// ワーク読み込み
@@ -484,7 +484,7 @@ int32_t CAutoPointingDlg::loadXml(const TCHAR *Path)
 		throw std::wstring(_T("XML にworks タグがありません。"));
 	}
 
-	rapidxml::first_attribute(work, _T("index"), gWorkIndex);
+	work->first_attribute(_T("index"), gWorkIndex);
 	ack = WorkBase::loadWorkList(gWorks, work, gWorkNames);
 	if (gWorkIndex >= static_cast<int32_t>(gWorks.size())){
 		gWorkIndex = 0;
@@ -538,26 +538,27 @@ int32_t CAutoPointingDlg::saveXml(const TCHAR *Path)
 	rapidxml::node_t *root = doc.allocate_node(rapidxml::node_element ,gApplicatonName.c_str());
 	rapidxml::node_t *node;
 
-	rapidxml::append_attribute(doc, root, _T("version"), _T("1.0"));
-	rapidxml::append_attribute(doc, root, _T("encoding"), _T("utf-8"));
+	root->append_attribute(doc, _T("version"), _T("1.0"));
+	root->append_attribute(doc, _T("encoding"), _T("utf-8"));
 
 	// 排他
 	std::lock_guard<std::mutex> lock(gWorkMutex);
 
 	// **** 各種パラメータ書き込み ****
-	rapidxml::append_node(doc ,root, _T("title"), gTitle);
+	root->append_node(doc, _T("title"), gTitle);
 
-	rapidxml::append_node_hex(doc, root, _T("soft_version"), SOFT_VERSION);
+	root->append_node_hex(doc, _T("soft_version"), SOFT_VERSION);
 
-	node = rapidxml::append_node(doc, root, _T("target"));
-//	attr = rapidxml::allocate_attribute(doc, _T("window_name"), gTargetWindowName.c_str());
-	rapidxml::append_attribute(doc ,node , _T("window_name"), gTargetWindowName.c_str());
-	rapidxml::append_attribute(doc, node, _T("x"), gBasePoint.x);
-	rapidxml::append_attribute(doc, node, _T("y"), gBasePoint.y);
+	node = root->append_node(doc, _T("target"));
+
+	node->append_attribute(doc, _T("window_name"), gTargetWindowName);
+	node->append_attribute(doc, _T("x"), gBasePoint.x);
+	node->append_attribute(doc, _T("y"), gBasePoint.y);
 
 	// ウインドウ内収まりチェック
-	node = rapidxml::append_node(doc ,root, _T("inside"));
-	rapidxml::append_attribute_check(doc, node, gInsideCheck);
+	node = root->append_node(doc, _T("inside"));
+
+	node->append_attribute_check(doc, gInsideCheck);
 
 	// ウインドウ表示初期位置
 	{ // 初期ウインドウ位置  ※Dialogの｢プロパティ｣>｢Center｣で値をTRUEにしておかないと中央に戻されてしまう。
@@ -575,10 +576,11 @@ int32_t CAutoPointingDlg::saveXml(const TCHAR *Path)
 		gWindowPos.x	= rect.left * gWindowDenominator / width;
 		gWindowPos.y	= rect.top  * gWindowDenominator / height;
 	}
-	node = rapidxml::append_node(doc, root, _T("window"));
+//	node = rapidxml::append_node(doc, root, _T("window"));
+	node = root->append_node(doc, _T("window"));
 //	rapidxml::append_attribute(doc, node, _T("denominator"), gWindowDenominator);
-	rapidxml::append_attribute(doc, node, _T("vpos"), gWindowPos.x);
-	rapidxml::append_attribute(doc, node, _T("hpos"), gWindowPos.y);
+	node->append_attribute(doc, _T("vpos"), gWindowPos.x);
+	node->append_attribute(doc, _T("hpos"), gWindowPos.y);
 
 	// COM
 	GnrlComList::getGuiPortNo(m_ComPortCombo, gCom);
@@ -588,26 +590,27 @@ int32_t CAutoPointingDlg::saveXml(const TCHAR *Path)
 	root->append_node(node);
 
 	// ブレ
-	node = rapidxml::append_node(doc ,root , _T("blur"));
-	rapidxml::append_attribute(doc, node, _T("x"), gBurePoint.x);
-	rapidxml::append_attribute(doc, node, _T("y"), gBurePoint.y);
-	rapidxml::append_attribute(doc, node, _T("time"), gBureTime);
+//	node = rapidxml::append_node(doc ,root , _T("blur"));
+	node = root->append_node(doc, _T("blur"));
+	node->append_attribute(doc, _T("x"), gBurePoint.x);
+	node->append_attribute(doc, _T("y"), gBurePoint.y);
+	node->append_attribute(doc, _T("time"), gBureTime);
 
 	// アクティブ時のポーズ
-	node = rapidxml::append_node(doc, root, _T("active"));
-	rapidxml::append_attribute(doc, node, _T("pause_time"), gActivePauseTime);
+	node = root->append_node(doc, _T("active"));
+	node->append_attribute(doc, _T("pause_time"), gActivePauseTime);
 
 	// 終了時刻
-	node = rapidxml::append_node(doc,root , _T("end_time"));
-	rapidxml::append_attribute(doc, node, _T("time0"), gNowTime[0]);
-	rapidxml::append_attribute(doc, node, _T("time1"), gNowTime[1]);
-	rapidxml::append_attribute(doc, node, _T("time2"), gNowTime[2]);
-	rapidxml::append_attribute(doc, node, _T("spin"), gSpinTime);
+	node = root->append_node(doc ,_T("end_time"));
+	node->append_attribute(doc, _T("time0"), gNowTime[0]);
+	node->append_attribute(doc, _T("time1"), gNowTime[1]);
+	node->append_attribute(doc, _T("time2"), gNowTime[2]);
+	node->append_attribute(doc, _T("spin"), gSpinTime);
 
 	// ワーク
-	node = rapidxml::append_node(doc, root ,_T("works"));
+	node = root->append_node(doc ,_T("works"));
 	gWorkIndex = m_OperationSel.GetCurSel();
-	rapidxml::append_attribute(doc, node, _T("index"), gWorkIndex);
+	node->append_attribute(doc, _T("index"), gWorkIndex);
 	ack = WorkBase::saveWorkList(gWorks, doc ,node, gWorkNames);
 
 	// XML書き込み
