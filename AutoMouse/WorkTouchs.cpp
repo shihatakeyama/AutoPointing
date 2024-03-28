@@ -66,6 +66,7 @@ int32_t WorkTouchs::loadXmlNode(const rapidxml::node_t* Node)
 	int32_t ack;
 	int32_t val;
 
+	// ランダム / 順番
 	ack = Node->first_attribute_val_index(_T("type"), m_ModeNames, val);
 	if(ack < ERC_ok){
 	}else{
@@ -73,7 +74,7 @@ int32_t WorkTouchs::loadXmlNode(const rapidxml::node_t* Node)
 	}
 
 #if 1
-	// プロセスの数読み込み
+	// touch プロセスの数読み込み
 	const rapidxml::node_t* itr = Node->first_node();	//-- rapidxml::first_node(Node);
 	while(itr){
 		int32_t idx;
