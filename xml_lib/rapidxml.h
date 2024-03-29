@@ -838,7 +838,7 @@ namespace rapidxml
 		xml_attribute<Ch> *append_attribute(xml_document<Ch> &Doc, const Ch *Name, const Ch *Str);
 		xml_attribute<Ch> *append_attribute(xml_document<Ch> &Doc, const Ch *Name, const string_t &Str);
 		xml_attribute<Ch> *append_attribute(xml_document<Ch> &Doc, const Ch *Name, const int32_t &Val);
-		xml_attribute<Ch> *append_attribute(xml_document<Ch> &Doc, const Ch *Name, const uint32_t &Val);
+		xml_attribute<Ch> *append_attribute_u32(xml_document<Ch> &Doc, const Ch *Name, const uint32_t &Val);
 		xml_attribute<Ch> *append_attribute(xml_document<Ch> &Doc, const Ch *Name, const double &Val);
 		xml_attribute<Ch> *append_attribute_hex(xml_document<Ch> &Doc, const Ch *Name, const uint32_t &Val);
 
@@ -847,7 +847,7 @@ namespace rapidxml
 
 		// ノードから ノード / 文字 / 数値 を取得
 		xml_node<Ch> *first_node(const Ch *Name, int32_t &Val) const;
-		xml_node<Ch> *first_node(const Ch *Name, uint32_t &Val) const;
+		xml_node<Ch> *first_node_u32(const Ch *Name, uint32_t &Val) const;
 		xml_node<Ch> *first_node(const Ch *Name, double &Val) const;
 		xml_node<Ch> *first_node_hex(const Ch *Name, uint32_t &Val) const;
 
@@ -856,7 +856,7 @@ namespace rapidxml
 		int32_t first_node_name_index(const Ch *name, const Ch **List, int32_t &Index) const;
 
 		// Node(名)がNameと一致しているか？
-		int32_t comp_node_name(const Ch *Name);
+		int32_t comp_node_name(const Ch *Name) const;
 
 		// ノードからノードを取得する。
 		xml_node *first_node(const Ch *Name, Ch **Str);

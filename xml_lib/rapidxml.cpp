@@ -1139,7 +1139,7 @@ namespace rapidxml{
 		return attr;
 	}
 	template <>
-	xml_attribute<Ch> *xml_node<Ch>::append_attribute(xml_document<Ch> &Doc, const Ch *Name, const uint32_t &Val)
+	xml_attribute<Ch> *xml_node<Ch>::append_attribute_u32(xml_document<Ch> &Doc, const Ch *Name, const uint32_t &Val)
 	{
 		Ch *valoc = Doc.allocate_uint(Val);
 		xml_attribute<Ch>* attr = Doc.allocate_attribute(Name, valoc);
@@ -1184,7 +1184,7 @@ namespace rapidxml{
 		return node;
 	}
 	template <>
-	xml_node<Ch> *xml_node<Ch>::first_node(const Ch *Name, uint32_t &Val) const
+	xml_node<Ch> *xml_node<Ch>::first_node_u32(const Ch *Name, uint32_t &Val) const
 	{
 		xml_node* node = first_node(Name);
 		if (node == nullptr)	return nullptr;
@@ -1247,7 +1247,7 @@ namespace rapidxml{
 	}
 
 	// Node(ñº)Ç™NameÇ∆àÍívÇµÇƒÇ¢ÇÈÇ©ÅH
-	template<> int32_t xml_node<Ch>::comp_node_name(const Ch *Name)
+	template<> int32_t xml_node<Ch>::comp_node_name(const Ch *Name) const
 	{
 		return internal::compare(name(), name_size(), Name, 0, false);
 	}
