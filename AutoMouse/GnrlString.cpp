@@ -50,12 +50,13 @@ int32_t findStringListId(const CString &PurposeName ,const LPCTSTR NameList[])
 int32_t findStringListId(const char *PurposeName ,const char *NameList[] ,bool case_sensitive)
 {
 	int32_t itr = 0;
-	std::size_t	purname_size = rapidxml::internal::measure(PurposeName);
-	std::size_t	listname_size;
+//	std::size_t	purname_size = rapidxml::internal::measure(PurposeName);
+//	std::size_t	listname_size;
 
 	while(*NameList){
-		listname_size	= rapidxml::internal::measure(*NameList);
-		if(rapidxml::internal::compare(*NameList, listname_size, PurposeName, purname_size, case_sensitive)){
+//		listname_size	= rapidxml::internal::measure(*NameList);
+//		if(rapidxml::internal::compare(*NameList, listname_size, PurposeName, purname_size, case_sensitive)){
+		if (strcmp(*NameList, PurposeName)){
 			return itr;
 		}
 

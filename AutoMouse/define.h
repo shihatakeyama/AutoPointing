@@ -15,7 +15,7 @@
 
 
 // ソフトバージョン
-#define		SOFT_VERSION	0x04243281
+#define		SOFT_VERSION	0x04243290
 
 #define		SPY_MODE		0		// 1:外部から自ウインドウ名をキャプチャされるのを防ぐ
 

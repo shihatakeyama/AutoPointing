@@ -144,6 +144,9 @@ namespace rapidxml
 
 namespace rapidxml
 {
+
+	typedef TCHAR Ch;
+
     // Forward declarations
     template<class Ch> class xml_node;
     template<class Ch> class xml_attribute;
@@ -162,6 +165,12 @@ namespace rapidxml
         node_doctype,       //!< A DOCTYPE node. Name is empty. Value contains DOCTYPE text.
         node_pi             //!< A PI node. Name contains target. Value contains instructions.
     };
+
+	enum return_type
+	{
+		ERC_ok			= 0
+		, ERC_no_data	= -3
+	};
 
     ///////////////////////////////////////////////////////////////////////
     // Parsing flags
@@ -317,35 +326,14 @@ namespace rapidxml
         };
 
         // Find length of the string
-        template<class Ch>
-        inline std::size_t measure(const Ch *p)
-        {
-            const Ch *tmp = p;
-            while (*tmp) 
-                ++tmp;
-            return tmp - p;
-        }
+//        template<class Ch>
+		std::size_t measure(const Ch *p);
+
 
         // Compare strings for equality
-        template<class Ch>
-        bool compare(const Ch *p1, std::size_t size1, const Ch *p2, std::size_t size2, bool case_sensitive)
-        {
-            if (size1 != size2)
-                return false;
-            if (case_sensitive)
-            {
-                for (const Ch *end = p1 + size1; p1 < end; ++p1, ++p2)
-                    if (*p1 != *p2)
-                        return false;
-            }
-            else
-            {
-                for (const Ch *end = p1 + size1; p1 < end; ++p1, ++p2)
-                    if (lookup_tables::lookup_upcase[static_cast<unsigned char>(*p1)] != lookup_tables::lookup_upcase[static_cast<unsigned char>(*p2)])
-                        return false;
-            }
-            return true;
-        }
+//        template<class Ch>
+		bool compare(const Ch *p1, std::size_t size1, const Ch *p2, std::size_t size2, bool case_sensitive);
+
     }
     //! \endcond
 
@@ -399,11 +387,7 @@ namespace rapidxml
         
         //! Constructs empty pool with default allocator functions.
 		memory_pool();
-//--            : m_alloc_func(0)
-//--            , m_free_func(0)
-//--        {
-//--            init();
-//--        }
+
 
         //! Destroys pool and frees all the memory. 
         //! This causes memory occupied by nodes allocated by the pool to be freed.
@@ -499,7 +483,7 @@ namespace rapidxml
         alloc_func *m_alloc_func;                           // Allocator function, or 0 if default is to be used
         free_func *m_free_func;                             // Free function, or 0 if default is to be used
     };
-#if 1
+
     ///////////////////////////////////////////////////////////////////////////
     // XML base
 
@@ -854,7 +838,7 @@ namespace rapidxml
 		xml_attribute<Ch> *append_attribute(xml_document<Ch> &Doc, const Ch *Name, const Ch *Str);
 		xml_attribute<Ch> *append_attribute(xml_document<Ch> &Doc, const Ch *Name, const string_t &Str);
 		xml_attribute<Ch> *append_attribute(xml_document<Ch> &Doc, const Ch *Name, const int32_t &Val);
-		xml_attribute<Ch> *append_attribute(xml_document<Ch> &Doc, const Ch *Name, const uint32_t &Val);
+		xml_attribute<Ch> *append_attribute_u32(xml_document<Ch> &Doc, const Ch *Name, const uint32_t &Val);
 		xml_attribute<Ch> *append_attribute(xml_document<Ch> &Doc, const Ch *Name, const double &Val);
 		xml_attribute<Ch> *append_attribute_hex(xml_document<Ch> &Doc, const Ch *Name, const uint32_t &Val);
 
@@ -863,7 +847,7 @@ namespace rapidxml
 
 		// ノードから ノード / 文字 / 数値 を取得
 		xml_node<Ch> *first_node(const Ch *Name, int32_t &Val) const;
-		xml_node<Ch> *first_node(const Ch *Name, uint32_t &Val) const;
+		xml_node<Ch> *first_node_u32(const Ch *Name, uint32_t &Val) const;
 		xml_node<Ch> *first_node(const Ch *Name, double &Val) const;
 		xml_node<Ch> *first_node_hex(const Ch *Name, uint32_t &Val) const;
 
@@ -872,7 +856,7 @@ namespace rapidxml
 		int32_t first_node_name_index(const Ch *name, const Ch **List, int32_t &Index) const;
 
 		// Node(名)がNameと一致しているか？
-		int32_t comp_node_name(const Ch *Name);
+		int32_t comp_node_name(const Ch *Name) const;
 
 		// ノードからノードを取得する。
 		xml_node *first_node(const Ch *Name, Ch **Str);
@@ -925,7 +909,6 @@ namespace rapidxml
         xml_node<Ch> *m_next_sibling;           // Pointer to next sibling of node, or 0 if none; this value is only valid if m_parent is non-zero
 
     };
-#endif
 
     ///////////////////////////////////////////////////////////////////////////
     // XML document
@@ -1053,6 +1036,7 @@ namespace rapidxml
             text = tmp;
         }
 		static void skip_whitespace_pred(Ch *&text);
+		static void skip_node_name_pred(Ch *&text);
 
 
         // Skip characters until predicate evaluates to true while doing the following:

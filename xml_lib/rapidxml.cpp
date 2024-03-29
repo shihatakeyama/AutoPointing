@@ -36,10 +36,10 @@
 
 namespace rapidxml{
 
-	typedef TCHAR Ch;
 
 	const Ch	xml_node<Ch>::CheckText[] = _T("check");
 	const Ch	*xml_node<Ch>::DisaEnaText[] = { _T("disable"), _T("enable") };
+
 
 
 	///////////////////////////////////////////////////////////////////////
@@ -79,15 +79,11 @@ namespace rapidxml{
 	//! to obtain best wasted memory to performance compromise.
 	//! To do it, define their values before rapidxml.hpp file is included.
 	//! \param Ch Character type of created nodes. 
-//--	template<class Ch = char>
-//--	class memory_pool
-//--	{
 
-//--	public:
+
+
 
 		//! \cond internal
-//--		typedef void *(alloc_func)(std::size_t);       // Type of user-defined function used to allocate memory
-//--		typedef void (free_func)(void *);              // Type of user-defined function used to free memory
 		//! \endcond
 
 		//! Constructs empty pool with default allocator functions.
@@ -232,7 +228,7 @@ namespace rapidxml{
 		//! Clears the pool. 
 		//! This causes memory occupied by nodes allocated by the pool to be freed.
 		//! Any nodes or strings allocated from the pool will no longer be valid.
-		template <>
+		template <> 
 		void memory_pool<Ch>::clear()
 		{
 			while (m_begin != m_static_memory)
@@ -599,7 +595,7 @@ namespace rapidxml{
 				i++;
 			}
 
-			return -1;
+			return ERC_no_data;
 		}
 		// Attr(ñº)Ç™NameÇ∆àÍívÇµÇƒÇ¢ÇÈÇ©ÅH
 		int32_t xml_attribute<Ch>::comp_attribute_name(const Ch *Name) const
@@ -1143,7 +1139,7 @@ namespace rapidxml{
 		return attr;
 	}
 	template <>
-	xml_attribute<Ch> *xml_node<Ch>::append_attribute(xml_document<Ch> &Doc, const Ch *Name, const uint32_t &Val)
+	xml_attribute<Ch> *xml_node<Ch>::append_attribute_u32(xml_document<Ch> &Doc, const Ch *Name, const uint32_t &Val)
 	{
 		Ch *valoc = Doc.allocate_uint(Val);
 		xml_attribute<Ch>* attr = Doc.allocate_attribute(Name, valoc);
@@ -1188,7 +1184,7 @@ namespace rapidxml{
 		return node;
 	}
 	template <>
-	xml_node<Ch> *xml_node<Ch>::first_node(const Ch *Name, uint32_t &Val) const
+	xml_node<Ch> *xml_node<Ch>::first_node_u32(const Ch *Name, uint32_t &Val) const
 	{
 		xml_node* node = first_node(Name);
 		if (node == nullptr)	return nullptr;
@@ -1242,7 +1238,7 @@ namespace rapidxml{
 			i++;
 		}
 
-		return -1;
+		return ERC_no_data;
 	}
 	template<> int32_t xml_node<Ch>::first_node_name_index(const Ch *name, const Ch **List, int32_t &Index) const
 	{
@@ -1251,7 +1247,7 @@ namespace rapidxml{
 	}
 
 	// Node(ñº)Ç™NameÇ∆àÍívÇµÇƒÇ¢ÇÈÇ©ÅH
-	template<> int32_t xml_node<Ch>::comp_node_name(const Ch *Name)
+	template<> int32_t xml_node<Ch>::comp_node_name(const Ch *Name) const
 	{
 		return internal::compare(name(), name_size(), Name, 0, false);
 	}
@@ -1533,6 +1529,13 @@ namespace rapidxml{
 		text = tmp;
 	}
 
+	template <> void xml_document<Ch>::skip_node_name_pred(Ch *&text)
+	{
+		Ch *tmp = text;
+		while (node_name_pred::test(*tmp))
+			++tmp;
+		text = tmp;
+	}
 
 
 	// Parse BOM, if any
@@ -1697,7 +1700,7 @@ namespace rapidxml{
 
 			// Extract PI target name
 			Ch *name = text;
-			skip<node_name_pred>(text);
+			skip_node_name_pred(text);
 			if (text == name)
 				RAPIDXML_PARSE_ERROR("expected PI target", text);
 			pi->name(name, text - name);
@@ -1848,7 +1851,7 @@ namespace rapidxml{
 
 		// Extract element name
 		Ch *name = text;
-		skip<node_name_pred>(text);
+		skip_node_name_pred(text);
 		if (text == name)
 			RAPIDXML_PARSE_ERROR("expected element name", text);
 		element->name(name, text - name);
@@ -1999,7 +2002,7 @@ namespace rapidxml{
 					{
 						// Skip and validate closing tag name
 						Ch *closing_name = text;
-						skip<node_name_pred>(text);
+						skip_node_name_pred(text);
 						if (!internal::compare(node->name(), node->name_size(), closing_name, text - closing_name, true)){
 							//								RAPIDXML_PARSE_ERROR("invalid closing tag name", text);
 							RAPIDXML_PARSE_ERROR("closing tag does not match", node->name());	// add by hatakeyama	2023/05/24 
@@ -2008,7 +2011,7 @@ namespace rapidxml{
 					else
 					{
 						// No validation, just skip name
-						skip<node_name_pred>(text);
+						skip_node_name_pred(text);
 					}
 					// Skip remaining whitespace after node name
 					skip_whitespace_pred(text);
@@ -2107,6 +2110,33 @@ namespace rapidxml{
 	//! \cond internal
 	namespace internal
 	{
+		std::size_t measure(const Ch *p)
+		{
+			const Ch *tmp = p;
+			while (*tmp)
+				++tmp;
+			return tmp - p;
+		}
+
+		bool compare(const Ch *p1, std::size_t size1, const Ch *p2, std::size_t size2, bool case_sensitive)
+		{
+			if (size1 != size2)
+				return false;
+			if (case_sensitive)
+			{
+				for (const Ch *end = p1 + size1; p1 < end; ++p1, ++p2)
+					if (*p1 != *p2)
+						return false;
+			}
+			else
+			{
+				for (const Ch *end = p1 + size1; p1 < end; ++p1, ++p2)
+					if (lookup_tables::lookup_upcase[static_cast<unsigned char>(*p1)] != lookup_tables::lookup_upcase[static_cast<unsigned char>(*p2)])
+						return false;
+			}
+			return true;
+		}
+
 
 		// Whitespace (space \n \r \t)
 		const unsigned char lookup_tables::lookup_whitespace[256] =
