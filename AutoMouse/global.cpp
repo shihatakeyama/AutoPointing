@@ -47,6 +47,7 @@ std::vector<AM_Point>		gPointVector;		/// ターゲットウインドウ座標基準
 std::wstring				gTitle;
 std::wstring				gTargetWindowName;
 bool						gInsideCheck = true;			// ポイント位置がウインドウ枠内に収まっているかチェック
+CPoint						gInsideMargin;
 int32_t						gWindowDenominator=100;
 CPoint						gWindowPos;
 CPoint						gBasePoint;		// Pointing オフセット

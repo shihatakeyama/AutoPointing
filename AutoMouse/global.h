@@ -46,6 +46,7 @@ extern std::vector<AM_Point>		gPointVector;		/// ターゲットウインドウ座標基準
 extern std::wstring					gTitle;
 extern std::wstring					gTargetWindowName;
 extern bool							gInsideCheck;
+extern CPoint						gInsideMargin;
 extern int32_t						gWindowDenominator;
 extern CPoint						gWindowPos;
 extern CPoint						gBasePoint;

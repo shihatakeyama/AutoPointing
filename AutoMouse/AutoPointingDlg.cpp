@@ -423,6 +423,8 @@ int32_t CAutoPointingDlg::loadXml(const TCHAR *Path)
 	node = root->first_node(_T("inside"));	//   rapidxml::first_node(root, _T("inside"));
 	if (node){
 		node->first_attribute_check(gInsideCheck);
+		node->first_attribute(_T("margin_x"), gInsideMargin.x);
+		node->first_attribute(_T("margin_y"), gInsideMargin.y);
 	}
 
 	// ウインドウ表示初期位置
@@ -557,8 +559,9 @@ int32_t CAutoPointingDlg::saveXml(const TCHAR *Path)
 
 	// ウインドウ内収まりチェック
 	node = root->append_node(doc, _T("inside"));
-
 	node->append_attribute_check(doc, gInsideCheck);
+	node->append_attribute(doc, _T("margin_x"), gInsideMargin.x);
+	node->append_attribute(doc, _T("margin_y"), gInsideMargin.y);
 
 	// ウインドウ表示初期位置
 	{ // 初期ウインドウ位置  ※Dialogの｢プロパティ｣>｢Center｣で値をTRUEにしておかないと中央に戻されてしまう。
