@@ -114,8 +114,8 @@ int32_t AP_pointingDesiredWindow(const CPoint &Point)
 //new_y = 1023;
 //int32_t height = rec.bottom -rec.top;
 // t-e
-				limit(new_x, rec.left, rec.right+gWindowMargin.x);
-				limit(new_y, rec.top, rec.bottom+gWindowMargin.y);
+				limit(new_x, rec.left, rec.right + gWindowMargin.x - gInsideMargin.x);
+				limit(new_y, rec.top, rec.bottom + gWindowMargin.y - gInsideMargin.y);
 			}
 
 			ack = AM_click(new_x ,new_y);
