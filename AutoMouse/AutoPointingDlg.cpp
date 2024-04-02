@@ -190,8 +190,9 @@ BOOL CAutoPointingDlg::OnInitDialog()
 		pSysMenu->InsertMenu(1, MF_SEPARATOR);
 		pSysMenu->InsertMenu(1, MF_STRING, IDC_LOAD_XML, _T("LOAD"));
 		pSysMenu->InsertMenu(1, MF_STRING, IDC_SAVE_XML, _T("SAVE"));
+		pSysMenu->InsertMenu(1, MF_SEPARATOR);
 		pSysMenu->InsertMenu(1, MF_STRING, IDC_TARGET_SIZE, _T("TARGET SIZE"));
-//++		pSysMenu->InsertMenu(1, MF_STRING, IDC_ADVANCE, _T("ADVANCE"));
+		pSysMenu->InsertMenu(1, MF_STRING, IDC_ADVANCE, _T("ADVANCE"));
 
 		// バージョン情報
 		CString strAboutMenu;
@@ -232,7 +233,8 @@ BOOL CAutoPointingDlg::OnInitDialog()
 	}
 #endif
 
-	{ // 初期ウインドウ位置  ※Dialogの｢プロパティ｣>｢Center｣で値をTRUEにしておかないと中央に戻されてしまう。
+#if 0
+	 // 初期ウインドウ位置  ※Dialogの｢プロパティ｣>｢Center｣で値をTRUEにしておかないと中央に戻されてしまう。
 
 		RECT  rect;
 		int32_t width  = GetSystemMetrics(SM_CXSCREEN);		// スクリーンの幅を取得
@@ -249,8 +251,9 @@ BOOL CAutoPointingDlg::OnInitDialog()
 		int32_t x = gWindowPos.x * width / gWindowDenominator ;
 		int32_t y = gWindowPos.y * height / gWindowDenominator;
 
-		BOOL aaa = SetWindowPos(this ,x ,y ,0 ,0 ,0);	// SWP_NOSIZE|SWP_NOZORDER
-	}
+		BOOL aaa = SetWindowPos(this ,x ,y ,100 ,100 ,SWP_NOMOVE | SWP_NOZORDER);	// SWP_NOSIZE|SWP_NOZORDER
+
+#endif
 
 
 	// 接続ボタンの色
@@ -271,13 +274,7 @@ BOOL CAutoPointingDlg::OnInitDialog()
 	SetWindowText(_T("AP"));
 #endif
 
-
-
 	// **** 各種スレッド起動 ****
-//--	gMouseThread.beginThread(MousePointThread ,NULL ,FALSE);
-
-
-
 	gOperationThread.beginThread(OperationThread ,NULL ,FALSE);
 
 	gRecvThread.beginThread(RecvRootine ,NULL ,FALSE);
@@ -411,7 +408,7 @@ int32_t CAutoPointingDlg::loadXml(const TCHAR *Path)
 
 	root->first_node(_T("title"), gTitle);
 
-	node = root->first_node(_T("target"));	//  rapidxml::first_node(root, _T("target"));
+	node = root->first_node(_T("target"));
 	if (node){
 		node->first_attribute(_T("window_name"), gTargetWindowName);
 		node->first_attribute(_T("x"), val);	gBasePoint.x = val;
@@ -419,7 +416,7 @@ int32_t CAutoPointingDlg::loadXml(const TCHAR *Path)
 	}
 
 	// ウインドウ内収まりチェック
-	node = root->first_node(_T("inside"));	//   rapidxml::first_node(root, _T("inside"));
+	node = root->first_node(_T("inside"));
 	if (node){
 		node->first_attribute_check(gInsideCheck);
 		node->first_attribute(_T("margin_x"), gInsideMargin.x);
@@ -427,7 +424,7 @@ int32_t CAutoPointingDlg::loadXml(const TCHAR *Path)
 	}
 
 	// ウインドウ表示初期位置
-	node = root->first_node(_T("window"));	//   rapidxml::first_node(root, _T("window"));
+	node = root->first_node(_T("window"));
 	if (node){
 		rapidxml::attribute_t *attr;
 
@@ -576,9 +573,7 @@ int32_t CAutoPointingDlg::saveXml(const TCHAR *Path)
 		gWindowPos.x	= rect.left * gWindowDenominator / width;
 		gWindowPos.y	= rect.top  * gWindowDenominator / height;
 	}
-//	node = rapidxml::append_node(doc, root, _T("window"));
 	node = root->append_node(doc, _T("window"));
-//	rapidxml::append_attribute(doc, node, _T("denominator"), gWindowDenominator);
 	node->append_attribute(doc, _T("vpos"), gWindowPos.x);
 	node->append_attribute(doc, _T("hpos"), gWindowPos.y);
 
@@ -586,11 +581,9 @@ int32_t CAutoPointingDlg::saveXml(const TCHAR *Path)
 	GnrlComList::getGuiPortNo(m_ComPortCombo, gCom);
 	gCom.saveXmlNode(doc ,node);
 	node->name(_T("com"));
-//--	rapidxml::append_node(root, node);
 	root->append_node(node);
 
 	// ブレ
-//	node = rapidxml::append_node(doc ,root , _T("blur"));
 	node = root->append_node(doc, _T("blur"));
 	node->append_attribute(doc, _T("x"), gBurePoint.x);
 	node->append_attribute(doc, _T("y"), gBurePoint.y);
@@ -639,11 +632,18 @@ void CAutoPointingDlg::showTargetSize()
 	::SetDlgItemText(m_hWnd, IDC_STATIC_COMMENT, txt.GetBuffer(0));
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-// ウインドウサイズ変更可能にします。
+// ウインドウサイズを大きくします。
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 void CAutoPointingDlg::setAdvance()
 {
-	
+	CRect rect;
+
+	GetWindowRect(&rect);
+
+	rect.bottom = rect.top + 340;
+
+	MoveWindow(rect, TRUE);
+
 }
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -877,8 +877,9 @@ void CAutoPointingDlg::OnBnClickedButton1()
 int32_t getTargetWindowPos(RECT &Rect)
 {
 	LPCTSTR winname = gTargetWindowName.c_str();
+	if((winname == nullptr) || (winname[0] == '\0'))	return -1;
 	HWND hWndChild = ::FindWindowEx(NULL, NULL, NULL, winname);
-	if (hWndChild == NULL) {
+	if (hWndChild == nullptr) {
 		return -1;
 	}
 
@@ -1144,14 +1145,6 @@ void CAutoPointingDlg::OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized)
 	}
 
 }
-
-
-
-//template class MyTemplate<int>;  // int型に対する具体化
-
-
-
-
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // デジタイザのバージョン をメインスレッドへ通知

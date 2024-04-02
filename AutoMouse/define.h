@@ -15,7 +15,7 @@
 
 
 // ソフトバージョン
-#define		SOFT_VERSION	0x04244020
+#define		SOFT_VERSION	0x04244021
 
 #define		SPY_MODE		0		// 1:外部から自ウインドウ名をキャプチャされるのを防ぐ
 
@@ -42,12 +42,6 @@ enum E_WindowPosBit{
 	EWP_left	= 0x04,
 	EWP_hcenter	= 0x08,
 	EWP_right	= 0x0C,
-};
-
-struct AM_Point{	// 旧仕様
-	Sint32 x, y;
-	Sint32 randx, randy;
-	Sint32 wait;
 };
 
 struct TouchPoint{
