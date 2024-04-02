@@ -27,7 +27,6 @@ int randScatter(int CenterVal ,int Width);
 // **** operation_Thread.cpp ****
 uint32_t OperationThread(void* Arg);
 uint32_t RecvRootine(void* Arg);
-int32_t RotatingHorse(const AM_Point *Point, int32_t Len);
 
 
 int32_t APD_sendCommand(Uint8 Comand1 ,Uint8 Comand2 ,const Uint8 *Data ,Uint8 Len);

@@ -42,8 +42,6 @@ int32_t		gActivePauseTime = 5000;
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // 操作リスト。
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-std::vector<AM_Point>		gPointVector;		/// ターゲットウインドウ座標基準
-
 std::wstring				gTitle;
 std::wstring				gTargetWindowName;
 bool						gInsideCheck = true;			// ポイント位置がウインドウ枠内に収まっているかチェック
