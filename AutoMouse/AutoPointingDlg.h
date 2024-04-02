@@ -27,6 +27,8 @@ public:
 	int32_t saveXmlIni();
 	int32_t saveXmlGui();
 	int32_t saveXml(const TCHAR *Path);
+	void showTargetSize();
+	void setAdvance();
 
 protected:
 

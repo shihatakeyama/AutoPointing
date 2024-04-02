@@ -72,10 +72,10 @@ BOOL CAutoPointing::InitInstance()
 	SetRegistryKey(_T("アプリケーション ウィザードで生成されたローカル アプリケーション"));
 
 
+    // すでに起動しているか判定
 	HANDLE    hMSP = CreateMutex(NULL, TRUE, _T("AutoPointingApplication"));
-    /* すでに起動しているか判定 */
     if(GetLastError() == ERROR_ALREADY_EXISTS){
-    /* すでに起動している。*/
+		// すでに起動している。
         MessageBox(NULL ,_T("すでに起動しています。")
 			, gApplicatonName.c_str(), MB_OK);
         ReleaseMutex(hMSP);

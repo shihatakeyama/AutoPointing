@@ -190,6 +190,8 @@ BOOL CAutoPointingDlg::OnInitDialog()
 		pSysMenu->InsertMenu(1, MF_SEPARATOR);
 		pSysMenu->InsertMenu(1, MF_STRING, IDC_LOAD_XML, _T("LOAD"));
 		pSysMenu->InsertMenu(1, MF_STRING, IDC_SAVE_XML, _T("SAVE"));
+		pSysMenu->InsertMenu(1, MF_STRING, IDC_TARGET_SIZE, _T("TARGET SIZE"));
+//++		pSysMenu->InsertMenu(1, MF_STRING, IDC_ADVANCE, _T("ADVANCE"));
 
 		// バージョン情報
 		CString strAboutMenu;
@@ -247,7 +249,7 @@ BOOL CAutoPointingDlg::OnInitDialog()
 		int32_t x = gWindowPos.x * width / gWindowDenominator ;
 		int32_t y = gWindowPos.y * height / gWindowDenominator;
 
-		BOOL aaa = SetWindowPos(this ,x ,y ,0 ,0 ,SWP_NOSIZE|SWP_NOZORDER);
+		BOOL aaa = SetWindowPos(this ,x ,y ,0 ,0 ,0);	// SWP_NOSIZE|SWP_NOZORDER
 	}
 
 
@@ -322,12 +324,9 @@ void CAutoPointingDlg::OnDestroy()
 
 	GnrlComList::clearComList();
 
-//--	clearParam();
 
 	WorkBase::clearProcList(gWorks);
 	gWorkNames.clear();
-
-//	g_Life = 0;
 }
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -431,8 +430,6 @@ int32_t CAutoPointingDlg::loadXml(const TCHAR *Path)
 	node = root->first_node(_T("window"));	//   rapidxml::first_node(root, _T("window"));
 	if (node){
 		rapidxml::attribute_t *attr;
-
-//		attr = rapidxml::first_attribute(node, _T("denominator"), gWindowDenominator);
 
 		attr = node->first_attribute(_T("vpos"), val);
 		if (attr){
@@ -623,6 +620,31 @@ int32_t CAutoPointingDlg::saveXml(const TCHAR *Path)
 	return ack;
 }
 
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+// ユーザーがウインドウサイズ/位置表示要求
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+void CAutoPointingDlg::showTargetSize()
+{
+	RECT rec;
+	int32_t ack;
+	CString	txt;
+
+	ack = getTargetWindowPos(rec);
+	if(ack < 0){
+		txt = _T("----");
+	}else{
+		txt.Format(_T("x=%d y=%d h=%d w=%d") ,rec.right ,rec.top ,rec.bottom-rec.top+1 ,rec.right-rec.left+1);
+	}
+
+	::SetDlgItemText(m_hWnd, IDC_STATIC_COMMENT, txt.GetBuffer(0));
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+// ウインドウサイズ変更可能にします。
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+void CAutoPointingDlg::setAdvance()
+{
+	
+}
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // ユーザーがバージョンボタンクリック
@@ -651,6 +673,12 @@ void CAutoPointingDlg::OnSysCommand(UINT nID, LPARAM lParam)
 		break;
 	case IDC_SAVE_XML:
 		saveXmlGui();
+		break;
+	case IDC_TARGET_SIZE:
+		showTargetSize();
+		break;
+	case IDC_ADVANCE:
+		setAdvance();
 		break;
 	default:
 		CDialogEx::OnSysCommand(nID, lParam);
@@ -1136,5 +1164,3 @@ void recvVersion(const uint8_t *Data, uint8_t Len)
 
 
 }
-
-
