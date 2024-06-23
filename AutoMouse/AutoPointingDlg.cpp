@@ -233,28 +233,26 @@ BOOL CAutoPointingDlg::OnInitDialog()
 	}
 #endif
 
-#if 0
-	 // 初期ウインドウ位置  ※Dialogの｢プロパティ｣>｢Center｣で値をTRUEにしておかないと中央に戻されてしまう。
+#if 1
+	// 初期ウインドウ位置  
+	// ※Dialogの｢プロパティ｣>｢Center｣で値をTRUEにしておかないと中央に戻されてしまう。
+	RECT  rect;
+	int32_t width  = GetSystemMetrics(SM_CXSCREEN);		// スクリーンの幅を取得
+	int32_t height = GetSystemMetrics(SM_CYSCREEN);		// スクリーンの高さを取得
 
-		RECT  rect;
-		int32_t width  = GetSystemMetrics(SM_CXSCREEN);		// スクリーンの幅を取得
-		int32_t height = GetSystemMetrics(SM_CYSCREEN);		// スクリーンの高さを取得
-
-
-//		::GetClientRect(nullptr ,&mrect);
-		GetWindowRect(&rect);
+	GetWindowRect(&rect);
 		
-		// 自ウインドウの大きさを引く
-		width -= rect.right  - rect.left;
-		height-= rect.bottom - rect.top;
+	// 自ウインドウの大きさを引く
+	width -= rect.right  - rect.left;
+	height-= rect.bottom - rect.top;
 
-		int32_t x = gWindowPos.x * width / gWindowDenominator ;
-		int32_t y = gWindowPos.y * height / gWindowDenominator;
+	int32_t x = gWindowPos.x * width / gWindowDenominator ;
+	int32_t y = gWindowPos.y * height / gWindowDenominator;
 
-		BOOL aaa = SetWindowPos(this ,x ,y ,100 ,100 ,SWP_NOMOVE | SWP_NOZORDER);	// SWP_NOSIZE|SWP_NOZORDER
+	GetClientRect(&rect);
 
+	BOOL aaa = SetWindowPos(this ,x ,y ,0 ,0 ,(SWP_NOSIZE|SWP_NOZORDER|SWP_NOOWNERZORDER));	// SWP_NOZORDER  SWP_NOSIZE|SWP_NOZORDER
 #endif
-
 
 	// 接続ボタンの色
 	m_CbrCom[0].CreateSolidBrush(RGB(0x80, 0x80, 0x80)); 
@@ -558,8 +556,9 @@ int32_t CAutoPointingDlg::saveXml(const TCHAR *Path)
 	node->append_attribute(doc, _T("margin_y"), gInsideMargin.y);
 
 	// ウインドウ表示初期位置
-	{ // 初期ウインドウ位置  ※Dialogの｢プロパティ｣>｢Center｣で値をTRUEにしておかないと中央に戻されてしまう。
-
+	// 初期ウインドウ位置
+	// ※Dialogの｢プロパティ｣>｢Center｣で値をTRUEにしておかないと中央に戻されてしまう。
+	{
 		RECT  rect;
 		int32_t width  = GetSystemMetrics(SM_CXSCREEN);		// スクリーンの幅を取得
 		int32_t height = GetSystemMetrics(SM_CYSCREEN);		// スクリーンの高さを取得
@@ -857,18 +856,7 @@ LRESULT CAutoPointingDlg::OnComment(WPARAM wParam, LPARAM lParam)
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 void CAutoPointingDlg::OnBnClickedButton1()
 {
-#if 0
-	int comno,ack;
 
-	if(!gCom.isOpened()){
-		openCom();
-	}
-
-	ack = APD_sendCommand(0x99, 0x99, NULL, 0);
-	if(ack < 0){
-		
-	}
-#endif
 }
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
