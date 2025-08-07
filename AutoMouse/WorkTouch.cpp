@@ -39,7 +39,6 @@ int32_t WorkTouch::proc()
 int32_t	WorkTouch::procOne()
 {
 //	setGuiComment(m_Comment);
-	SendComment(m_Comment);
 
 	if (!m_Comment.empty()){
 		TRACE(m_Comment.c_str());

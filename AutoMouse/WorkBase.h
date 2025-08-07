@@ -70,7 +70,8 @@ public:
 	int32_t saveXmlComment(rapidxml::document_t &Doc ,rapidxml::node_t* Node) const;
 
 	// ƒRƒƒ“ƒg•\¦
-	void SendComment(const std::wstring &Txt);
+	void setGuiComment(const std::wstring &Txt);
+	void setGuiCnt(int32_t Cnt);
 
 protected:
 	int32_t					m_LoopNum;

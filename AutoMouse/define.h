@@ -15,7 +15,7 @@
 
 
 // ソフトバージョン
-#define		SOFT_VERSION	0x04246230
+#define		SOFT_VERSION	0x04248070
 
 #define		SPY_MODE		0		// 1:外部から自ウインドウ名をキャプチャされるのを防ぐ
 
@@ -73,6 +73,8 @@ enum E_ReturnCode {
 #define WM_UPDATEDATA	(WM_APP+100)
 #define WM_SHOW_VERSION (WM_APP+101)
 #define WM_COMMENT		(WM_APP+102)
+#define WM_CNT			(WM_APP+103)
+
 
 
 #endif // #ifndef AM_DEFIN_H

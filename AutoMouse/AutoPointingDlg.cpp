@@ -1,3 +1,4 @@
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // AutoPointingDlg.cpp : 実装ファイル
 //
@@ -151,6 +152,8 @@ BEGIN_MESSAGE_MAP(CAutoPointingDlg, CDialogEx)
 	ON_MESSAGE(WM_UPDATEDATA, OnUpdatedataA)
 	ON_MESSAGE(WM_SHOW_VERSION, OnShowVersion)
 	ON_MESSAGE(WM_COMMENT	,OnComment)
+	ON_MESSAGE(WM_CNT		,OnCnt)
+
 
 	ON_BN_CLICKED(IDC_BUTTON_START, &CAutoPointingDlg::OnBnClickedButtonStart)
 	ON_BN_CLICKED(IDC_BUTTON_STOP, &CAutoPointingDlg::OnBnClickedButtonStop)
@@ -833,23 +836,21 @@ LRESULT CAutoPointingDlg::OnShowVersion(WPARAM wParam, LPARAM lParam)
 	return 0; // メッセージ固有の戻り値を返す
 }
 
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-// コメント表示
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-void WorkBase::SendComment(const std::wstring &Txt)
-{
-	const WCHAR *pc = Txt.c_str();
-
-	SendMessageA(pAutoPointingDlg->m_hWnd, WM_COMMENT, reinterpret_cast<WPARAM>(pc), 0);
-}
 
 LRESULT CAutoPointingDlg::OnComment(WPARAM wParam, LPARAM lParam)
 {
 	::SetDlgItemText(m_hWnd, IDC_STATIC_COMMENT, reinterpret_cast<WCHAR*>(wParam));
 
+	return 0;
+}
+
+LRESULT CAutoPointingDlg::OnCnt(WPARAM wParam, LPARAM lParam)
+{
+	::SetDlgItemText(m_hWnd, IDC_STATIC_CNT, reinterpret_cast<WCHAR*>(wParam));
 
 	return 0;
 }
+
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // ボタン押された
