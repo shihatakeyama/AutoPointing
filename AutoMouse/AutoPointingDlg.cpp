@@ -1125,6 +1125,7 @@ void CAutoPointingDlg::OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized)
 //		gAddSleep = 6;		// アクティブになってから少しウエイトして、操作の人間の時間与える
 		APD_SleepAppend(gActivePauseTime);
 
+TRACE("CAutoPointingDlg::OnActivate()\n");
 
 		mta_t mt;
 
