@@ -26,7 +26,7 @@ WorkWait::~WorkWait()
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 int32_t WorkWait::procOne()
 {
-	SendComment(m_Comment);
+//	setGuiComment(m_Comment);
 
 	delay(m_WaitMsec);
 

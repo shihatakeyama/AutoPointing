@@ -33,8 +33,6 @@ int32_t	WorkTouchs::procOne()
 	int32_t ack = ERC_ok;
 	if(m_TouchPoints.size() == 0)	return ERC_ng;
 
-//	SendComment(m_Comment);
-
 	switch(m_Mode){
 	case EPTM_each:
 		for(i=0;i<m_TouchPoints.size();i++){

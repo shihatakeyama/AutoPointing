@@ -47,6 +47,7 @@ protected:
 	afx_msg LRESULT OnUpdatedataA(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnShowVersion(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnComment(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnCnt(WPARAM wParam, LPARAM lParam);
 
 	DECLARE_MESSAGE_MAP()
 public:

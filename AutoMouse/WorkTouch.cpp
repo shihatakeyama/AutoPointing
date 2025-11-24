@@ -26,8 +26,6 @@ WorkTouch::~WorkTouch()
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 int32_t	WorkTouch::procOne()
 {
-	SendComment(m_Comment);
-
 	return touchPointAndDelay(*m_TouchPoint);
 }
 

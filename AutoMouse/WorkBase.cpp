@@ -11,11 +11,14 @@
 #include "global.h"
 #include "sub.h"
 #include "GnrlThread.h"
-#include "WorkBase.h"
 #include "WorkTouch.h"
 #include "WorkTouchs.h"
 #include "WorkWait.h"
 
+#include "Resource.h"
+#include "AutoPointingDlg.h"
+
+#include "WorkBase.h"
 
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -64,6 +67,10 @@ int32_t WorkBase::proc()
 
 	for(i=0;m_LoopNum==0 ? true : i<m_LoopNum;i++){
 		if (!isLife())		return ERC_ok;
+
+		setGuiComment(m_Comment);
+		setGuiCnt(i);
+
 		ack = procOne();
 		if (ack < ERC_ok)	return ack;
 	}
@@ -263,4 +270,27 @@ int32_t WorkBase::saveXmlComment(rapidxml::document_t &Doc ,rapidxml::node_t* No
 	return ERC_ok;
 }
 
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+// コメント表示
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+void WorkBase::setGuiComment(const std::wstring &Txt)
+{
+	const WCHAR *pc = Txt.c_str();
+
+	SendMessageA(pAutoPointingDlg->m_hWnd, WM_COMMENT, reinterpret_cast<WPARAM>(pc), 0);
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+// 残り回数を表示    引数は試行回数 0:1回目 
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+void WorkBase::setGuiCnt(int32_t Cnt)
+{
+	std::wstring str;
+
+	if (m_LoopNum != 0){
+		str = std::to_wstring(m_LoopNum - (Cnt+1));
+	}
+
+	SendMessageA(pAutoPointingDlg->m_hWnd, WM_CNT, reinterpret_cast<WPARAM>(str.c_str()), 0);
+}
 

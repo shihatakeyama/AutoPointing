@@ -82,6 +82,8 @@ enum E_ReturnCode {
 #define WM_UPDATEDATA	(WM_APP+100)
 #define WM_SHOW_VERSION (WM_APP+101)
 #define WM_COMMENT		(WM_APP+102)
+#define WM_CNT			(WM_APP+103)
+
 
 
 #endif // #ifndef AM_DEFIN_H
