@@ -62,5 +62,6 @@ class WorkBase;
 std::vector<WorkBase*>		gWorks;
 std::vector<std::wstring>	gWorkNames;
 std::mutex					gWorkMutex;
+std::mutex					gStateMutex;
 int32_t						gInitWorkNo= 0;
 int32_t						gWorkIndex = 0;	//  Œ»İÀs’†‚Ìƒ[ƒN

@@ -43,7 +43,7 @@ void APD_Sleep(int32_t msc)
 	gDelayRemine = msc + random(gBureTime);
 	gBPMutex.unlock();
 
-	while (g_Operation != 0){
+	while (g_Operation == EOS_operation){
 		{
 			std::lock_guard<std::mutex> lock(gBPMutex);
 			if (gDelayRemine == 0){
@@ -67,7 +67,7 @@ void APD_Sleep(int32_t msc)
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 void APD_SleepAppend(int32_t msc)
 {
-	if (g_Operation == 0) return;
+	if (g_Operation == EOS_non_operation) return;
 
 	std::lock_guard<std::mutex> lock(gBPMutex);
 
@@ -103,17 +103,17 @@ int32_t AP_pointingDesiredWindow(const CPoint &Point)
 	}else{
 		// 目的のウインドウが設定されていれば
 		ack = getTargetWindowPos(rec);
-		if(ack >= ERC_ok){
+		if(ack < ERC_ok){
+			// ウインドウが見つからない。
+			return ERC_window_not_found;
+
+		}else{
 			// ウインドウ位置変換 ランダム
 			new_x = randScatter(Point.x + rec.left ,gBurePoint.x);
 			new_y = randScatter(Point.y + rec.top  ,gBurePoint.y);
 
 			// 領域内チェック
 			if (gInsideCheck){
-// t-b
-//new_y = 1023;
-//int32_t height = rec.bottom -rec.top;
-// t-e
 				limit(new_x, rec.left, rec.right + gWindowMargin.x - gInsideMargin.x);
 				limit(new_y, rec.top, rec.bottom + gWindowMargin.y - gInsideMargin.y);
 			}

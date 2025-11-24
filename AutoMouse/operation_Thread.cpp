@@ -37,17 +37,25 @@
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 Uint32 OperationThread(void* Arg)
 {
-	uint32_t seed = static_cast<uint32_t>(time(NULL));		// スレッド中でrand()する場合は当スレッド中でsrand()しないとsrandが効かない。？
+	int32_t ack;
+	uint32_t seed = static_cast<uint32_t>(time(NULL));		// スレッド中でrand()する場合は本スレッド中でsrand()しないとsrandが効かない。？
 	srand(seed);  
 
 	while (gOperationThread.isLife()){
 		if (g_Operation != 0){	// 稼働中だったら。
-			std::lock_guard<std::mutex> lock(gWorkMutex);
-			gWorks[gWorkIndex]->proc();
+			{
+				std::lock_guard<std::mutex> lock(gWorkMutex);
+				ack = gWorks[gWorkIndex]->proc();
+			}
+			if(ack < ERC_ok){
+				// 何か異常だったら終了させる。
+				std::lock_guard<std::mutex> lock(gStateMutex);
+				g_Operation	= EOS_stop_req;
+			}
 		}
 		Sleep(100);
 	}
 
-	return 0;
+	return ERC_ok;
 }
 

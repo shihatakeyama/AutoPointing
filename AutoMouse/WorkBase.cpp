@@ -81,19 +81,19 @@ int32_t WorkBase::procOne()
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // タッチ操作など
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-int32_t WorkBase::touchPointAndDelay(const TouchPoint *Point)
+int32_t WorkBase::touchPointAndDelay(const TouchPoint &Point)
 {
-	ASSERT(Point);
-	int32_t ack = ERC_ng;
+	int32_t ack;
+
+	if(!isLife())	ERC_ok;
 
 	// RUN中であればタッチ操作します。
-	if(isLife()){
-		ack = AP_pointingDesiredWindow(CPoint(Point->x,Point->y));
-	}
+	ack = AP_pointingDesiredWindow(CPoint(Point.x,Point.y));
+	if(ack < ERC_ok)	return ack;
 
-	delay(Point->delay);
+	delay(Point.delay);
 
-	return ack;
+	return ERC_ok;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // 待ち
@@ -107,8 +107,7 @@ void WorkBase::delay(int32_t Msec)
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 bool WorkBase::isLife()
 {
-	return (g_Operation != 0);
-//	return gOperationThread.isLife();
+	return (g_Operation == EOS_operation);
 }
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

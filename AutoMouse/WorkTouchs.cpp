@@ -40,6 +40,7 @@ int32_t	WorkTouchs::procOne()
 		for(i=0;i<m_TouchPoints.size();i++){
 			if (!isLife())	return ERC_ok;
 			ack = m_TouchPoints[i]->proc();
+			if(ack < ERC_ok)	break;
 		}
 		break;
 	case EPTM_anyone:
@@ -55,7 +56,7 @@ int32_t	WorkTouchs::procOne()
 		break;
 	}
 
-	return ERC_ok;
+	return ack;
 }
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
