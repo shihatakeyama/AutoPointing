@@ -71,6 +71,9 @@ public:
 	afx_msg void OnDestroy();
 	afx_msg void OnBnClickedButtonStart();
 	afx_msg void OnBnClickedButtonStop();
+	void start();
+	void stop();
+
 	CButton m_Start;
 	CButton m_Stop;
 

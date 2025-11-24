@@ -41,7 +41,7 @@ public:
 	virtual int32_t proc();
 	virtual int32_t procOne();
 
-	int32_t touchPointAndDelay(const TouchPoint *Point);
+	int32_t touchPointAndDelay(const TouchPoint &Point);
 	void delay(int32_t Msec);
 	static bool isLife();	// true:í èÌâ^ì]íÜ
 

@@ -306,7 +306,7 @@ void CAutoPointingDlg::OnDestroy()
 {
 	CDialogEx::OnDestroy();
 
-	g_Operation = 0;
+	g_Operation = EOS_non_operation;
 
 	saveXmlIni();
 
@@ -734,6 +734,8 @@ void CAutoPointingDlg::OnTimer(UINT_PTR nIDEvent)
 	static POINT oldpoint = { 0, 0 };
 	Sint32 ack;
 
+	std::lock_guard<std::mutex> lock(gStateMutex);
+
 	if (nIDEvent == ET_100ms){
 		// **** Delay 表示 ****
 		CString str;
@@ -769,8 +771,15 @@ void CAutoPointingDlg::OnTimer(UINT_PTR nIDEvent)
 			oldpoint = point;
 		}
 
+		// UI以外から稼働止め要求あった場合。
+		if(	g_Operation	== EOS_stop_req){
+			stop();
+			::SetDlgItemText(m_hWnd, IDC_STATIC_COMMENT, _T("ターゲットウインドウが見つかりません"));
+			return;
+		}
+
 		// **** 終了判定 ****
-		if ((g_Operation == 0) || (time(&now) == (time_t)-1) || (m_EndTime == (time_t)-1) ) {
+		if ((g_Operation == EOS_non_operation) || (time(&now) == (time_t)-1) || (m_EndTime == (time_t)-1) ) {
 			return;
 		}
 		if (time(&now) == (time_t)-1) {
@@ -778,7 +787,7 @@ void CAutoPointingDlg::OnTimer(UINT_PTR nIDEvent)
 		}
 
 		if(m_EndTime < now){
-			OnBnClickedButtonStop();
+			stop();
 		}
 	}
 
@@ -865,9 +874,9 @@ void CAutoPointingDlg::OnBnClickedButton1()
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 int32_t getTargetWindowPos(RECT &Rect)
 {
-	LPCTSTR winname = gTargetWindowName.c_str();
-	if((winname == nullptr) || (winname[0] == '\0'))	return -1;
-	HWND hWndChild = ::FindWindowEx(NULL, NULL, NULL, winname);
+	LPCTSTR wndname = gTargetWindowName.c_str();
+	if((wndname == nullptr) || (wndname[0] == '\0'))	return -1;
+	HWND hWndChild = ::FindWindowEx(NULL, NULL, NULL, wndname);
 	if (hWndChild == nullptr) {
 		return -1;
 	}
@@ -882,14 +891,25 @@ int32_t getTargetWindowPos(RECT &Rect)
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 void CAutoPointingDlg::OnBnClickedButtonStart()
 {
+	std::lock_guard<std::mutex> lock(gStateMutex);
+	start();
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+// 停止 ボタン押された
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+void CAutoPointingDlg::OnBnClickedButtonStop()
+{
+	std::lock_guard<std::mutex> lock(gStateMutex);
+	stop();
+}
+void CAutoPointingDlg::start()
+{
 	int32_t curpos,ack;
 
-
-	if (gWorks.size() < gWorkIndex){
+	if (static_cast<int32_t>(gWorks.size()) < gWorkIndex){
 		MessageBox(_T("稼働条件が見つかりません。"), gApplicatonName.c_str(), MB_OK | MB_ICONSTOP);
 		return;
 	}
-
 
 	if(!gCom.isOpened()){
 		openCom();
@@ -920,20 +940,17 @@ void CAutoPointingDlg::OnBnClickedButtonStart()
 
 	gWorkIndex = m_OperationSel.GetCurSel();
 
-	g_Operation = 1;
+	g_Operation = EOS_operation;
 	m_Start.EnableWindow(FALSE);
 	m_Stop.EnableWindow(TRUE);
 	m_Stop.SetFocus();
 }
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-// 停止 ボタン押された
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-void CAutoPointingDlg::OnBnClickedButtonStop()
+void CAutoPointingDlg::stop()
 {
-	g_Operation = 0;
+	g_Operation = EOS_non_operation;
 	m_Start.EnableWindow(TRUE);
 	m_Start.SetFocus();
-	m_Stop.EnableWindow(FALSE);
+	m_Stop.EnableWindow(FALSE);	
 }
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -1126,6 +1143,7 @@ void CAutoPointingDlg::OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized)
 //		gAddSleep = 6;		// アクティブになってから少しウエイトして、操作の人間の時間与える
 		APD_SleepAppend(gActivePauseTime);
 
+TRACE("CAutoPointingDlg::OnActivate()\n");
 
 		mta_t mt;
 

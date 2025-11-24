@@ -51,7 +51,7 @@ int32_t APD_sendCommand(uint8_t Comand1, uint8_t Comand2, const uint8_t *Data, u
 
 	ack = gCom.write(gTxBuf, len);
 	if (ack < 0){
-		return -4;
+		return ERC_cmd_send;
 	}
 
 	return 0;

@@ -20,31 +20,13 @@ WorkTouch::~WorkTouch()
 {
 	delete m_TouchPoint;
 }
-#if 0
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-// ワーク処理
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-int32_t WorkTouch::proc()
-{
-	int32_t ack;
 
-	ack = touchPointAndDelay(m_TouchPoint);
-
-	return ack;
-}
-#endif
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // ワーク処理 1回
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 int32_t	WorkTouch::procOne()
 {
-//	setGuiComment(m_Comment);
-
-	if (!m_Comment.empty()){
-		TRACE(m_Comment.c_str());
-	}
-
-	return touchPointAndDelay(m_TouchPoint);
+	return touchPointAndDelay(*m_TouchPoint);
 }
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

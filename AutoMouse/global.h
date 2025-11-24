@@ -55,6 +55,7 @@ class WorkBase;
 extern std::vector<WorkBase*>		gWorks;
 extern std::vector<std::wstring>	gWorkNames;
 extern std::mutex					gWorkMutex;
+extern std::mutex					gStateMutex;
 extern int32_t						gInitWorkNo;
 extern int32_t						gWorkIndex;
 
